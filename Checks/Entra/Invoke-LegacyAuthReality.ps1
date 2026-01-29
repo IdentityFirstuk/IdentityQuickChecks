@@ -46,7 +46,7 @@ function Get-EvidenceLimit {
     return 15
 }
 
-Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -Block {
+Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
     try {
         Import-Module Microsoft.Graph.Identity.DirectoryManagement -Force -ErrorAction Stop
         Import-Module Microsoft.Graph.Reports -Force -ErrorAction Stop
@@ -66,8 +66,8 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         "SMTP" = "SMTP protocol authentication"
         "IMAP" = "IMAP protocol authentication"
         "POP"  = "POP protocol authentication"
-        "EAS"  = "Exchange ActiveSync"
-        "EWS"  = "Exchange Web Services"
+        "EAS" = "Exchange ActiveSync"
+        "EWS" = "Exchange Web Services"
         "PowerShell" = "Remote PowerShell (basic auth)"
         "BasicAuth" = "Basic authentication (generic)"
         "MAPI" = "MAPI over HTTP"
@@ -87,7 +87,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
     # Query all sign-ins (this can take time for large tenants)
     $allSignIns = @()
     try {
-        # Get the last 30 days of non-interactive sign-ins where legacy auth was used
         $signIns = Get-MgAuditLogSignIn `
             -Filter "createdDateTime gt $startDate and clientAppUsed ne 'Browser' and clientAppUsed ne 'MobileApps'" `
             -All `
@@ -96,7 +95,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         $allSignIns = $signIns
     } catch {
         Write-IFQCLog -Context $ctx -Level WARN -Message "Failed to query sign-ins: $($_.Exception.Message)"
-        # Try broader query
         try {
             $allSignIns = Get-MgAuditLogSignIn -Filter "createdDateTime gt $startDate" -All -ErrorAction SilentlyContinue
         } catch {
@@ -111,11 +109,9 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         $user = $signIn.UserPrincipalName
         $created = [DateTime]$signIn.CreatedDateTime
         
-        # Detect legacy auth based on client app or auth methods
         $isLegacy = $false
         $detectedProtocols = @()
         
-        # Check client app used
         foreach ($proto in $legacyProtocols.Keys) {
             if ($clientApp -match $proto -or $clientApp -match $legacyProtocols[$proto]) {
                 $isLegacy = $true
@@ -123,17 +119,14 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
             }
         }
         
-        # Check for basic auth in authentication methods
         $authMethods = $signIn.AuthenticationMethodsUsed
         if ($authMethods -contains "Password" -and $authMethods.Count -eq 1) {
-            # Single factor password only - could be legacy
             if ($clientApp -match "Mobile|Desktop|App") {
                 $isLegacy = $true
                 $detectedProtocols += "BasicAuth"
             }
         }
         
-        # Check for legacy client
         $legacyClients = @("Exchange ActiveSync", "IMAP", "POP", "SMTP", "MAPI", "Exchange Web Services")
         foreach ($client in $legacyClients) {
             if ($clientApp -match $client) {
@@ -148,7 +141,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         if ($isLegacy) {
             foreach ($proto in $detectedProtocols) {
                 if ($legacyUsage.ContainsKey($proto)) {
-                    # Check if user already recorded
                     $existing = $legacyUsage[$proto].users | Where-Object { $_.UserPrincipalName -eq $user }
                     if (-not $existing) {
                         $legacyUsage[$proto].users += [PSCustomObject]@{
@@ -161,7 +153,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
                         }
                     }
                     
-                    # Update last seen
                     if ($null -eq $legacyUsage[$proto].lastSeen -or $created -gt $legacyUsage[$proto].lastSeen) {
                         $legacyUsage[$proto].lastSeen = $created
                     }
@@ -170,7 +161,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         }
     }
     
-    # Count per protocol
     foreach ($proto in $legacyUsage.Keys) {
         $legacyUsage[$proto].count = ($legacyUsage[$proto].users | Measure-Object).Count
     }
@@ -178,13 +168,10 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
     $ctx.Data.protocols = $legacyUsage
     $ctx.Data.totalLegacyUsers = (($legacyUsage.Values | ForEach-Object { $_.users.UserPrincipalName }) | Sort-Object -Unique).Count
     
-    # ---------------------------
     # Findings
-    # ---------------------------
     $evidenceLimit = Get-EvidenceLimit -DetailLevel $DetailLevel
     $totalLegacyEvents = ($legacyUsage.Values | Measure-Object -Property count -Sum).Sum
     
-    # Finding: Any legacy auth detected
     if ($totalLegacyEvents -gt 0) {
         $highRiskProtocols = @("SMTP", "IMAP", "POP", "EAS")
         $hasHighRisk = $false
@@ -201,28 +188,30 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
             "$($_): $($legacyUsage[$_].count) users"
         }) -join ", "
         
+        # Build evidence array
+        $evidenceArray = @()
+        foreach ($proto in ($legacyUsage.Keys | Where-Object { $legacyUsage[$_].count -gt 0 })) {
+            $evidenceArray += ($legacyUsage[$proto].users | Select-Object -First $evidenceLimit | ForEach-Object {
+                [PSCustomObject]@{
+                    Protocol = $proto
+                    UserPrincipalName = $_.UserPrincipalName
+                    LastSignIn = $_.LastSignIn
+                    ClientApp = $_.ClientApp
+                    IPAddress = $_.IPAddress
+                }
+            })
+        }
+        
         Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
             -Id "LEGACY-AUTH-DETECTED" `
             -Title "Legacy authentication usage detected" `
             -Severity $severity `
             -Description "Legacy authentication protocols are being used in your tenant. $totalLegacyEvents events from $($ctx.Data.totalLegacyUsers) unique users.`n`n$protoSummary" `
             -Count $ctx.Data.totalLegacyUsers `
-            -Evidence ($legacyUsage.Keys | Where-Object { $legacyUsage[$_].count -gt 0-Object {
-                $ } | ForEachproto = $_
-                $legacyUsage[$proto].users | Select-Object -First $evidenceLimit | ForEach-Object {
-                    [PSCustomObject]@{
-                        Protocol = $proto
-                        UserPrincipalName = $_.UserPrincipalName
-                        LastSignIn = $_.LastSignIn
-                        ClientApp = $_.ClientApp
-                        IPAddress = $_.IPAddress
-                    }
-                }
-            }) `
+            -Evidence $evidenceArray `
             -Recommendation "Plan migration to Modern Authentication. Block legacy auth in Conditional Access policies. Notify users of deprecated clients."
         )
     } else {
-        # Finding: No legacy auth (good news)
         Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
             -Id "LEGACY-AUTH-CLEAN" `
             -Title "No legacy authentication detected" `
@@ -233,7 +222,6 @@ Invoke-IFQCSafe -Context $Context $ctx -Name "Legacy authentication detection" -
         )
     }
     
-    # Summary stats
     $ctx.Data.summary = @{
         totalLegacyUsers = $ctx.Data.totalLegacyUsers
         totalEvents = $totalLegacyEvents
@@ -254,5 +242,4 @@ Write-Host "LegacyAuthReality check complete." -ForegroundColor Green
 Write-Host "  JSON: $($output.Json)" -ForegroundColor Cyan
 Write-Host "  HTML: $($output.Html)" -ForegroundColor Cyan
 
-# Cleanup
 try { Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null } catch { }
