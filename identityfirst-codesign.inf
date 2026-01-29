@@ -1,5 +1,5 @@
 [NewRequest]
-Subject = "CN=IdentityFirst Code Signing, O=IdentityFirst Ltd, L=London, C=GB"
+Subject = "CN=IdentityFirst Code Signing, O=IdentityFirst Ltd, L=Northumberland, C=GB"
 KeyLength = 4096
 KeySpec = 1
 KeyUsage = 0x80
