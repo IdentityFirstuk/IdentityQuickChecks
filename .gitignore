@@ -1,0 +1,31 @@
+# PowerShell module artifacts
+*.pssess
+*.log
+*.tmp
+
+# Output directories
+IFQC-Output/
+Output/
+output/
+
+# Package output
+*.zip
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# PowerShell
+.profile
+*.ps1.bak
+*.psm1.bak
+
+# Module cache
+$env:USERPROFILE/Documents/WindowsPowerShell/Modules/IdentityFirst.QuickChecks/

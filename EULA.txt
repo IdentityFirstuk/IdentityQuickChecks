@@ -1,0 +1,70 @@
+================================================================================
+                    IDENTITYFIRST QUICKCHECKS - EULA
+================================================================================
+
+Thank you for using IdentityFirst QuickChecks!
+
+These PowerShell scripts are free to use for any purpose - commercial or 
+personal. We built them to help organisations understand their identity 
+posture better.
+
+--------------------------------------------------------------------------------
+                         WHAT YOU CAN DO
+--------------------------------------------------------------------------------
+
+✓ Use these scripts in your organisation
+✓ Modify them to fit your needs
+✓ Share them with colleagues or clients
+✓ Use them for consulting engagements
+✓ Build upon them (with attribution)
+
+--------------------------------------------------------------------------------
+                         WHAT YOU CANNOT DO
+--------------------------------------------------------------------------------
+
+✗ Claim them as your own work
+✗ Sell them as-is
+✗ Hold us liable for any issues
+
+--------------------------------------------------------------------------------
+                         DISCLAIMERS
+--------------------------------------------------------------------------------
+
+THESE SCRIPTS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+
+IdentityFirst Ltd and the author (mark.ahearne@identityfirst.net) accept 
+no liability for:
+
+• Any damage caused by running these scripts
+• Any decisions made based on script output
+• Any security issues discovered or not discovered
+• Any compliance or regulatory implications
+
+These scripts provide READ-ONLY visibility. They do not modify anything,
+but you should always:
+
+1. Review scripts before running in your environment
+2. Test in a non-production environment first
+3. Run with appropriate (minimum required) permissions
+4. Review output before taking any action
+
+--------------------------------------------------------------------------------
+                         ATTRIBUTION
+--------------------------------------------------------------------------------
+
+If you modify or build upon these scripts, please keep the original 
+attribution:
+
+"Based on IdentityFirst QuickChecks by IdentityFirst Ltd"
+
+--------------------------------------------------------------------------------
+
+For questions, support, or to learn about our full IdentityHealthCheck 
+product:
+
+Website:  https://www.identityfirst.net
+Email:    mark.ahearne@identityfirst.net
+
+================================================================================
+                    IDENTITYFIRST QUICKCHECKS - EULA
+================================================================================

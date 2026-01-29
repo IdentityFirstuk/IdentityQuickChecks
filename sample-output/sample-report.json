@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "toolName": "BreakGlassReality",
+    "toolVersion": "1.0.0",
+    "runId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "generatedAtUtc": "2026-01-29T12:00:00.000Z",
+    "host": {
+      "computerName": "DC01",
+      "userName": "admin",
+      "domain": "CORP",
+      "osCaption": "Microsoft Windows Server 2022 Standard",
+      "osVersion": "10.0.20348",
+      "manufacturer": "Dell Inc.",
+      "model": "PowerEdge R740"
+    },
+    "detailLevel": "Normal"
+  },
+  "summary": {
+    "totalFindings": 2,
+    "critical": 0,
+    "high": 2,
+    "medium": 0,
+    "low": 0
+  },
+  "data": {
+    "breakGlassAccountsFound": 3,
+    "breakGlassEnabled": 3,
+    "passwordNeverExpires": 2,
+    "mfaEnabled": 1
+  },
+  "findings": [
+    {
+      "id": "BG-001",
+      "title": "Break-glass accounts with password never expires",
+      "severity": "High",
+      "description": "Break-glass accounts should have regular password rotation. Password never expires increases compromise risk.",
+      "count": 2,
+      "recommendation": "Implement 90-day password rotation for break-glass accounts. Consider using PIM for just-in-time access instead.",
+      "evidence": [
+        {
+          "SamAccountName": "BG-Admin1",
+          "Name": "Break Glass Admin 1",
+          "Enabled": true,
+          "PasswordNeverExpires": true,
+          "LastLogon": "2024-06-15T10:30:00"
+        },
+        {
+          "SamAccountName": "breakglass",
+          "Name": "Emergency Break Glass",
+          "Enabled": true,
+          "PasswordNeverExpires": true,
+          "LastLogon": null
+        }
+      ]
+    },
+    {
+      "id": "BG-002",
+      "title": "Break-glass accounts without MFA",
+      "severity": "High",
+      "description": "Break-glass accounts should have MFA enabled. MFA provides critical protection for emergency access accounts.",
+      "count": 2,
+      "recommendation": "Enable MFA on all break-glass accounts. Consider using Microsoft Entra ID Privileged Identity Management for conditional MFA requirements.",
+      "evidence": [
+        {
+          "SamAccountName": "BG-Admin1",
+          "Name": "Break Glass Admin 1",
+          "MFAEnabled": false
+        },
+        {
+          "SamAccountName": "breakglass",
+          "Name": "Emergency Break Glass",
+          "MFAEnabled": false
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "This check identifies accounts with 'break', 'glass', 'emergency', or 'incident' in the name.",
+    "This script shows break-glass accounts exist. It cannot answer: Who approved them? When tested? What controls exist?"
+  ]
+}
