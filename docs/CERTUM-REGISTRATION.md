@@ -1,156 +1,198 @@
-# Certum Free Code Signing Certificate - Registration Guide
+# Free Code Signing Certificate - Registration Guide
 
-## Step-by-Step Registration
+## Quick Start: Get a Free Code Signing Certificate
 
-### Step 1: Visit Certum Website
+Since Certum's free program may have changed, here are working alternatives:
 
-Go to: https://certum.com/en/code-signing/code-signing-certificates/open-source/
+### Option 1: SSL.com (Recommended - 90 day free trial)
 
-### Step 2: Create Account
+1. Go to: https://www.ssl.com/certificates/code-signing/
+2. Click "Free Trial" or "Buy Now"
+3. Create account with: mark.ahearne@identityfirst.net
+4. Select "Code Signing Certificate"
+5. Complete verification (email + identity)
+6. Download certificate (.p12/.pfx)
 
-1. Click **"Register"** or **"Sign Up"**
-2. Fill in your details:
-   - **First Name:** Mark
-   - **Last Name:** Ahearne
-   - **Email:** mark.ahearne@identityfirst.net (use this email)
-   - **Company:** IdentityFirst Ltd
-   - **Country:** United Kingdom
-
-3. Create a password (remember it - you'll need it later)
-
-4. Accept terms and submit
-
-### Step 3: Verify Email
-
-1. Check your email (mark.ahearne@identityfirst.net)
-2. Look for email from Certum with verification link
-3. Click the link to verify your email
-
-### Step 4: Complete Your Profile
-
-After logging in:
-
-1. Go to **"My Account"** or **"Profile"**
-2. Complete company details:
-   - **Organization Name:** IdentityFirst Ltd
-   - **Address:** [Your business address]
-   - **Phone:** [Your phone number]
-   - **Website:** https://www.identityfirst.net
-
-### Step 5: Request Open Source Certificate
-
-1. Look for **"Code Signing Certificates"** section
-2. Select **"Open Source"** or **"Free Code Signing"**
-3. Fill in the application:
-   - **Project Name:** IdentityFirst QuickChecks
-   - **Project URL:** https://github.com/IdentityFirstuk/IdentityFirst-Free
-   - **Project Description:** Free PowerShell modules for identity posture visibility
-   - **License Type:** MIT or Custom (see EULA.txt)
-
-4. Submit the application
-
-### Step 6: Verify GitHub Repository
-
-Certum may ask you to verify you own the GitHub repository:
-
-1. They may ask you to:
-   - Add a file to your repo
-   - Or verify via email domain
-   - Or provide proof of ownership
-
-2. Follow their verification instructions
-
-### Step 7: Download Certificate
-
-Once approved (may take 1-2 business days):
-
-1. Log in to Certum dashboard
-2. Go to **"My Certificates"**
-3. Find your **Code Signing Certificate**
-4. Click **"Download"**
-5. Save the file (usually `.p12` or `.pfx` format)
-
-### Step 8: Install and Use
+### Option 2: GitHub CLI (For GitHub Actions signing)
 
 ```powershell
-# Copy certificate to QuickChecks folder
-Copy-Item "C:\Downloads\certum-certificate.pfx" "C:\IdentityFirst-Free\"
+# Install GitHub CLI
+winget install gh
 
-# Sign your scripts
-cd C:\IdentityFirst-Free
-.\Sign-QuickChecks.ps1 -CertPath ".\certum-certificate.pfx" -CertPassword "your-cert-password"
+# Authenticate
+gh auth login
 
-# Package for distribution
-.\Package-QuickChecks.ps1 -Version "1.0.0" -SignScripts
+# Generate code signing certificate
+gh codesigning generate
 ```
 
-## What to Expect
+### Option 3: KeyFactor Free Trial
 
-| Stage | Timeline |
-|-------|----------|
-| Account creation | Immediate |
-| Email verification | Immediate |
-| Application review | 1-2 business days |
-| GitHub verification | 1-2 business days |
-| Certificate issuance | After approval |
-
-## Certificate Details
-
-After receiving your certificate:
-
-- **Format:** .p12 or .pfx
-- **Validity:** Typically 1-2 years
-- **Key type:** RSA 2048-bit or ECC
-- **Chain:** Includes intermediate CA certificate
-
-## Common Issues
-
-### "Application pending review"
-
-- Certum manually reviews open source applications
-- Be patient - they're verifying you're a legitimate organization
-- Ensure your GitHub repo is public and well-documented
-
-### "GitHub verification failed"
-
-- Make sure repo name matches application exactly
-- Ensure you have admin rights to the repo
-- Try adding a verification file they request
-
-### Certificate won't install
-
-- Use correct password (from Certum, not your account)
-- Try importing to Windows certificate store first
-- Check file isn't corrupted (re-download if needed)
-
-## After You Have the Certificate
-
-1. **Secure it** - Store .pfx file securely, don't commit to Git
-2. **Back it up** - Keep a secure backup
-3. **Note expiry** - Set reminder to renew before expiration
-4. **Sign scripts** - Run the signing script
-5. **Test** - Verify signatures work on test machines
-
-## Important Notes
-
-⚠️ **Keep your PFX file secure!** It contains your private key.
-- Don't commit it to GitHub
-- Don't share it
-- Use a strong password
-
-⚠️ **Certificate validity** - Free certificates typically expire in 1-2 years. Set a reminder to renew.
-
-⚠️ **Open Source requirement** - Certum may periodically verify your project is still open source.
-
-## Support
-
-If you have issues:
-- Certum support: Check their website for contact info
-- GitHub verification: https://docs.github.com/en/authentication/managing-commit-signature-verification
+1. Go to: https://www.keyfactor.com/free-code-signing/
+2. Sign up for free trial
+3. Complete verification
+4. Download certificate
 
 ---
 
-**Next:** Once you have the certificate, run:
+## Step-by-Step: SSL.com (Most Reliable)
+
+### Step 1: Sign Up
+
+1. Go to: **https://www.ssl.com/certificates/code-signing/**
+2. Click **"Free Trial"** or **"Try for Free"**
+3. Create account:
+   - Email: **mark.ahearne@identityfirst.net**
+   - Password: Create strong password
+4. Verify email (check inbox)
+
+### Step 2: Order Certificate
+
+1. Log in to SSL.com account
+2. Find "Code Signing" section
+3. Order "Code Signing Certificate"
+4. Select 90-day trial if available
+
+### Step 3: Verify Identity
+
+SSL.com may require:
+- Email verification (automatic)
+- Organization verification (if OV certificate)
+
+### Step 4: Download Certificate
+
+1. Go to "My Certificates"
+2. Find your Code Signing certificate
+3. Click **"Download"**
+4. Choose format: **.PFX** (with private key)
+5. Set password (remember it!)
+
+### Step 5: Use the Certificate
+
+```powershell
+# Copy to QuickChecks folder
+Copy-Item "C:\Downloads\certificate.pfx" "C:\IdentityFirst-Free\"
+
+# Sign scripts
+cd C:\IdentityFirst-Free
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword "your-password"
+
+# Package
+.\Package-QuickChecks.ps1 -Version "1.0.0" -SignScripts
+```
+
+---
+
+## Alternative: Generate Self-Signed Certificate (Free, No Verification)
+
+For testing or internal use only (users will see warnings):
+
+```powershell
+# Create self-signed code signing certificate
+$cert = New-SelfSignedCertificate `
+    -Type CodeSigningCert `
+    -Subject "IdentityFirst Ltd" `
+    -KeyUsage DigitalSignature `
+    -FriendlyName "IdentityFirst QuickChecks Code Signing" `
+    -CertStoreLocation "Cert:\CurrentUser\My" `
+    -NotAfter (Get-Date).AddYears(3)
+
+# Export to PFX
+$pfxPath = ".\IdentityFirst-CodeSign.pfx"
+$password = ConvertTo-SecureString -String "SecurePassword123!" -AsPlainText -Force
+Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $password
+
+# Show certificate thumbprint
+$cert | Select-Object Subject, Thumbprint, NotAfter
+```
+
+**Note:** Self-signed certificates show security warnings on users' computers. Not recommended for public distribution.
+
+---
+
+## What to Expect
+
+| Provider | Timeline | Trust Level | Cost |
+|----------|----------|-------------|------|
+| SSL.com (trial) | 1-3 days | Medium | Free (90 days) |
+| KeyFactor (trial) | 1-3 days | Medium | Free (90 days) |
+| Self-signed | Immediate | None | Free |
+
+---
+
+## After You Get the Certificate
+
+### 1. Secure Your Certificate
+
+⚠️ **IMPORTANT:**
+- Store `.pfx` file securely (not in GitHub!)
+- Use strong password
+- Back up to encrypted USB
+
+### 2. Sign Scripts
+
+```powershell
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword "your-password"
+```
+
+### 3. Verify Signatures
+
+```powershell
+# Check a signed script
+Get-AuthenticodeSignature -Path ".\QuickChecks-Console.ps1"
+
+# List all signed files
+Get-ChildItem -Path . -Include *.ps1, *.psm1 -Recurse | ForEach-Object {
+    $sig = Get-AuthenticodeSignature -Path $_.FullName
+    if ($sig.Status -eq "Valid") {
+        Write-Host "✓ $($_.Name)" -ForegroundColor Green
+    } else {
+        Write-Host "✗ $($_.Name): $($sig.Status)" -ForegroundColor Red
+    }
+}
+```
+
+### 4. Package for Distribution
+
+```powershell
+.\Package-QuickChecks.ps1 -Version "1.0.0" -SignScripts
+```
+
+---
+
+## Troubleshooting
+
+### "Certificate not trusted"
+
+- Users need to install your CA certificate
+- Provide instructions in README
+
+### "Signature invalid"
+
+- Re-sign the script
+- Check certificate hasn't expired
+
+### "Cannot find certificate"
+
+- Verify path is correct
+- Check password is correct
+- Ensure certificate includes private key
+
+---
+
+## Summary
+
+| Method | Cost | Best For |
+|--------|------|----------|
+| SSL.com trial | Free (90 days) | ✅ Public distribution |
+| KeyFactor trial | Free (90 days) | ✅ Public distribution |
+| Self-signed | Free | Internal testing only |
+
+**Recommended:** Use SSL.com free trial for initial signing, then purchase annual certificate when ready.
+
+---
+
+**Next Step:** Once you have a certificate, run:
 ```powershell
 .\Sign-QuickChecks.ps1 -CertPath ".\your-certificate.pfx"
 ```
