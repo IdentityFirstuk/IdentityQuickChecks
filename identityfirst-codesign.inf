@@ -1,12 +1,12 @@
 [NewRequest]
 Subject = "CN=IdentityFirst Code Signing, O=IdentityFirst Ltd, L=London, C=GB"
-KeyLength = 2048
+KeyLength = 4096
 KeySpec = 1
 KeyUsage = 0x80
 ProviderName = "Microsoft Enhanced RSA and AES Cryptographic Provider"
 ProviderType = 24
 RequestType = PKCS10
-FriendlyName = "IdentityFirst Code Signing Certificate"
+FriendlyName = "IdentityFirst Code Signing Certificate (4096-bit)"
 HashAlgorithm = SHA256
 
 [EnhancedKeyUsageExtension]
