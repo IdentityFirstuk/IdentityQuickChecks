@@ -56,6 +56,43 @@ All scripts follow these principles:
 
 ### Prerequisites
 
+Before running QuickChecks, ensure you have the required modules and tools:
+
+### PowerShell Modules
+
+| Module | Required For | Install Command |
+|--------|--------------|-----------------|
+| ActiveDirectory | AD scripts | Install via RSAT |
+| AzureAD | Azure AD scripts | `Install-Module AzureAD` |
+| Microsoft.Graph | Entra ID scripts | `Install-Module Microsoft.Graph.Identity.DirectoryManagement` |
+| AWS.Tools | AWS scripts | `Install-Module AWS.Tools.IdentityManagement` |
+
+### CLI Tools
+
+| Tool | Required For | Install |
+|------|--------------|---------|
+| AWS CLI | AWS inventory | [Download](https://aws.amazon.com/cli/) |
+| gcloud | GCP inventory | [Download](https://cloud.google.com/sdk) |
+
+### Quick Install
+
+Run the prerequisites installer to set up everything automatically:
+
+```powershell
+# Install all prerequisites
+.\Install-Prerequisites.ps1
+
+# Modules only
+.\Install-Prerequisites.ps1 -ModulesOnly
+
+# CLI tools only
+.\Install-Prerequisites.ps1 -CliOnly
+```
+
+**Note:** Requires PowerShell 5.1+ and internet connection.
+
+### Manual Requirements
+
 - Windows PowerShell 5.1+ or PowerShell 7+
 - ActiveDirectory module (RSAT) for domain scripts
 - Domain Admin-equivalent permissions for full visibility
