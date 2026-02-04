@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Install IdentityFirst QuickChecks module.
 
@@ -12,14 +12,14 @@
 .NOTES
     Author: IdentityFirst Ltd
     Requirements: PowerShell 5.1+
-    
+
 .USAGE
     # Install for current user only
     .\Install-QuickChecks.ps1
-    
+
     # Install for all users (requires admin)
     .\Install-QuickChecks.ps1 -AllUsers
-    
+
     # Install from extracted ZIP
     .\Install-QuickChecks.ps1 -SourcePath "C:\Downloads\IdentityFirst.QuickChecks-v1.0.0"
 #>
@@ -28,19 +28,26 @@
 param(
     [Parameter()]
     [string]$SourcePath = (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)),
-    
+
     [Parameter()]
     [switch]$AllUsers,
-    
+
     [Parameter()]
     [switch]$Force,
-    
+
     [Parameter()]
-    [switch]$Help
+    [Parameter()]
+    [switch]$Help,
+
+    [Parameter()]
+    [System.Security.SecureString]$CertPassword
+    ,
+    [Parameter()]
+    [pscredential]$CertCredential
 )
 
 if ($Help) {
-    Write-Host @"
+    Write-Output @"
 IdentityFirst QuickChecks - Installation Script
 ================================================
 
@@ -69,11 +76,7 @@ TO RUN CHECKS:
     exit 0
 }
 
-Write-Host ""
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║       IdentityFirst QuickChecks - Installation            ║" -ForegroundColor Cyan
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
-Write-Host ""
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='InstallStart' })
 
 # Determine installation path
 $moduleName = "IdentityFirst.QuickChecks"
@@ -94,11 +97,7 @@ if ($AllUsers) {
     $installPath = Join-Path $documentsPath "WindowsPowerShell\Modules\$moduleName"
 }
 
-Write-Host "  Source:     $SourcePath" -ForegroundColor Gray
-Write-Host "  Target:     $installPath" -ForegroundColor Gray
-Write-Host "  Version:    $moduleVersion" -ForegroundColor Gray
-Write-Host "  All Users:  $(if ($AllUsers) { 'Yes' } else { 'No' })" -ForegroundColor Gray
-Write-Host ""
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='InstallInfo'; Source=$SourcePath; Target=$installPath; Version=$moduleVersion; AllUsers=[bool]$AllUsers })
 
 # Check if already installed
 if (Test-Path $installPath) {
@@ -107,29 +106,28 @@ if (Test-Path $installPath) {
     if (Test-Path $existingVersionFile) {
         $existingVersion = (Get-Content $existingVersionFile -Raw).Trim()
     }
-    
-    Write-Host "  ⚠ Module already installed: v$existingVersion" -ForegroundColor Yellow
-    
+
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Warn'; Action='ModuleExists'; ExistingVersion=$existingVersion })
+
     if (-not $Force) {
-        Write-Host ""
-        Write-Host "  Use -Force to overwrite or -AllUsers for machine-wide install." -ForegroundColor Gray
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='PromptOverwrite' })
         $response = Read-Host "  Continue with installation? (y/n)"
         if ($response.ToLower() -ne "y") {
-            Write-Host "Installation cancelled." -ForegroundColor Gray
+            Write-Output "Installation cancelled."
             exit 0
         }
     }
-    
-    Write-Host "  Removing existing installation..." -ForegroundColor Gray
+
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='RemovingExisting' ; Path=$installPath })
     Remove-Item -Path $installPath -Recurse -Force
 }
 
 # Create installation directory
-Write-Host "  Creating module directory..." -ForegroundColor Gray
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CreateModuleDir'; Path=$installPath })
 New-Item -ItemType Directory -Path $installPath -Force | Out-Null
 
 # Copy module files
-Write-Host "  Copying module files..." -ForegroundColor Gray
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CopyStart' })
 
 $copyItems = @(
     @{ Source = "Module"; Target = "Module" }
@@ -143,14 +141,14 @@ $copyItems = @(
 foreach ($item in $copyItems) {
     $src = Join-Path $SourcePath $item.Source
     $dst = Join-Path $installPath $item.Target
-    
+
     if (Test-Path $src) {
         if (Test-Path $src -PathType Container) {
             Copy-Item -Path $src -Destination $dst -Recurse -Force
         } else {
             Copy-Item -Path $src -Destination $dst -Force
         }
-        Write-Host "    ✓ $($item.Source)" -ForegroundColor Gray
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='Copied'; Item=$item.Source; Destination=$dst })
     }
 }
 
@@ -159,11 +157,11 @@ $versionedPath = Join-Path $installPath $moduleVersion
 New-Item -ItemType Directory -Path $versionedPath -Force | Out-Null
 
 # Copy files to versioned directory as well (PowerShellGet compatible)
-Write-Host "  Setting up versioned directory..." -ForegroundColor Gray
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='SetupVersionDir'; Path=$versionedPath })
 foreach ($item in $copyItems) {
     $src = Join-Path $SourcePath $item.Source
     $dst = Join-Path $versionedPath $item.Target
-    
+
     if (Test-Path $src) {
         if (Test-Path $src -PathType Container) {
             Copy-Item -Path $src -Destination $dst -Recurse -Force
@@ -174,32 +172,148 @@ foreach ($item in $copyItems) {
 }
 
 # Verify installation
-Write-Host ""
-Write-Host "  Verifying installation..." -ForegroundColor Gray
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='VerifyInstallation' })
 
 $manifestPath = Join-Path $installPath "IdentityFirst.QuickChecks.psd1"
 if (Test-Path $manifestPath) {
     try {
         $manifest = Import-PowerShellDataFile $manifestPath -ErrorAction Stop
-        Write-Host "    ✓ Module manifest loaded successfully" -ForegroundColor Green
-        Write-Host "    ✓ Version: $($manifest.ModuleVersion)" -ForegroundColor Gray
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='ManifestLoaded'; Version=$manifest.ModuleVersion })
     } catch {
-        Write-Host "    ⚠ Warning: Could not load manifest: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Warn'; Action='ManifestLoadFailed'; Message=$_.Exception.Message })
     }
 }
 
+# Install certificate to Trusted Root (for self-signed certs)
+Write-Output ""
+    Write-Output @"
+$certPath = Join-Path $SourcePath "identityfirst-codesign.pfx"
+if (Test-Path $certPath) {
+            try {
+                # Use provided secure password parameter first
+                if ($CertPassword) {
+                    $password = $CertPassword
+                } elseif ($CertCredential) {
+                    # If a PSCredential was provided, use its Password (SecureString)
+                    $password = $CertCredential.Password
+                    Write-IFQC -InputObject ([PSCustomObject]@{
+                        Timestamp = (Get-Date).ToString('o'); Level='Info'; Action='UsingPfxFromPSCredential'
+                    })
+                    Write-Output "Using PFX password from provided PSCredential"
+                } else {
+                    # Prompt securely for PFX password (hidden input). If empty, support developer env var fallback `IFQC_DEV_PFX_PASSWORD`.
+                    try {
+                        $password = Read-Host "Enter password for PFX (press ENTER if none)" -AsSecureString
+                    } catch {
+                        $password = $null
+                    }
+
+                    # If no interactive password provided, check developer env var using helper
+                    if (-not $password) {
+                        try { Import-Module -Name Security\IdentityFirst.Security -ErrorAction SilentlyContinue } catch { }
+                        if (Get-Command -Name Get-SecureStringFromEnv -ErrorAction SilentlyContinue) {
+                            $ss = Get-SecureStringFromEnv -EnvVarName 'IFQC_DEV_PFX_PASSWORD'
+                            if ($ss) {
+                                $password = $ss
+                                Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp = (Get-Date).ToString('o'); Level='Info'; Action='UsingDevPfxPassword'; Source='IFQC_DEV_PFX_PASSWORD' })
+                                Write-Output "Using developer PFX password from IFQC_DEV_PFX_PASSWORD (hidden)."
+                            }
+                        }
+                    }
+                }
+
+                    try {
+                        if ($password) {
+                            $cert = Get-PfxCertificate -FilePath $certPath -Password $password -ErrorAction Stop
+                        } else {
+                            $cert = Get-PfxCertificate -FilePath $certPath -ErrorAction Stop
+                        }
+                    } catch {
+                        # fallback try without password
+                        Write-IFQC -InputObject ([PSCustomObject]@{
+                            Timestamp = (Get-Date).ToString('o'); Level='Error'; Action='PfxLoadFailed'; Message=$_.Exception.Message
+                        })
+                        Write-Output "Installation cancelled."
+                    }
+            }
+
+        # Check if certificate is already in Trusted Root
+        $existingCert = Get-ChildItem -Path Cert:\LocalMachine\Root | Where-Object Thumbprint -eq $cert.Thumbprint
+        if ($existingCert) {
+            Write-Output "    ✓ Certificate already installed in Trusted Root"
+        } else {
+            # Export to temp file and import
+            $tempCertPath = [System.IO.Path]::GetTempFileName()
+            Export-Certificate -Cert $cert -FilePath $tempCertPath -Type CERT | Out-Null
+Write-Output "════════════════════════════════════════════════════════════"
+            Remove-Item -Path $tempCertPath -Force
+Write-Output "════════════════════════════════════════════════════════════"
+            Write-Output "    ✓ Thumbprint: $($cert.Thumbprint)"
+        }
+    } catch {
+        Write-Output "    ⚠ Could not install certificate: $($_.Exception.Message)"
+        Write-Output "    ℹ Run as administrator to install to machine root"
+    }
+} else {
+    Write-Output "    ℹ Certificate file not found - signatures may show 'Unknown publisher'"
+}
+
 # Summary
-Write-Host ""
-Write-Host "════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host "  Installation Complete" -ForegroundColor White
-Write-Host "════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  Module installed to:" -ForegroundColor Gray
-Write-Host "  $installPath" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  To use, run:" -ForegroundColor Gray
-Write-Host "  Import-Module IdentityFirst.QuickChecks" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "  Or run individual checks:" -ForegroundColor Gray
-Write-Host "  Import-Module '$installPath'" -ForegroundColor Yellow
-Write-Host "  Invoke-BreakGlassReality.ps1" -ForegroundColor Yellow
+Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='InstallComplete'; Path=$installPath })
+Write-Output ([PSCustomObject]@{ InstalledPath = $installPath })
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDii+ra+NXJa2Ao
+# xkHgN+IK6NNK3uG+cXWSPp3Mjp52JqCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIN8NKP02eFrF8vQritZj2B2mEuUDQhVe
+# hgJ23BL1eeRoMA0GCSqGSIb3DQEBAQUABIICAH8ewSa4bH/IU0+MIvnK2JUMb+ng
+# D2Lgvfx/RjAzQCUvSXHlYVuxk3CXE3olEnTU67XpuCjp0D61ZZ/DjEh6Rp6s+ygR
+# zW1xRaMylurDzSqlJnjcdX+Weqie1Eekxg/cDP73mwUnXGyp1IvpC83YeXBrLLMq
+# RFNp5qjfdrHNohE/CcAJhw0kWa01hddHgwWGKsQvtCjsznxmYo+Uao4V0gz/YUr3
+# 9zQJpKJ3azQNbM7vTZk3RR16drDwaEWDQBj4yG66fra5qffvtTxS9ygr8nP/LWlN
+# npUmvQGadpZ0IJE2pWk/m7rALUNAv/wlA9Z5MwYYx8KUJFYrL5jG2GHVE98k5fn5
+# CK77x0IYiJaZlkfIzJKRX6kClgqpIIneCw3MeBUGfMYdulWRCekcfuQj3Zb15o7P
+# tmghomw7LOqHGPezglRfHx/OFYU8CooRRXAoEFWaUJpRmq3tbUpR0XJb6RguC8u1
+# tDRVQG/QBca/kIK8mDeixU1pUr0Ym+ccTxuvR1Yrf2Rf3rlVHkhHDxwkC8NCtb7A
+# Y9brX2p3dNR/AK+2SNVDVQTHUkeveLCyqo5YxWmALPxPxPPXFipi7Q146rN7HEtQ
+# sG1k6qf2CRhju5t6Ll322OKB4be+Q14SpQK6Pc14DsEqe+bWW8WVRUct//EM2ESq
+# EQ8FRQMIJ47Qwv51
+# SIG # End signature block
+

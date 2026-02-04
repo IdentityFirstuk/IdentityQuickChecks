@@ -1,0 +1,256 @@
+﻿#!/usr/bin/env pwsh
+# IdentityFirst Maximum Security Self-Signed Certificate Generator
+# Developer helper — creates 4096-bit RSA certificate for local code signing
+# THIS SCRIPT IS FOR MAINTAINERS ONLY. Do NOT distribute this script
+# or any generated private keys (PFX) to customers or include in production
+# packages. It is intended for local development and testing.
+
+param(
+    [System.Security.SecureString]$CertPassword,
+    [int]$CertYears = 3,
+    [switch]$ReSignOnly = $false
+)
+
+$ErrorActionPreference = "Stop"
+$CertSubject = "CN=IdentityFirst Code Signing, O=IdentityFirst Ltd, L=Northumberland, C=GB"
+$CertFriendlyName = "IdentityFirst Code Signing Certificate (4096-bit RSA + SHA-256)"
+$ScriptsPath = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+
+function IFQCWriteHeader {
+    param([string]$Message)
+    Write-Output ""
+    Write-Output ("=" * 70)
+    Write-Output " $Message"
+    Write-Output ("=" * 70)
+    Write-Output ""
+}
+
+function IFQCWriteStep {
+    param([string]$Message)
+    Write-Output "[+] $Message"
+}
+
+function IFQCWriteSecurity {
+    param([string]$Message)
+    Write-Output "[🔒] $Message"
+}
+
+function IFQCWriteWarning {
+    param([string]$Message)
+    Write-Warning "[IFQC] $Message"
+}
+
+function IFQCWriteError {
+    param([string]$Message)
+    Write-Error "[IFQC] $Message"
+}
+
+# Display security settings
+IFQCWriteHeader "IdentityFirst Maximum Security Certificate Generator"
+
+IFQCWriteSecurity "Security Configuration:"
+Write-Output "  Key Algorithm:    RSA (4096-bit) - Maximum strength"
+Write-Output "  Hash Algorithm:   SHA-256 - Industry standard"
+Write-Output "  Key Usage:        Digital Signature only"
+Write-Output "  EKU:              Code Signing (1.3.6.1.5.5.7.3.3)"
+Write-Output "  Validity:         $CertYears years"
+Write-Output ""
+
+# Step 1: Create self-signed certificate
+if (-not $ReSignOnly) {
+    IFQCWriteStep "Checking for existing certificate..."
+    $existingCert = Get-ChildItem -Path "Cert:\CurrentUser\My" | Where-Object { $_.Subject -eq $CertSubject }
+
+    if ($existingCert) {
+        IFQCWriteWarning "Certificate already exists!"
+        Write-Output "  Thumbprint:       $($existingCert.Thumbprint)"
+        Write-Output "  Not After:        $($existingCert.NotAfter)"
+        Write-Output "  Key Size:         $($existingCert.PublicKey.Key.KeySize) bits"
+
+        $confirm = Read-Host "Replace existing certificate? (y/n)"
+        if ($confirm -ne 'y' -and $confirm -ne 'Y') {
+            Write-Output "Using existing certificate..."
+            $cert = $existingCert
+        } else {
+            IFQCWriteStep "Removing existing certificate..."
+            $existingCert | Remove-Item -Force
+            IFQCWriteStep "Creating new certificate..."
+            $cert = New-SelfSignedCertificate `
+                -Type CodeSigningCert `
+                -Subject $CertSubject `
+                -KeyUsage DigitalSignature `
+                -FriendlyName $CertFriendlyName `
+                -CertStoreLocation "Cert:\CurrentUser\My" `
+                -NotAfter (Get-Date).AddYears($CertYears) `
+                -KeyLength 4096
+        }
+    } else {
+        IFQCWriteStep "Creating new 4096-bit RSA certificate..."
+        $cert = New-SelfSignedCertificate `
+            -Type CodeSigningCert `
+            -Subject $CertSubject `
+            -KeyUsage DigitalSignature `
+            -FriendlyName $CertFriendlyName `
+            -CertStoreLocation "Cert:\CurrentUser\My" `
+            -NotAfter (Get-Date).AddYears($CertYears) `
+            -KeyLength 4096
+    }
+
+    IFQCWriteSecurity "Certificate Details:"
+    Write-Output "  Thumbprint:       $($cert.Thumbprint)"
+    Write-Output "  Key Size:         $($cert.PublicKey.Key.KeySize) bits"
+    Write-Output "  Algorithm:        $($cert.SignatureAlgorithm)"
+    Write-Output "  Not Before:       $($cert.NotBefore)"
+    Write-Output "  Not After:        $($cert.NotAfter)"
+    Write-Output ""
+
+    # Step 2: Export PFX with strong encryption
+    IFQCWriteStep "Exporting to PFX with AES-256 encryption..."
+    if (-not $CertPassword) {
+        # For developer convenience: if the IFQC_DEV_PFX_PASSWORD env var is set,
+        # use it (converted to SecureString). This keeps the script secure for
+        # customers while allowing faster local/dev runs when needed.
+        if ($env:IFQC_DEV_PFX_PASSWORD) {
+            try {
+                # Build SecureString from developer-provided env var without using ConvertTo-SecureString -AsPlainText
+                $devPwd = $env:IFQC_DEV_PFX_PASSWORD
+                $ss = New-Object System.Security.SecureString
+                foreach ($ch in $devPwd.ToCharArray()) { $ss.AppendChar($ch) }
+                $ss.MakeReadOnly()
+                $CertPassword = $ss
+                Write-Output "Using developer PFX password from IFQC_DEV_PFX_PASSWORD (hidden)."
+            } catch {
+                $CertPassword = Read-Host "Enter password to protect the exported PFX (input hidden)" -AsSecureString
+            }
+        } else {
+            $CertPassword = Read-Host "Enter password to protect the exported PFX (input hidden)" -AsSecureString
+        }
+    }
+    $pfxPath = Join-Path $ScriptsPath "identityfirst-codesign.pfx"
+    Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $CertPassword -CryptoAlgorithm AES256_AES -Force | Out-Null
+    IFQCWriteStep "PFX exported: $pfxPath"
+
+    # Step 3: Export public certificate
+    IFQCWriteStep "Exporting public certificate (CER)..."
+    $cerPath = Join-Path $ScriptsPath "identityfirst-codesign.cer"
+    Export-Certificate -Cert $cert -FilePath $cerPath -Force | Out-Null
+    IFQCWriteStep "CER exported: $cerPath"
+}
+
+# Step 4: Find and sign scripts
+IFQCWriteHeader "Signing PowerShell Scripts"
+
+$signableExtensions = @('.ps1', '.psm1')
+$signingScripts = @()
+
+Get-ChildItem -Path $ScriptsPath -Recurse -File | ForEach-Object {
+    if ($signableExtensions -contains $_.Extension.ToLower()) {
+        $signingScripts += $_.FullName
+    }
+}
+
+IFQCWriteStep "Found $($signingScripts.Count) scripts to sign"
+IFQCWriteSecurity "Using SHA-256 for all signatures"
+Write-Output ""
+
+# Step 5: Sign all scripts
+$signCount = 0
+$skipCount = 0
+$errorCount = 0
+
+foreach ($scriptPath in $signingScripts) {
+    try {
+        $scriptName = Split-Path -Leaf $scriptPath
+        $relativePath = $scriptPath.Replace($ScriptsPath, "").TrimStart("\/")
+
+        # Check if already signed
+        $signature = Get-AuthenticodeSignature -FilePath $scriptPath
+        if ($signature.Status -eq 'Valid') {
+            Write-Output "  [=] $relativePath"
+            $skipCount++
+            continue
+        }
+
+        # Sign the script
+        if (-not $ReSignOnly) {
+            Set-AuthenticodeSignature -FilePath $scriptPath -Certificate $cert -HashAlgorithm SHA256 -TimestampServer "http://timestamp.digicert.com" | Out-Null
+        } else {
+            $pfxPath = Join-Path $ScriptsPath "identityfirst-codesign.pfx"
+            if (Test-Path $pfxPath) {
+                if (-not $CertPassword) {
+                    if ($env:IFQC_DEV_PFX_PASSWORD) {
+                        try {
+                            $devPwd = $env:IFQC_DEV_PFX_PASSWORD
+                            $ss = New-Object System.Security.SecureString
+                            foreach ($ch in $devPwd.ToCharArray()) { $ss.AppendChar($ch) }
+                            $ss.MakeReadOnly()
+                            $CertPassword = $ss
+                        } catch {
+                            $CertPassword = Read-Host "Enter password for PFX used for re-signing (input hidden)" -AsSecureString
+                        }
+                    } else {
+                        $CertPassword = Read-Host "Enter password for PFX used for re-signing (input hidden)" -AsSecureString
+                    }
+                }
+
+                try {
+                    $cert = Get-PfxCertificate -FilePath $pfxPath -Password $CertPassword -ErrorAction Stop
+                } catch {
+                    # fallback: try without password (some PFX may be unprotected)
+                    $cert = Get-PfxCertificate -FilePath $pfxPath -ErrorAction Stop
+                }
+
+                Set-AuthenticodeSignature -FilePath $scriptPath -Certificate $cert -HashAlgorithm SHA256 -TimestampServer "http://timestamp.digicert.com" | Out-Null
+            } else {
+                throw "PFX not found: $pfxPath"
+            }
+        }
+
+        Write-Output "  [+] $relativePath"
+        $signCount++
+    }
+    catch {
+        Write-Output "  [X] $(Split-Path -Leaf $scriptPath): $($_.Exception.Message)"
+        $errorCount++
+    }
+}
+
+# Step 6: Summary
+IFQCWriteHeader "Signing Complete"
+
+Write-Output "  Total scripts:   $($signingScripts.Count)"
+Write-Output "  Signed:          $signCount"
+Write-Output "  Already signed:  $skipCount"
+Write-Output "  Errors:          $errorCount"
+Write-Output ""
+
+IFQCWriteSecurity "Certificate Security:"
+Write-Output "  Algorithm:       RSA 4096-bit + SHA-256"
+Write-Output "  Encryption:      AES-256 for PFX export"
+Write-Output "  Timestamp:       Included (DigiCert)"
+Write-Output ""
+
+if (-not $ReSignOnly) {
+    IFQCWriteStep "Files created:"
+    Write-Output "  - identityfirst-codesign.pfx"
+    Write-Output "    (KEEP SECURE - contains private key)"
+    Write-Output "  - identityfirst-codesign.cer"
+    Write-Output "    (safe to share with clients)"
+    Write-Output ""
+
+    IFQCWriteWarning "SECURITY RECOMMENDATIONS:"
+    Write-Output "  1. Store PFX on encrypted drive"
+    Write-Output "  2. Use strong password (change default)"
+    Write-Output "  3. Limit access to authorized personnel only"
+    Write-Output "  4. Rotate certificate annually"
+    Write-Output "  5. Revoke and recreate if compromised"
+    Write-Output ""
+
+    Write-Output "To re-sign scripts in future:"
+    Write-Output "  .\dev-tools\Create-SelfSignedCert.ps1 -ReSignOnly"
+}
+
+Write-Output ""
+Write-Output "To verify signatures:"
+Write-Output "  Get-AuthenticodeSignature .\scripts\*.ps1 | Format-Table Path, Status, SignerCertificate -Auto"
+

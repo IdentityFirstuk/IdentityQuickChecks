@@ -1,0 +1,738 @@
+[Information] Create-SelfSignedCert.ps1:59 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:65 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:94 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:102 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:128 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:161 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:169 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:204 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Create-SelfSignedCert.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Create-SelfSignedCert.ps1'
+[Warning] Create-SelfSignedCert.ps1:159 PSUseDeclaredVarsMoreThanAssignments - The variable 'scriptName' is assigned but never used.
+[Warning] Create-SelfSignedCert.ps1:34 PSAvoidOverwritingBuiltInCmdlets - 'Write-Warning' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden
+[Warning] Create-SelfSignedCert.ps1:39 PSAvoidOverwritingBuiltInCmdlets - 'Write-Error' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden
+[ParseError] Generate-CSR.ps1:109 InvalidVariableReferenceWithDrive - Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.
+[Information] Generate-CSR.ps1:116 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:119 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:136 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:139 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:147 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:195 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Generate-CSR.ps1:199 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Generate-CSR.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Generate-CSR.ps1'
+[Warning] Generate-CSR.ps1:197 PSAvoidAssignmentToAutomaticVariable - The Variable 'args' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.
+[ParseError] Install-Prerequisites.ps1:139 InvalidVariableReferenceWithDrive - Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.
+[Information] Install-Prerequisites.ps1:20 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:24 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:34 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:37 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:40 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:59 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:110 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:112 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:118 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:120 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:126 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:131 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:134 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:147 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:149 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:156 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:159 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:165 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:168 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:184 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:190 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:192 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:200 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:204 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:209 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:212 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:215 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:219 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:230 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:236 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:238 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:246 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:250 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:256 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:259 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:261 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:286 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:290 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:295 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:311 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:314 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:318 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:323 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:326 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:330 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:333 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:337 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:341 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:344 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:348 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:358 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-Prerequisites.ps1:364 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Install-Prerequisites.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Install-Prerequisites.ps1'
+[Warning] Install-Prerequisites.ps1:101 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] Install-Prerequisites.ps1:95 PSUseDeclaredVarsMoreThanAssignments - The variable 'color' is assigned but never used.
+[Warning] Install-Prerequisites.ps1:269 PSUseDeclaredVarsMoreThanAssignments - The variable 'process' is assigned but never used.
+[Warning] Install-Prerequisites.ps1:33 PSReviewUnusedParameter - The parameter 'ModulesOnly' has been declared but not used.
+[Warning] Install-Prerequisites.ps1:36 PSReviewUnusedParameter - The parameter 'CliOnly' has been declared but not used.
+[Warning] Install-Prerequisites.ps1:39 PSReviewUnusedParameter - The parameter 'Force' has been declared but not used.
+[ParseError] Install-QuickChecks.ps1:189 TerminatorExpectedAtEndOfString - The string is missing the terminator: "@.
+[Information] Install-QuickChecks.ps1:15 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:19 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:31 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:34 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:37 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:109 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:111 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:120 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:144 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Install-QuickChecks.ps1:164 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Install-QuickChecks.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Install-QuickChecks.ps1'
+[Warning] Package-QuickChecks.ps1:47 PSAvoidDefaultValueSwitchParameter - File 'Package-QuickChecks.ps1' has a switch parameter default to true.
+[Information] Package-QuickChecks.ps1:15 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:19 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:28 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:37 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:40 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:43 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:46 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:49 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:52 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:57 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:78 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:161 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:167 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:172 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:176 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:186 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:190 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:196 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:217 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:226 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:229 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:235 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:238 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:242 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:246 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:255 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:261 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:265 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Package-QuickChecks.ps1:276 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] QuickChecks-Console.ps1:98 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] QuickChecks-Console.ps1:99 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] QuickChecks-Console.ps1:101 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] QuickChecks-Console.ps1:196 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] QuickChecks-Console.ps1:356 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] QuickChecks-Console.ps1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:155 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:192 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:197 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:214 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:216 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:226 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:232 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:237 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:242 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:247 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:252 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:257 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:262 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:268 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:278 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:288 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:300 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:312 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:317 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:318 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:321 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:322 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:330 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:342 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:354 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:357 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:367 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:370 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:382 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:396 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:401 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:408 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:410 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:423 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:434 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:439 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:442 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:446 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:495 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:514 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:519 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:525 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:568 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:575 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:581 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:584 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks-Console.ps1:587 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] QuickChecks-Console.ps1:205 PSUseApprovedVerbs - The cmdlet 'Step1-Welcome' uses an unapproved verb.
+[Warning] QuickChecks-Console.ps1:276 PSUseApprovedVerbs - The cmdlet 'Step2-Connections' uses an unapproved verb.
+[Warning] QuickChecks-Console.ps1:365 PSUseApprovedVerbs - The cmdlet 'Step3-Selection' uses an unapproved verb.
+[Warning] QuickChecks-Console.ps1:432 PSUseApprovedVerbs - The cmdlet 'Step4-RunAssessment' uses an unapproved verb.
+[Warning] QuickChecks-Console.ps1:276 PSUseSingularNouns - The cmdlet 'Step2-Connections' uses a plural noun. A singular noun should be used instead.
+[Warning] QuickChecks-Console.ps1:148 PSAvoidOverwritingBuiltInCmdlets - 'Test-Connection' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden
+[Warning] QuickChecks-Console.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'QuickChecks-Console.ps1'
+[Warning] QuickChecks-Console.ps1:101 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:234 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:239 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:244 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:249 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:254 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] QuickChecks-Console.ps1:21 PSReviewUnusedParameter - The parameter 'AutoRun' has been declared but not used.
+[Warning] QuickChecks-Console.ps1:80 PSReviewUnusedParameter - The parameter 'AsObject' has been declared but not used.
+[Warning] QuickChecks-Console.ps1:128 PSReviewUnusedParameter - The parameter 'NoNewline' has been declared but not used.
+[Warning] QuickChecks-Console.ps1:61 PSUseDeclaredVarsMoreThanAssignments - The variable 'colors' is assigned but never used.
+[Information] Run-AllQuickChecks.ps1:75 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:81 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:83 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:87 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:90 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:96 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:99 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:109 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:112 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:114 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:115 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:116 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:117 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Run-AllQuickChecks.ps1:118 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Run-AllQuickChecks.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Run-AllQuickChecks.ps1'
+[Warning] Sign-QuickChecks.ps1:118 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] Sign-QuickChecks.ps1:119 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] Sign-QuickChecks.ps1:121 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] Sign-QuickChecks.ps1:23 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:26 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:35 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:38 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:41 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:44 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:132 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:154 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:167 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:170 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:176 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:181 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:184 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:190 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:195 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:209 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:213 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:218 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:227 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:230 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:252 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:254 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Sign-QuickChecks.ps1:259 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Sign-QuickChecks.ps1:37 PSReviewUnusedParameter - The parameter 'CertPath' has been declared but not used.
+[Warning] Sign-QuickChecks.ps1:40 PSReviewUnusedParameter - The parameter 'CertPassword' has been declared but not used.
+[Warning] Sign-QuickChecks.ps1:49 PSReviewUnusedParameter - The parameter 'CertCredential' has been declared but not used.
+[Warning] Sign-QuickChecks.ps1:201 PSAvoidOverwritingBuiltInCmdlets - 'Set-AuthenticodeSignature' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden
+[Warning] Sign-QuickChecks.ps1:121 PSPossibleIncorrectComparisonWithNull - $null should be on the left side of equality comparisons.
+[Warning] Sign-QuickChecks.ps1:201 PSUseShouldProcessForStateChangingFunctions - Function 'Set-AuthenticodeSignature' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] Sign-QuickChecks.ps1:246 PSUseSingularNouns - The cmdlet 'Get-ScriptFiles' uses a plural noun. A singular noun should be used instead.
+[Information] Start-QuickChecks.ps1:7 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:19 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:23 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:27 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:33 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:37 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:41 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:46 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:50 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:143 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:154 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:160 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:172 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:177 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:188 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:193 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:203 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:208 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:211 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:216 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:218 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:235 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:246 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:253 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:258 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:262 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:266 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:282 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:290 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:302 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:313 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:316 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:361 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:364 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:368 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:372 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:380 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:422 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:424 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:426 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:428 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:431 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:451 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:454 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:458 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:461 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Start-QuickChecks.ps1:519 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Start-QuickChecks.ps1:18 PSReviewUnusedParameter - The parameter 'Run' has been declared but not used.
+[Warning] Start-QuickChecks.ps1:22 PSReviewUnusedParameter - The parameter 'Console' has been declared but not used.
+[Warning] Start-QuickChecks.ps1:36 PSReviewUnusedParameter - The parameter 'Install' has been declared but not used.
+[Warning] Start-QuickChecks.ps1:40 PSReviewUnusedParameter - The parameter 'Help' has been declared but not used.
+[Warning] Start-QuickChecks.ps1:53 PSReviewUnusedParameter - The parameter 'NoSign' has been declared but not used.
+[Warning] Start-QuickChecks.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Start-QuickChecks.ps1'
+[Warning] Start-QuickChecks.ps1:182 PSUseSingularNouns - The cmdlet 'Get-AvailableChecks' uses a plural noun. A singular noun should be used instead.
+[Warning] Start-QuickChecks.ps1:229 PSUseSingularNouns - The cmdlet 'Invoke-AllChecks' uses a plural noun. A singular noun should be used instead.
+[Warning] Start-QuickChecks.ps1:443 PSUseSingularNouns - The cmdlet 'Export-Results' uses a plural noun. A singular noun should be used instead.
+[Warning] Start-QuickChecks.ps1:294 PSUseShouldProcessForStateChangingFunctions - Function 'Start-ConsoleMode' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Information] Test-QuickChecks.ps1:38 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:40 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:51 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:54 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:78 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:81 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:84 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:91 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:117 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:122 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:127 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:137 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:146 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:152 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:159 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:168 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:187 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:192 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:210 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:228 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:237 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:254 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:256 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:259 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:263 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:271 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:283 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:294 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:301 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:313 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:320 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:337 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:353 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Test-QuickChecks.ps1:357 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Test-QuickChecks.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Test-QuickChecks.ps1'
+[Warning] Test-QuickChecks.ps1:252 PSUseSingularNouns - The cmdlet 'Test-Modules' uses a plural noun. A singular noun should be used instead.
+[Information] Invoke-InactiveAccountDetection.ps1:6 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:7 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:29 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:32 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:56 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:69 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:74 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:77 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:81 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:85 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:90 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:95 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:107 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:122 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:128 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:136 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:139 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:142 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:145 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:150 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:162 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:166 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:178 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:184 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:194 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:196 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:203 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:206 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:227 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:230 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:235 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:244 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:254 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:260 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:265 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:273 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:276 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:281 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:291 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:296 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:301 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:314 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:324 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:329 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:335 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:348 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:361 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:374 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-InactiveAccountDetection.ps1:387 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:24 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:28 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:49 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:51 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:56 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:69 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:90 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:106 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:111 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:117 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:127 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:142 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:146 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:148 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:151 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:154 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:164 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:175 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AwsIdentityInventory.ps1:191 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-AwsIdentityInventory.ps1:30 PSReviewUnusedParameter - The parameter 'UseCli' has been declared but not used.
+[Warning] Invoke-AwsIdentityInventory.ps1:113 PSUseDeclaredVarsMoreThanAssignments - The variable 'adminPatterns' is assigned but never used.
+[Warning] Invoke-AppConsentReality.ps1:270 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] Invoke-AppConsentReality.ps1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:53 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:55 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:68 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:76 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:86 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:88 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:92 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:96 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:100 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:104 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:110 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:117 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:123 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:135 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:145 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:158 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:175 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:188 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:202 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:204 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:206 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:211 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:224 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:237 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-AppConsentReality.ps1:251 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-AppConsentReality.ps1:69 PSUseDeclaredVarsMoreThanAssignments - The variable 'moderateRiskScopes' is assigned but never used.
+[Warning] Invoke-AppConsentReality.ps1:107 PSUseDeclaredVarsMoreThanAssignments - The variable 'scopeId' is assigned but never used.
+[Information] Invoke-GuestCreep.ps1:23 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GuestCreep.ps1:27 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-GuestCreep.ps1:29 PSReviewUnusedParameter - The parameter 'GuestAgeDays' has been declared but not used.
+[Warning] Invoke-HybridSyncReality.ps1:55 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] Invoke-HybridSyncReality.ps1:65 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Warning] Invoke-HybridSyncReality.ps1:243 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] Invoke-HybridSyncReality.ps1:24 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:47 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:56 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:67 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:71 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:73 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:81 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:90 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:101 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:111 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:119 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:123 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:128 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:142 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:145 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:154 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:160 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:163 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:175 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:181 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:191 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:204 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-HybridSyncReality.ps1:217 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-LegacyAuthReality.ps1:251 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] Invoke-LegacyAuthReality.ps1:7 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:29 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:57 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:60 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:75 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:84 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:86 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:94 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:104 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:106 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:111 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:114 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:121 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:129 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:140 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:155 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:163 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:167 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:170 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:174 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:184 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:186 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:190 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:204 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-LegacyAuthReality.ps1:224 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-LegacyAuthReality.ps1:31 PSReviewUnusedParameter - The parameter 'LookbackDays' has been declared but not used.
+[Information] Invoke-MfaCoverageGap.ps1:23 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:21 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:42 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:45 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:48 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:51 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:66 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:69 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:72 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:74 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-EntraEnhancedIdentity.ps1:78 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:21 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:44 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:48 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:57 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:67 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:80 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:96 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:119 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:122 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:126 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:128 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Invoke-GcpIdentityInventory.ps1:138 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Invoke-GcpIdentityInventory.ps1:121 PSUseDeclaredVarsMoreThanAssignments - The variable 'disabledSas' is assigned but never used.
+[Information] QuickChecks.config.psd1:8 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:11 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:14 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:18 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:28 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:32 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:35 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:47 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:51 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:56 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:67 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:72 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:75 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:81 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:85 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:89 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:93 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:97 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:101 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:104 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:108 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:112 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:116 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:120 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:124 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:128 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:131 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] QuickChecks.config.psd1:140 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[ParseError] Create-SelfSignedCert.ps1:10 InvalidLeftHandSide - The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+[Information] Create-SelfSignedCert.ps1:63 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:69 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:98 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:106 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:132 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:165 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:173 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:208 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:240 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] Create-SelfSignedCert.ps1:248 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] Create-SelfSignedCert.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'Create-SelfSignedCert.ps1'
+[Warning] Create-SelfSignedCert.ps1:163 PSUseDeclaredVarsMoreThanAssignments - The variable 'scriptName' is assigned but never used.
+[Information] CrossEnvironmentBoundary.ps1:28 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] CrossEnvironmentBoundary.ps1:29 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] CrossEnvironmentBoundary.ps1:52 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] CrossEnvironmentBoundary.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'CrossEnvironmentBoundary.ps1'
+[Warning] CrossEnvironmentBoundary.ps1:37 PSUseDeclaredVarsMoreThanAssignments - The variable 'boundaryViolations' is assigned but never used.
+[Warning] IdentityTieringDrift.ps1:37 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] IdentityTieringDrift.ps1:31 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] IdentityTieringDrift.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'IdentityTieringDrift.ps1'
+[Information] BreakGlassReality.ps1:44 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] BreakGlassReality.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'BreakGlassReality.ps1'
+[Information] IdentityNamingHygiene.ps1:42 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityNamingHygiene.ps1:43 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityNamingHygiene.ps1:44 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityNamingHygiene.ps1:46 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] IdentityNamingHygiene.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'IdentityNamingHygiene.ps1'
+[ParseError] PasswordPolicyDrift.ps1:37 UnexpectedToken - Unexpected token ')' in expression or statement.
+[ParseError] PasswordPolicyDrift.ps1:53 UnexpectedToken - Unexpected token '}' in expression or statement.
+[ParseError] PasswordPolicyDrift.ps1:54 UnexpectedToken - Unexpected token '}' in expression or statement.
+[ParseError] PasswordPolicyDrift.ps1:54 UnexpectedToken - Unexpected token '}' in expression or statement.
+[ParseError] PasswordPolicyDrift.ps1:130 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:133 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:134 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:135 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:136 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:137 TokenAfterEndOfValidScriptText - Executable script code found in signature block.
+[ParseError] PasswordPolicyDrift.ps1:76 MissingEndCurlyBrace - Missing closing '}' in statement block or type definition.
+[ParseError] PasswordPolicyDrift.ps1:74 MissingEndCurlyBrace - Missing closing '}' in statement block or type definition.
+[ParseError] PasswordPolicyDrift.ps1:71 MissingEndCurlyBrace - Missing closing '}' in statement block or type definition.
+[ParseError] PasswordPolicyDrift.ps1:137 MissingCatchOrFinally - The Try statement is missing its Catch or Finally block.
+[ParseError] PasswordPolicyDrift.ps1:70 MissingEndCurlyBrace - Missing closing '}' in statement block or type definition.
+[Information] PasswordPolicyDrift.ps1:27 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PasswordPolicyDrift.ps1:72 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] PasswordPolicyDrift.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'PasswordPolicyDrift.ps1'
+[Information] PrivilegedNestingAbuse.ps1:32 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:34 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:36 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:45 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:46 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:48 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:50 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] PrivilegedNestingAbuse.ps1:52 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] PrivilegedNestingAbuse.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'PrivilegedNestingAbuse.ps1'
+[Information] ExternalTrustMapping.ps1:35 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ExternalTrustMapping.ps1:38 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] ExternalTrustMapping.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'ExternalTrustMapping.ps1'
+[Warning] IdentityAttackSurface.ps1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'IdentityAttackSurface.ps1'
+[Warning] IdentityFirst.QuickChecks.psd1:10 PSUseToExportFieldsInManifest - Do not use wildcard or $null in this field. Explicitly specify a list for FunctionsToExport.
+[Warning] IdentityFirst.QuickChecks.psm1:71 PSAvoidUsingEmptyCatchBlock - Empty catch block is used. Please use Write-Error or throw statements in catch blocks.
+[Information] IdentityFirst.QuickChecks.psm1:4 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:18 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:30 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:33 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:36 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:88 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:92 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:96 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:122 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:125 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:129 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:146 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:161 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:164 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:168 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:171 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:174 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:177 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:181 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:202 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:206 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:219 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:223 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:240 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:259 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:274 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:281 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:290 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.QuickChecks.psm1:464 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Warning] IdentityFirst.QuickChecks.psm1:104 PSAvoidUsingWriteHost - File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.
+[Warning] IdentityFirst.QuickChecks.psm1:109 PSAvoidUsingWriteHost - File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.
+[Warning] IdentityFirst.QuickChecks.psm1:14 PSUseShouldProcessForStateChangingFunctions - Function 'New-IFQCContext' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] IdentityFirst.QuickChecks.psm1:142 PSUseShouldProcessForStateChangingFunctions - Function 'New-IFQCFinding' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Information] IdentityFirst.Security.manifest.psd1:5 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.manifest.psd1:16 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.manifest.psd1:25 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.manifest.psd1:33 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.manifest.psd1:41 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.manifest.psd1:51 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:31 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:35 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:39 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:43 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:58 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:61 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:65 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:70 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:75 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:80 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:83 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:87 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:105 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:109 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:113 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:125 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:134 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:160 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:176 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:188 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:203 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:215 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:230 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:242 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:261 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:264 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:268 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:280 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:286 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:299 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:328 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:402 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:429 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:432 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:436 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:446 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:452 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:458 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:463 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:469 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:487 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:491 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:503 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:507 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:516 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:518 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:523 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:548 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:552 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:559 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:562 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:565 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:595 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:599 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:626 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:630 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:632 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] IdentityFirst.Security.psm1:636 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Error] IdentityFirst.Security.psm1:41 PSAvoidUsingConvertToSecureStringWithPlainText - File 'IdentityFirst.Security.psm1' uses ConvertTo-SecureString with plaintext. This will expose secure information. Encrypted standard strings should be used instead.
+[Error] IdentityFirst.Security.psm1:62 PSAvoidUsingUsernameAndPasswordParams - Function 'Get-CredentialFromInput' has both Username and Password parameters. Either set the type of the Password parameter to SecureString or replace the Username and Password parameters with a Credential parameter of type PSCredential. If using a Credential parameter in PowerShell 4.0 or earlier, please define a credential transformation attribute after the PSCredential type attribute.
+[Warning] IdentityFirst.Security.psm1:317 PSUseShouldProcessForStateChangingFunctions - Function 'New-SecureLogFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] IdentityFirst.Security.psm1:419 PSUseShouldProcessForStateChangingFunctions - Function 'New-SecureHtmlReport' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] IdentityFirst.Security.psm1:477 PSUseShouldProcessForStateChangingFunctions - Function 'Set-OutputFileSecurity' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] IdentityFirst.Security.psm1:538 PSUseShouldProcessForStateChangingFunctions - Function 'New-SecureOutputFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.
+[Warning] IdentityFirst.Security.psm1:28 PSAvoidUsingPlainTextForPassword - Parameter '$PlainPassword' should not use String type but either SecureString or PSCredential, otherwise it increases the chance to expose this sensitive information.
+[Warning] IdentityFirst.Security.psm1:66 PSAvoidUsingPlainTextForPassword - Parameter '$PlainPassword' should not use String type but either SecureString or PSCredential, otherwise it increases the chance to expose this sensitive information.
+[Information] ReportFormatter.psm1:10 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:13 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:16 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:19 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:22 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:35 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:70 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:80 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:95 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:97 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:141 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:147 PSAvoidTrailingWhitespace - Line has trailing whitespace
+[Information] ReportFormatter.psm1:6 PSProvideCommentHelp - The cmdlet 'Export-IdentityReport' does not have a help comment.
+[Information] ReportFormatter.psm1:105 PSProvideCommentHelp - The cmdlet 'Write-IdentityHeader' does not have a help comment.
+[Information] ReportFormatter.psm1:120 PSProvideCommentHelp - The cmdlet 'Write-IdentityResult' does not have a help comment.
+[Information] ReportFormatter.psm1:137 PSProvideCommentHelp - The cmdlet 'Get-ReferToIHC' does not have a help comment.
+[Warning] ReportFormatter.psm1: PSUseBOMForUnicodeEncodedFile - Missing BOM encoding for non-ASCII encoded file 'ReportFormatter.psm1'

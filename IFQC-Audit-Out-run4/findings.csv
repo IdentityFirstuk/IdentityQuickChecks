@@ -1,0 +1,3 @@
+"AssertionId","Severity","Title","Entities","EvidenceRefs","Why","Remediation"
+"PrivilegedAccountsWithoutMFA","critical","Privileged user without MFA","alice@example.com","entra.user:sample-entra-1","A single credential compromise can lead to tenant-wide compromise.","Require MFA for privileged roles, enforce Conditional Access, remove standing admin access."
+"OrphanedAccounts","high","Active account without HR linkage","alice@example.com","entra.user:sample-entra-1","No joiner/leaver authority","Link identity to HR source of truth and automate deprovisioning."

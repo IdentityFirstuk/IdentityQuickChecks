@@ -1,10 +1,10 @@
-<#
+﻿<#
 .SYNOPSIS
     Legacy Authentication Detection - Basic Auth, SMTP, IMAP, POP3, etc.
 
 .DESCRIPTION
     Detects legacy authentication protocols being used in Entra ID.
-    Legacy auth (basic auth, SMTP, IMAP, POP3, EAS, EWS, PowerShell) bypass 
+    Legacy auth (basic auth, SMTP, IMAP, POP3, EAS, EWS, PowerShell) bypass
     Modern Authentication and is a common attack vector.
 
 .OUTPUTS
@@ -22,11 +22,11 @@
 param(
     [Parameter()]
     [string]$OutputDirectory = (Join-Path $PWD "IFQC-Output"),
-    
+
     [Parameter()]
     [ValidateSet("Normal","Detailed")]
     [string]$DetailLevel = "Normal",
-    
+
     [Parameter()]
     [int]$LookbackDays = 30
 )
@@ -54,13 +54,13 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
     } catch {
         throw "Microsoft Graph modules required. Install Microsoft.Graph and connect first."
     }
-    
+
     $ctx.Data.connected = $true
     $ctx.Data.lookbackDays = $LookbackDays
-    
+
     $startDate = (Get-Date).AddDays(-$LookbackDays).ToString("yyyy-MM-ddTHH:mm:ssZ")
     $ctx.Data.startDate = $startDate
-    
+
     # Define legacy auth protocols
     $legacyProtocols = @{
         "SMTP" = "SMTP protocol authentication"
@@ -72,7 +72,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
         "BasicAuth" = "Basic authentication (generic)"
         "MAPI" = "MAPI over HTTP"
     }
-    
+
     $legacyUsage = @{}
     foreach ($proto in $legacyProtocols.Keys) {
         $legacyUsage[$proto] = @{
@@ -81,9 +81,9 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
             lastSeen = $null
         }
     }
-    
+
     Write-IFQCLog -Context $ctx -Level INFO -Message "Querying sign-in logs for legacy auth..."
-    
+
     # Query all sign-ins (this can take time for large tenants)
     $allSignIns = @()
     try {
@@ -91,7 +91,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
             -Filter "createdDateTime gt $startDate and clientAppUsed ne 'Browser' and clientAppUsed ne 'MobileApps'" `
             -All `
             -ErrorAction SilentlyContinue
-        
+
         $allSignIns = $signIns
     } catch {
         Write-IFQCLog -Context $ctx -Level WARN -Message "Failed to query sign-ins: $($_.Exception.Message)"
@@ -101,24 +101,24 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
             Write-IFQCLog -Context $ctx -Level ERROR -Message "All sign-in queries failed"
         }
     }
-    
+
     Write-IFQCLog -Context $ctx -Level INFO -Message "Processing $($allSignIns.Count) sign-in records..."
-    
+
     foreach ($signIn in $allSignIns) {
         $clientApp = $signIn.ClientAppUsed
         $user = $signIn.UserPrincipalName
         $created = [DateTime]$signIn.CreatedDateTime
-        
+
         $isLegacy = $false
         $detectedProtocols = @()
-        
+
         foreach ($proto in $legacyProtocols.Keys) {
             if ($clientApp -match $proto -or $clientApp -match $legacyProtocols[$proto]) {
                 $isLegacy = $true
                 $detectedProtocols += $proto
             }
         }
-        
+
         $authMethods = $signIn.AuthenticationMethodsUsed
         if ($authMethods -contains "Password" -and $authMethods.Count -eq 1) {
             if ($clientApp -match "Mobile|Desktop|App") {
@@ -126,7 +126,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
                 $detectedProtocols += "BasicAuth"
             }
         }
-        
+
         $legacyClients = @("Exchange ActiveSync", "IMAP", "POP", "SMTP", "MAPI", "Exchange Web Services")
         foreach ($client in $legacyClients) {
             if ($clientApp -match $client) {
@@ -137,7 +137,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
                 }
             }
         }
-        
+
         if ($isLegacy) {
             foreach ($proto in $detectedProtocols) {
                 if ($legacyUsage.ContainsKey($proto)) {
@@ -152,7 +152,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
                             Location = $signIn.Location.City + ", " + $signIn.Location.State + ", " + $signIn.Location.CountryOrRegion
                         }
                     }
-                    
+
                     if ($null -eq $legacyUsage[$proto].lastSeen -or $created -gt $legacyUsage[$proto].lastSeen) {
                         $legacyUsage[$proto].lastSeen = $created
                     }
@@ -160,18 +160,18 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
             }
         }
     }
-    
+
     foreach ($proto in $legacyUsage.Keys) {
         $legacyUsage[$proto].count = ($legacyUsage[$proto].users | Measure-Object).Count
     }
-    
+
     $ctx.Data.protocols = $legacyUsage
     $ctx.Data.totalLegacyUsers = (($legacyUsage.Values | ForEach-Object { $_.users.UserPrincipalName }) | Sort-Object -Unique).Count
-    
+
     # Findings
     $evidenceLimit = Get-EvidenceLimit -DetailLevel $DetailLevel
     $totalLegacyEvents = ($legacyUsage.Values | Measure-Object -Property count -Sum).Sum
-    
+
     if ($totalLegacyEvents -gt 0) {
         $highRiskProtocols = @("SMTP", "IMAP", "POP", "EAS")
         $hasHighRisk = $false
@@ -181,13 +181,13 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
                 break
             }
         }
-        
+
         $severity = if ($hasHighRisk) { "High" } else { "Medium" }
-        
+
         $protoSummary = ($legacyUsage.Keys | Where-Object { $legacyUsage[$_].count -gt 0 } | ForEach-Object {
             "$($_): $($legacyUsage[$_].count) users"
         }) -join ", "
-        
+
         # Build evidence array
         $evidenceArray = @()
         foreach ($proto in ($legacyUsage.Keys | Where-Object { $legacyUsage[$_].count -gt 0 })) {
@@ -201,7 +201,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
                 }
             })
         }
-        
+
         Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
             -Id "LEGACY-AUTH-DETECTED" `
             -Title "Legacy authentication usage detected" `
@@ -221,7 +221,7 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
             -Recommendation "Continue monitoring. Ensure Conditional Access policies block legacy auth."
         )
     }
-    
+
     $ctx.Data.summary = @{
         totalLegacyUsers = $ctx.Data.totalLegacyUsers
         totalEvents = $totalLegacyEvents
@@ -237,9 +237,72 @@ Invoke-IFQCSafe -Context $ctx -Name "Legacy authentication detection" -Block {
 
 $output = Save-IFQCReport -Context $ctx
 
-Write-Host ""
-Write-Host "LegacyAuthReality check complete." -ForegroundColor Green
-Write-Host "  JSON: $($output.Json)" -ForegroundColor Cyan
-Write-Host "  HTML: $($output.Html)" -ForegroundColor Cyan
+# Emit structured report saved event
+$reportEvent = [PSCustomObject]@{
+    Timestamp = (Get-Date).ToString('o')
+    Level = 'Info'
+    Action = 'ReportSaved'
+    Tool = $ctx.ToolName
+    Json = $output.Json
+    Html = $output.Html
+}
+Write-IFQC -InputObject $reportEvent
 
 try { Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null } catch { }
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDvZOySzjGf1+/8
+# Hu+DMOyhMTLqql7MSL4mT9Wt/bTsuqCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIKXL3rTLWFtRjApF0hKD6ayo9ijSLFnD
+# o7D8NnMQpq/qMA0GCSqGSIb3DQEBAQUABIICAKvGo/QHr3GkXqWxJpth+axRwIVr
+# LY0+NXFrkEMp7G7vjL3QZGvJ7ewPasW7JuuqTRoc//O/SDWNjfQaxmXoJRmv+CQY
+# vB9KfaJ1cUaYX4oVUSKYInz6rJMzWzRo+nmEPtTtvbXQW6rZpPea3/aIy2koBdaT
+# 8UyLpHOCZbrZASWSAY/CqrYErCcyB5ugbJ5yb3M3xFAthPumdpz4q6FajSsdPdox
+# X2WxxsnpgOiliC0tpAXl+5HluYw+fqqmt9+gTCRsEX4CF8/XyechZ65FgpbscYxy
+# sSEYeoOHND5aRPTFL+enbUeV4fsuYGVAhiY5ncFkzAzK+S6/ebLLKJsF66C907ik
+# rlpbee07iFvDNkS1D0Rsoik2fEF6jzRZCAiTCNKqngzrD8kPfo9xPXgV0AihS4W7
+# L6wIz+PtvjJKA/D92+4PqqqmzJhROJNaI8B7uh57ft1U8rFvGpYJCelE2AExziGg
+# YWJ0FuN5TD+s0QhUOprEzoQUP64O+30xlFKAcskkGLNtCFTeXO3h9HhtbhZWi92a
+# uehsu6uWMN5UyuGKfGZ09j1qONHRQQfKUjn812OaY2KwXeemnLeuvA7U1HZZM7YC
+# fwin32sI7zQ/6EMc1ZJS0TPJFFxkFZ55ezHPGwUU988ktYZeA/yyiXxmk1P4jl4M
+# ktF66eZhH8QdnDLp
+# SIG # End signature block
+

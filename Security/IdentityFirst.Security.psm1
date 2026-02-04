@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 # IdentityFirst QuickChecks - Security Module
 # ============================================================================
 # Version: 1.0.0
@@ -14,6 +14,29 @@
 # - Error handling with security considerations
 # ============================================================================
 
+# Provide a lightweight fallback for Write-IFQC when not available (defensive)
+if (-not (Get-Command -Name Write-IFQC -ErrorAction SilentlyContinue)) {
+    function Write-IFQC {
+        param(
+            [Parameter(ValueFromPipeline=$true, Mandatory=$false)] $InputObject,
+            [string]$Message,
+            [string]$Level = 'Info'
+        )
+
+        if ($PSBoundParameters.ContainsKey('InputObject') -and $InputObject) {
+            Write-Output $InputObject
+            return
+        }
+
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString('o')
+            Level = $Level
+            Message = $Message
+        }
+        Write-Output $obj
+    }
+}
+
 #region Secure String Handling
 
 function ConvertTo-SecureStringIfNeeded {
@@ -26,22 +49,46 @@ function ConvertTo-SecureStringIfNeeded {
     #>
     param(
         [Parameter(Mandatory = $false)]
-        [AllowEmptyString()]
-        [string]$PlainPassword,
-        
-        [Parameter(Mandatory = $false)]
         [SecureString]$SecurePassword
     )
-    
+
+    # Prefer explicit SecureString input. Do not accept plain-text passwords.
     if ($SecurePassword) {
         return $SecurePassword
     }
-    
-    if ($PlainPassword -and $PlainPassword -notlike '*System.Security.SecureString*') {
-        return ConvertTo-SecureString -String $PlainPassword -AsPlainText -Force
-    }
-    
+
+    # No password provided; return $null. Callers should prompt the user or
+    # accept a PSCredential where appropriate.
     return $null
+}
+
+function Get-SecureStringFromEnv {
+    <#
+    .SYNOPSIS
+        Convert an environment variable string into a SecureString.
+    .DESCRIPTION
+        Safely converts a developer-supplied environment variable into a
+        System.Security.SecureString. Caller must ensure the env var name
+        is appropriate for the runtime (e.g. IFQC_DEV_PFX_PASSWORD).
+    #>
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$EnvVarName = 'IFQC_DEV_PFX_PASSWORD'
+    )
+
+    # Use a safe lookup for environment variables that supports dynamic names
+    $val = [Environment]::GetEnvironmentVariable($EnvVarName)
+    if (-not $val) { return $null }
+
+    try {
+        $ss = New-Object System.Security.SecureString
+        foreach ($ch in $val.ToCharArray()) { $ss.AppendChar($ch) }
+        $ss.MakeReadOnly()
+        return $ss
+    } catch {
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Warn'; Action='EnvToSecureStringFailed'; EnvVar=$EnvVarName; Message=$_.Exception.Message })
+        return $null
+    }
 }
 
 function Get-CredentialFromInput {
@@ -55,36 +102,31 @@ function Get-CredentialFromInput {
     param(
         [Parameter(Mandatory = $false)]
         [PSCredential]$Credential,
-        
+
         [Parameter(Mandatory = $false)]
         [SecureString]$SecurePassword,
-        
+
         [Parameter(Mandatory = $false)]
         [AllowEmptyString()]
-        [string]$Username,
-        
-        [Parameter(Mandatory = $false)]
-        [AllowEmptyString()]
-        [string]$PlainPassword
+        [string]$Username
     )
-    
+
     # If PSCredential provided, return it
     if ($Credential) {
         return $Credential
     }
-    
+
     # Build username if not provided
-    if (-not $Username -and -not $Credential) {
+    if (-not $Username) {
         $Username = "$env:USERDOMAIN\$env:USERNAME"
     }
-    
-    # Convert password to secure string
-    $secureString = ConvertTo-SecureStringIfNeeded -PlainPassword $PlainPassword -SecurePassword $SecurePassword
-    
-    if ($secureString) {
-        return New-Object -TypeName PSCredential -ArgumentList $Username, $secureString
+
+    # If SecureString provided, create PSCredential
+    if ($SecurePassword) {
+        return New-Object -TypeName PSCredential -ArgumentList $Username, $SecurePassword
     }
-    
+
+    # No credential information available
     return $null
 }
 
@@ -102,21 +144,27 @@ function Test-ValidPath {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Path,
-        
+
         [Parameter(Mandatory = $false)]
         [string[]]$AllowedRoots = @($PSScriptRoot, $env:TEMP)
     )
-    
+
     try {
         # Resolve the full path
         $resolvedPath = Resolve-Path -Path $Path -ErrorAction Stop | Select-Object -ExpandProperty Path
-        
+
         # Check for path traversal attempts
         if ($resolvedPath -match '\.\.\\|\.\.[/]') {
-            Write-Warning "Path traversal attempt detected: $Path"
+            $obj = [PSCustomObject]@{
+                Timestamp = (Get-Date).ToString("o")
+                Level = 'Warning'
+                Message = "Path traversal attempt detected: $Path"
+                Type = 'Security'
+            }
+            Write-IFQC -InputObject $obj
             return $false
         }
-        
+
         # Verify path is within allowed roots
         $isValid = $false
         foreach ($root in $AllowedRoots) {
@@ -125,11 +173,17 @@ function Test-ValidPath {
                 break
             }
         }
-        
+
         return $isValid
     }
     catch {
-        Write-Warning "Invalid path: $Path - $($_.Exception.Message)"
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Error'
+            Message = "Invalid path: $Path - $($_.Exception.Message)"
+            Type = 'Security'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
 }
@@ -145,7 +199,7 @@ function Test-ValidIdentifier {
         [Parameter(Mandatory = $true)]
         [string]$Identifier
     )
-    
+
     # Only allow alphanumeric, dash, underscore, and dot
     return $Identifier -match '^[a-zA-Z0-9_\-\.]+$'
 }
@@ -161,13 +215,19 @@ function Test-ValidCsvPath {
         [Parameter(Mandatory = $true)]
         [string]$CsvPath
     )
-    
+
     # Check extension
     if (-not $CsvPath.EndsWith('.csv', [StringComparison]::OrdinalIgnoreCase)) {
-        Write-Warning "Invalid file extension. Only .csv allowed."
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Warning'
+            Message = 'Invalid file extension. Only .csv allowed.'
+            Type = 'Validation'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
-    
+
     return Test-ValidPath -Path $CsvPath
 }
 
@@ -182,13 +242,19 @@ function Test-ValidJsonPath {
         [Parameter(Mandatory = $true)]
         [string]$JsonPath
     )
-    
+
     # Check extension
     if (-not $JsonPath.EndsWith('.json', [StringComparison]::OrdinalIgnoreCase)) {
-        Write-Warning "Invalid file extension. Only .json allowed."
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Warning'
+            Message = 'Invalid file extension. Only .json allowed.'
+            Type = 'Validation'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
-    
+
     return Test-ValidPath -Path $JsonPath
 }
 
@@ -203,13 +269,19 @@ function Test-ValidHtmlPath {
         [Parameter(Mandatory = $true)]
         [string]$HtmlPath
     )
-    
+
     # Check extension
     if (-not $HtmlPath.EndsWith('.html', [StringComparison]::OrdinalIgnoreCase)) {
-        Write-Warning "Invalid file extension. Only .html allowed."
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Warning'
+            Message = 'Invalid file extension. Only .html allowed.'
+            Type = 'Validation'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
-    
+
     return Test-ValidPath -Path $HtmlPath
 }
 
@@ -228,14 +300,14 @@ function Write-SecureLog {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Message,
-        
+
         [Parameter(Mandatory = $false)]
         [string]$Level = "INFO",
-        
+
         [Parameter(Mandatory = $false)]
         [string]$LogFile
     )
-    
+
     # Sensitive patterns to redact
     $sensitivePatterns = @(
         '\bpwd\b[:\s]*\S+',
@@ -247,31 +319,39 @@ function Write-SecureLog {
         '\bAPI[_-]?key\b[:\s]*\S+',
         '[A-Za-z0-9+/]{40,}==?'  # Base64 encoded secrets
     )
-    
+
     # Redact sensitive data
     $safeMessage = $Message
     foreach ($pattern in $sensitivePatterns) {
         $safeMessage = $safeMessage -replace $pattern, '***REDACTED***'
     }
-    
+
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $logEntry = "[$timestamp] [$Level] $safeMessage"
-    
-    # Output to console
-    switch ($Level) {
-        "ERROR" { Write-Host $logEntry -ForegroundColor Red }
-        "WARNING" { Write-Host $logEntry -ForegroundColor Yellow }
-        "SUCCESS" { Write-Host $logEntry -ForegroundColor Green }
-        default { Write-Host $logEntry }
+
+    # Emit structured log to pipeline (preserve plain-text for file writes)
+    $obj = [PSCustomObject]@{
+        Timestamp = (Get-Date).ToString("o")
+        Level = $Level
+        Message = $safeMessage
+        Text = $logEntry
+        Type = 'SecureLog'
     }
-    
+    Write-IFQC -InputObject $obj
+
     # Write to log file if specified
     if ($LogFile -and (Test-Path -Path (Split-Path -Parent $LogFile) -ErrorAction SilentlyContinue)) {
         try {
             Add-Content -Path $LogFile -Value $logEntry -ErrorAction Stop
         }
         catch {
-            Write-Warning "Unable to write to log file: $($_.Exception.Message)"
+            $obj = [PSCustomObject]@{
+                Timestamp = (Get-Date).ToString("o")
+                Level = 'Warning'
+                Message = "Unable to write to log file: $($_.Exception.Message)"
+                Type = 'IO'
+            }
+            Write-IFQC -InputObject $obj
         }
     }
 }
@@ -287,39 +367,61 @@ function New-SecureLogFile {
         [Parameter(Mandatory = $true)]
         [string]$LogPath
     )
-    
+
     try {
         # Create parent directory if needed
         $parentDir = Split-Path -Parent $LogPath
         if (-not (Test-Path -Path $parentDir)) {
             New-Item -Path $parentDir -ItemType Directory -Force | Out-Null
         }
-        
+
         # Create or truncate log file
         New-Item -Path $LogPath -ItemType File -Force | Out-Null
-        
-        # Set restrictive ACL (owner only)
-        $acl = Get-Acl -Path $LogPath
-        $acl.SetAccessRuleProtection($true, $false)
-        $acl.RemoveAllAccessRules()
-        
-        $currentUser = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")  # Administrators
-        $acl.AddAccessRule((New-Object System.Security.AccessControl.FileSystemAccessRule(
-            $currentUser,
-            "FullControl",
-            "Allow"
-        )))
-        
-        # Make it owner-only for sensitive data
-        $owner = New-Object System.Security.Principal.NTAccount($env:USERNAME)
-        $acl.SetOwner($owner)
-        
-        Set-Acl -Path $LogPath -AclObject $acl
-        
+
+        if ($IsWindows) {
+            try {
+                $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+                $acl = Get-Acl -Path $LogPath
+                $acl.SetAccessRuleProtection($true, $false)
+
+                # Build a restrictive rule for the current user
+                $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+                    $currentUser,
+                    [System.Security.AccessControl.FileSystemRights]::FullControl,
+                    [System.Security.AccessControl.InheritanceFlags]::None,
+                    [System.Security.AccessControl.PropagationFlags]::None,
+                    [System.Security.AccessControl.AccessControlType]::Allow
+                )
+
+                # Replace any existing rules for this user with the restrictive one
+                $acl.ResetAccessRule($rule)
+
+                # Ensure owner is set to current user
+                $acl.SetOwner((New-Object System.Security.Principal.NTAccount($currentUser)))
+
+                Set-Acl -Path $LogPath -AclObject $acl
+            }
+            catch {
+                $obj = [PSCustomObject]@{
+                    Timestamp = (Get-Date).ToString("o")
+                    Level = 'Warning'
+                    Message = "Failed to set ACL on log file: $($_.Exception.Message)"
+                    Type = 'IO'
+                }
+                Write-IFQC -InputObject $obj
+            }
+        }
+
         return $true
     }
     catch {
-        Write-Warning "Failed to create secure log file: $($_.Exception.Message)"
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Error'
+            Message = "Failed to create secure log file: $($_.Exception.Message)"
+            Type = 'IO'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
 }
@@ -339,9 +441,21 @@ function Get-SecureHtmlContent {
         [Parameter(Mandatory = $true)]
         [string]$Content
     )
-    
-    # HTML encode special characters
-    return [System.Web.HttpUtility]::HtmlEncode($Content)
+
+    # HTML encode special characters (use System.Net.WebUtility on Core/Win)
+    try {
+        return [System.Net.WebUtility]::HtmlEncode($Content)
+    }
+    catch {
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Warning'
+            Message = "Html encoding fallback used: $($_.Exception.Message)"
+            Type = 'Sanitization'
+        }
+        Write-IFQC -InputObject $obj
+        return $Content -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;'
+    }
 }
 
 function New-SecureHtmlReport {
@@ -354,14 +468,14 @@ function New-SecureHtmlReport {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Title,
-        
+
         [Parameter(Mandatory = $false)]
         [string]$CssPath,
-        
+
         [Parameter(Mandatory = $false)]
         [scriptblock]$Content
     )
-    
+
     $html = @"
 <!DOCTYPE html>
 <html lang="en">
@@ -371,30 +485,30 @@ function New-SecureHtmlReport {
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
     <title>$(Get-SecureHtmlContent -Content $Title)</title>
 "@
-    
+
     # Add custom CSS if provided
     if ($CssPath -and (Test-Path $CssPath)) {
         $cssContent = Get-Content -Path $CssPath -Raw
         $html += "<style>`n$(Get-SecureHtmlContent -Content $cssContent)`n</style>"
     }
-    
+
     $html += @"
 </head>
 <body>
     <div class="container">
 "@
-    
+
     # Add content
     if ($Content) {
         $html += & $Content
     }
-    
+
     $html += @"
     </div>
 </body>
 </html>
 "@
-    
+
     return $html
 }
 
@@ -412,21 +526,27 @@ function Set-OutputFileSecurity {
     param(
         [Parameter(Mandatory = $true)]
         [string]$FilePath,
-        
+
         [Parameter(Mandatory = $false)]
         [switch]$ReadOnly
     )
-    
+
     try {
         if (-not (Test-Path -Path $FilePath)) {
-            Write-Warning "File not found: $FilePath"
+            $obj = [PSCustomObject]@{
+                Timestamp = (Get-Date).ToString("o")
+                Level = 'Warning'
+                Message = "File not found: $FilePath"
+                Type = 'IO'
+            }
+            Write-IFQC -InputObject $obj
             return $false
         }
-        
+
         $acl = Get-Acl -Path $FilePath
         $acl.SetAccessRuleProtection($true, $false)
         $acl.RemoveAllAccessRules()
-        
+
         # Owner gets full control
         $owner = New-Object System.Security.Principal.NTAccount($env:USERNAME)
         $acl.SetOwner($owner)
@@ -435,18 +555,24 @@ function Set-OutputFileSecurity {
             "FullControl",
             "Allow"
         )))
-        
+
         Set-Acl -Path $FilePath -AclObject $acl
-        
+
         # Set read-only if requested
         if ($ReadOnly) {
             Set-ItemProperty -Path $FilePath -Name IsReadOnly -Value $true -ErrorAction SilentlyContinue
         }
-        
+
         return $true
     }
     catch {
-        Write-Warning "Failed to set file security: $($_.Exception.Message)"
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Error'
+            Message = "Failed to set file security: $($_.Exception.Message)"
+            Type = 'IO'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
 }
@@ -461,28 +587,34 @@ function New-SecureOutputFile {
     param(
         [Parameter(Mandatory = $true)]
         [string]$FilePath,
-        
+
         [Parameter(Mandatory = $false)]
         [switch]$ReadOnly
     )
-    
+
     try {
         # Create parent directory
         $parentDir = Split-Path -Parent $FilePath
         if (-not (Test-Path -Path $parentDir)) {
             New-Item -Path $parentDir -ItemType Directory -Force | Out-Null
         }
-        
+
         # Create file
         New-Item -Path $FilePath -ItemType File -Force | Out-Null
-        
+
         # Apply security
         Set-OutputFileSecurity -FilePath $FilePath -ReadOnly:$ReadOnly
-        
+
         return $true
     }
     catch {
-        Write-Warning "Failed to create secure output file: $($_.Exception.Message)"
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Error'
+            Message = "Failed to create secure output file: $($_.Exception.Message)"
+            Type = 'IO'
+        }
+        Write-IFQC -InputObject $obj
         return $false
     }
 }
@@ -502,17 +634,23 @@ function Get-ScriptHash {
         [Parameter(Mandatory = $true)]
         [string]$FilePath
     )
-    
+
     if (-not (Test-Path -Path $FilePath)) {
         return $null
     }
-    
+
     try {
         $hash = Get-FileHash -Path $FilePath -Algorithm SHA256 -ErrorAction Stop
         return $hash.Hash
     }
     catch {
-        Write-Warning "Failed to compute hash: $($_.Exception.Message)"
+        $obj = [PSCustomObject]@{
+            Timestamp = (Get-Date).ToString("o")
+            Level = 'Warning'
+            Message = "Failed to compute hash: $($_.Exception.Message)"
+            Type = 'Integrity'
+        }
+        Write-IFQC -InputObject $obj
         return $null
     }
 }
@@ -527,17 +665,17 @@ function Test-ScriptIntegrity {
     param(
         [Parameter(Mandatory = $true)]
         [string]$FilePath,
-        
+
         [Parameter(Mandatory = $true)]
         [string]$ExpectedHash
     )
-    
+
     $currentHash = Get-ScriptHash -FilePath $FilePath
-    
+
     if (-not $currentHash) {
         return $false
     }
-    
+
     return $currentHash -eq $ExpectedHash
 }
 
@@ -561,3 +699,60 @@ Export-ModuleMember -Function @(
     'Get-ScriptHash',
     'Test-ScriptIntegrity'
 )
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCB/X3ZO4ixm+YO7
+# 9JLKyn6lAwE7+nBa37lBkvziLJTF0aCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIBrBqhVmiLxvOdv8XzmN6nKI3Ccc8+KH
+# N7wM3DXdiIHkMA0GCSqGSIb3DQEBAQUABIICAIyYNxb5Lr2zlVV00TlvtOKl0dUJ
+# dOCwQaQ6MjVlnKu7ngGiSVexj3z1o2vJ8zntwjUbBzpVCgW7/ZsQ0hvfiMbnS+QS
+# BRenjDW2iVbVsrX3kqko8g+RgO9rEcF5jhbmfed1E4HgLSCEX7c6o6FNYwW9dXfz
+# LLLVvoo2lcx/7DL3RDiPmqPGBnCp1Mkn7GYfVKgs73LZwVD2nGUsv1/xB1YMBHpO
+# j25FmfUEnd4yW5dPv1DKfquaqNgYYI1DKNJHW+sRc1WZzEyysOoMZMAZzam2Z3Pf
+# Kpg5WnwyzySBJNP1idx4KtDSWgxk8XyrsNqGQ4X309m81LeoS36TJoo4chmJ0h1E
+# Er21vY5Yi1KCkeBL67eLi3rsLRoSgB2sNCqAdhjuqW/52kUwQ3hE0aSbj4dF2XB/
+# tQVwULmKmQo/moZlHe5ndVH4VlFLnPHVA74nPNKW/t3i0CVBm4ZQVdy7v4WwFVjz
+# az4/wTLKcPDSJeMpvN1vpTBs9W6/CwPXl75x81mRaXClNUl6f1vOCJw30ERbzGW3
+# DrvXael5NgC4CgaPzTEapDL4WfPqxW66LHqq9SwZg2CNPvJ1NI/EshreIVe8K2J9
+# 4i3C7cFEPE1dQTa90F/Affhow0cf297prvAo4z1MHHqL0gVcBP58OwNxpcqDqZMD
+# gN1sjIMolpoW62eP
+# SIG # End signature block
+

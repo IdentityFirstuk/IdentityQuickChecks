@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generate Code Signing Certificate Request (CSR).
 
@@ -56,7 +56,7 @@ param(
 )
 
 if ($Help) {
-    Write-Host @"
+    Write-Output @"
 IdentityFirst QuickChecks - CSR Generator
 ==========================================
 
@@ -81,11 +81,11 @@ WHAT TO DO NEXT:
     exit 0
 }
 
-Write-Host ""
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║       IdentityFirst QuickChecks - CSR Generator            ║" -ForegroundColor Cyan
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
-Write-Host ""
+Write-Output ""
+Write-Output "╔════════════════════════════════════════════════════════════╗"
+Write-Output "║       IdentityFirst QuickChecks - CSR Generator            ║"
+Write-Output "╚════════════════════════════════════════════════════════════╝"
+Write-Output ""
 
 # Check for OpenSSL
 $opensslPath = $null
@@ -105,16 +105,18 @@ foreach ($loc in $opensslLocations) {
             $opensslPath = $result.Source
             break
         }
-    } catch { }
+    } catch {
+        Write-Verbose "OpenSSL probe failed for $loc: $($_.Exception.Message)"
+    }
 }
 
 if (-not $opensslPath) {
-    Write-Host "OpenSSL not found. Generating CSR using PowerShell..." -ForegroundColor Yellow
-    Write-Host ""
-    
+    Write-Output "OpenSSL not found. Generating CSR using PowerShell..."
+    Write-Output ""
+
     # Generate using PowerShell (New-SelfSignedCertificate doesn't export CSR directly)
     # We'll create a config file for external CSR generation
-    
+
     $configContent = @"
 [req]
 default_bits = $KeySize
@@ -131,24 +133,24 @@ OU = $OrganizationalUnit
 CN = $CommonName
 emailAddress = $Email
 "@
-    
+
     $configPath = Join-Path $OutputPath "openssl.cnf"
     $configContent | Out-File -FilePath $configPath -Encoding UTF8
-    
-    Write-Host "OpenSSL configuration created: $configPath" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "To generate CSR with OpenSSL, run:" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "  openssl req -new -newkey rsa:$KeySize -nodes -keyout identityfirst.key -out identityfirst.csr -config openssl.cnf" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "Or install OpenSSL and rerun this script." -ForegroundColor Gray
-    
+
+    Write-Output "OpenSSL configuration created: $configPath"
+    Write-Output ""
+    Write-Output "To generate CSR with OpenSSL, run:"
+    Write-Output ""
+    Write-Output "  openssl req -new -newkey rsa:$KeySize -nodes -keyout identityfirst.key -out identityfirst.csr -config openssl.cnf"
+    Write-Output ""
+    Write-Output "Or install OpenSSL and rerun this script."
+
     exit 0
 }
 
 # Generate CSR using OpenSSL
-Write-Host "Using OpenSSL at: $opensslPath" -ForegroundColor Gray
-Write-Host ""
+Write-Output "Using OpenSSL at: $opensslPath"
+Write-Output ""
 
 # Create output directory if needed
 if (-not (Test-Path $OutputPath)) {
@@ -186,42 +188,99 @@ $csrPath = Join-Path $OutputPath "identityfirst-codesign.csr"
 $keyPath = Join-Path $OutputPath "identityfirst-codesign.key"
 
 # Generate private key and CSR
-Write-Host "Generating $KeySize-bit RSA private key..." -ForegroundColor Gray
+Write-Output "Generating $KeySize-bit RSA private key..."
 
 try {
     $env:OPENSSL_CONF = $configPath
-    
+
     # Generate key and CSR
     $args = @("req", "-newkey", "rsa:$KeySize", "-nodes", "-keyout", $keyPath, "-out", $csrPath, "-subj", "/C=$Country/ST=$State/L=$Locality/O=$Organization/OU=$OrganizationalUnit/CN=$CommonName/emailAddress=$Email")
     $process = Start-Process -FilePath $opensslPath -ArgumentList $args -Wait -PassThru -NoNewWindow
-    
+
     if ($process.ExitCode -eq 0 -and (Test-Path $csrPath)) {
-        Write-Host "✓ CSR generated successfully!" -ForegroundColor Green
-        Write-Host ""
-        Write-Host "Files created:" -ForegroundColor Gray
-        Write-Host "  CSR:  $csrPath" -ForegroundColor Cyan
-        Write-Host "  Key:  $keyPath" -ForegroundColor Cyan
-        Write-Host ""
-        
+        Write-Output "✓ CSR generated successfully!"
+        Write-Output ""
+        Write-Output "Files created:"
+        Write-Output "  CSR:  $csrPath"
+        Write-Output "  Key:  $keyPath"
+        Write-Output ""
+
         # Show CSR contents
-        Write-Host "CSR Contents:" -ForegroundColor Gray
-        Write-Host ("─" * 60) -ForegroundColor Gray
-        Get-Content $csrPath | Write-Host -ForegroundColor DarkGray
-        Write-Host ("─" * 60) -ForegroundColor Gray
-        Write-Host ""
-        
-        Write-Host "NEXT STEPS:" -ForegroundColor Yellow
-        Write-Host "1. Submit the CSR file to your Certificate Authority" -ForegroundColor Gray
-        Write-Host "2. CA will issue a signed certificate (.cer/.crt)" -ForegroundColor Gray
-        Write-Host "3. Convert to PFX: openssl pkcs12 -export -in cert.cer -inkey identityfirst.key -out identityfirst.pfx" -ForegroundColor Gray
-        Write-Host ""
-        Write-Host "⚠️  Keep your private key (.key) secure!" -ForegroundColor Red
+        Write-Output "CSR Contents:"
+        Write-Output ("─" * 60)
+        Get-Content $csrPath | ForEach-Object { Write-Output $_ }
+        Write-Output ("─" * 60)
+        Write-Output ""
+
+        Write-Output "NEXT STEPS:"
+        Write-Output "1. Submit the CSR file to your Certificate Authority"
+        Write-Output "2. CA will issue a signed certificate (.cer/.crt)"
+        Write-Output "3. Convert to PFX: openssl pkcs12 -export -in cert.cer -inkey identityfirst.key -out identityfirst.pfx"
+        Write-Output ""
+        Write-Output "⚠️  Keep your private key (.key) secure!"
     } else {
-        Write-Host "✗ Failed to generate CSR" -ForegroundColor Red
+        Write-Output "✗ Failed to generate CSR"
     }
 } catch {
-    Write-Host "✗ Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Output "✗ Error: $($_.Exception.Message)"
 }
 
 # Clean up config
 Remove-Item $configPath -ErrorAction SilentlyContinue
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDU1aJQu/gg7huf
+# wr9ZOP4ur312LLo9FaRSdVbJiCjZW6CCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIAKOg3SkPzXah9gALWm4MbRLg+Prd0Ca
+# //kJXGqLGs8EMA0GCSqGSIb3DQEBAQUABIICAKQcpu5DZzRnuERXVuzS33zEcp+5
+# vtNCKT4XjEf5kIJzbFm9E1UCzj73nCJtZzkAzMGAokcvURrZi0tgqKpOkYyOf97c
+# N4OTJvngk9sG8Jp5R12W1Scwt59ZxpJ+8spSEVm8hqE73HJjGHC79XORBrIsE1nz
+# DJd/G/aRl9mGaMX3wM/ejgZNBwUnM/9waraVe4LZpF0OSikhZgPT/FRvfCO+NYAL
+# zRXLGJUiBK0fLnwbIsraiSoctMy3d0rGOk+CpOWDonM18bhYK1vVwL97tBF2MBh4
+# s/7XfP88hiZQBmpuRZH+F442yUZni+nLZtsHPIcSNkxy6gEDAXKvhCJ/6ksbqEN0
+# kp1e+d31bw8s4JsyZOiw6A0QaBt4zN2S6yuN/EmUQXQai24aLCcpuFvDsjNQhIUo
+# vMw4OWpaz5ziaSYc5DGdUUjd3A+5WqZ6/56frL7pSJTLpF91hgFf++a4DH6cq5KA
+# coAcsoUYMrYxZFrO0RbnMYtB0RwAWVkjPjrIbxEgzWvOHbpC5IbKsAjsTRWE0N7h
+# QJtBB9lS8L8XuzpR8wVOXSMCe7ntkKuFPTMQr62ZwSf/x2GfwuAQxZPCDeL37OGI
+# T2F+7GMYgLPH4cTgvVnhsvuQk5zB37ikFbVrwHEOJ+hyTFIF7S/I9/vEe49WrNOU
+# tfWRmRSzl6mwijPF
+# SIG # End signature block
+

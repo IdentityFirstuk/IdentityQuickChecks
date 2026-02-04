@@ -1,0 +1,1951 @@
+[
+  {
+    "Message": "Do not use wildcard or $null in this field. Explicitly specify a list for FunctionsToExport.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psd1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psd1",
+        "LineNumber": 10,
+        "ColumnNumber": 27,
+        "Line": "    FunctionsToExport = @('*-IFQC*')\n",
+        "Offset": 414
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psd1",
+        "LineNumber": 10,
+        "ColumnNumber": 36,
+        "Line": "    FunctionsToExport = @('*-IFQC*')\n",
+        "Offset": 423
+      },
+      "StartLineNumber": 10,
+      "StartColumnNumber": 27,
+      "EndLineNumber": 10,
+      "EndColumnNumber": 36,
+      "Text": "'*-IFQC*'",
+      "StartOffset": 414,
+      "EndOffset": 423
+    },
+    "RuleName": "PSUseToExportFieldsInManifest",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psd1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psd1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psd1",
+        "Description": "Replace '*-IFQC*' with @('Add-IFQCFinding', 'Add-IFQCNote', 'ConvertTo-IFQCSafeHtml', 'Get-IFQCHostInfo', \r\n\t\t'Invoke-IFQCSafe', 'New-IFQCContext', 'New-IFQCFinding', \r\n\t\t'Save-IFQCReport', 'Write-IFQCLog')",
+        "StartLineNumber": 10,
+        "StartColumnNumber": 27,
+        "EndLineNumber": 10,
+        "EndColumnNumber": 36,
+        "Text": "@('Add-IFQCFinding', 'Add-IFQCNote', 'ConvertTo-IFQCSafeHtml', 'Get-IFQCHostInfo', \r\n\t\t'Invoke-IFQCSafe', 'New-IFQCContext', 'New-IFQCFinding', \r\n\t\t'Save-IFQCReport', 'Write-IFQCLog')",
+        "Lines": [
+          "@('Add-IFQCFinding', 'Add-IFQCNote', 'ConvertTo-IFQCSafeHtml', 'Get-IFQCHostInfo', ",
+          "\t\t'Invoke-IFQCSafe', 'New-IFQCContext', 'New-IFQCFinding', ",
+          "\t\t'Save-IFQCReport', 'Write-IFQCLog')"
+        ],
+        "Start": {
+          "Line": 10,
+          "Column": 27
+        },
+        "End": {
+          "Line": 10,
+          "Column": 36
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 10,
+    "Column": 27
+  },
+  {
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 71,
+        "ColumnNumber": 5,
+        "Line": "    catch {\n",
+        "Offset": 2240
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 73,
+        "ColumnNumber": 6,
+        "Line": "    }\n",
+        "Offset": 2336
+      },
+      "StartLineNumber": 71,
+      "StartColumnNumber": 5,
+      "EndLineNumber": 73,
+      "EndColumnNumber": 6,
+      "Text": "catch {\n        # Best-effort: ignore and continue; Write-IFQCLog will fallback to console\n    }",
+      "StartOffset": 2240,
+      "EndOffset": 2336
+    },
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": null,
+    "IsSuppressed": false,
+    "Line": 71,
+    "Column": 5
+  },
+  {
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 104,
+        "ColumnNumber": 13,
+        "Line": "            Write-Host $line\n",
+        "Offset": 3152
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 104,
+        "ColumnNumber": 29,
+        "Line": "            Write-Host $line\n",
+        "Offset": 3168
+      },
+      "StartLineNumber": 104,
+      "StartColumnNumber": 13,
+      "EndLineNumber": 104,
+      "EndColumnNumber": 29,
+      "Text": "Write-Host $line",
+      "StartOffset": 3152,
+      "EndOffset": 3168
+    },
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": null,
+    "IsSuppressed": false,
+    "Line": 104,
+    "Column": 13
+  },
+  {
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 109,
+        "ColumnNumber": 9,
+        "Line": "        Write-Host $line\n",
+        "Offset": 3256
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 109,
+        "ColumnNumber": 25,
+        "Line": "        Write-Host $line\n",
+        "Offset": 3272
+      },
+      "StartLineNumber": 109,
+      "StartColumnNumber": 9,
+      "EndLineNumber": 109,
+      "EndColumnNumber": 25,
+      "Text": "Write-Host $line",
+      "StartOffset": 3256,
+      "EndOffset": 3272
+    },
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": null,
+    "IsSuppressed": false,
+    "Line": 109,
+    "Column": 9
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 4,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 4,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 4,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 4,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 4,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 4,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 4,
+          "Column": 1
+        },
+        "End": {
+          "Line": 4,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 4,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 18,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 18,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 18,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 18,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 18,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 18,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 18,
+          "Column": 1
+        },
+        "End": {
+          "Line": 18,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 18,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 22,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 22,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 22,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 22,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 22,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 22,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 22,
+          "Column": 1
+        },
+        "End": {
+          "Line": 22,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 22,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 30,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 30,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 30,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 30,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 30,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 30,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 30,
+          "Column": 1
+        },
+        "End": {
+          "Line": 30,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 30,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 33,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 33,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 33,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 33,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 33,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 33,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 33,
+          "Column": 1
+        },
+        "End": {
+          "Line": 33,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 33,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 36,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 36,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 36,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 36,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 36,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 36,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 36,
+          "Column": 1
+        },
+        "End": {
+          "Line": 36,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 36,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 88,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 88,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 88,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 88,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 88,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 88,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 88,
+          "Column": 1
+        },
+        "End": {
+          "Line": 88,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 88,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 92,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 92,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 92,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 92,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 92,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 92,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 92,
+          "Column": 1
+        },
+        "End": {
+          "Line": 92,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 92,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 96,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 96,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 96,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 96,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 96,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 96,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 96,
+          "Column": 1
+        },
+        "End": {
+          "Line": 96,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 96,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 122,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 122,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 122,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 122,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 122,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 122,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 122,
+          "Column": 1
+        },
+        "End": {
+          "Line": 122,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 122,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 125,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 125,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 125,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 125,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 125,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 125,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 125,
+          "Column": 1
+        },
+        "End": {
+          "Line": 125,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 125,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 129,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 129,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 129,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 129,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 129,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 129,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 129,
+          "Column": 1
+        },
+        "End": {
+          "Line": 129,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 129,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 146,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 146,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 146,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 146,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 146,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 146,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 146,
+          "Column": 1
+        },
+        "End": {
+          "Line": 146,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 146,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 161,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 161,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 161,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 161,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 161,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 161,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 161,
+          "Column": 1
+        },
+        "End": {
+          "Line": 161,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 161,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 164,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 164,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 164,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 164,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 164,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 164,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 164,
+          "Column": 1
+        },
+        "End": {
+          "Line": 164,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 164,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 168,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 168,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 168,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 168,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 168,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 168,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 168,
+          "Column": 1
+        },
+        "End": {
+          "Line": 168,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 168,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 171,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 171,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 171,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 171,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 171,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 171,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 171,
+          "Column": 1
+        },
+        "End": {
+          "Line": 171,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 171,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 174,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 174,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 174,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 174,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 174,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 174,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 174,
+          "Column": 1
+        },
+        "End": {
+          "Line": 174,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 174,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 177,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 177,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 177,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 177,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 177,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 177,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 177,
+          "Column": 1
+        },
+        "End": {
+          "Line": 177,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 177,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 181,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 181,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 181,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 181,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 181,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 181,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 181,
+          "Column": 1
+        },
+        "End": {
+          "Line": 181,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 181,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 202,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 202,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 202,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 202,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 202,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 202,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 202,
+          "Column": 1
+        },
+        "End": {
+          "Line": 202,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 202,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 206,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 206,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 206,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 206,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 206,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 206,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 206,
+          "Column": 1
+        },
+        "End": {
+          "Line": 206,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 206,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 219,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 219,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 219,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 219,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 219,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 219,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 219,
+          "Column": 1
+        },
+        "End": {
+          "Line": 219,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 219,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 223,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 223,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 223,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 223,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 223,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 223,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 223,
+          "Column": 1
+        },
+        "End": {
+          "Line": 223,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 223,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 240,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 240,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 240,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 240,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 240,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 240,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 240,
+          "Column": 1
+        },
+        "End": {
+          "Line": 240,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 240,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 259,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 259,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 259,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 259,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 259,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 259,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 259,
+          "Column": 1
+        },
+        "End": {
+          "Line": 259,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 259,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 274,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 274,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 274,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 274,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 274,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 274,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 274,
+          "Column": 1
+        },
+        "End": {
+          "Line": 274,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 274,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 281,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 281,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 281,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 281,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 281,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 281,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 281,
+          "Column": 1
+        },
+        "End": {
+          "Line": 281,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 281,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 290,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 290,
+        "ColumnNumber": 9,
+        "Offset": 0,
+        "Line": "        "
+      },
+      "StartLineNumber": 290,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 290,
+      "EndColumnNumber": 9,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "        "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 290,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 290,
+        "EndColumnNumber": 9,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 290,
+          "Column": 1
+        },
+        "End": {
+          "Line": 290,
+          "Column": 9
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 290,
+    "Column": 1
+  },
+  {
+    "Message": "Line has trailing whitespace",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 464,
+        "ColumnNumber": 1,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 464,
+        "ColumnNumber": 5,
+        "Offset": 0,
+        "Line": "    "
+      },
+      "StartLineNumber": 464,
+      "StartColumnNumber": 1,
+      "EndLineNumber": 464,
+      "EndColumnNumber": 5,
+      "StartOffset": 0,
+      "EndOffset": 0,
+      "Text": "    "
+    },
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": [
+      {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "Description": null,
+        "StartLineNumber": 464,
+        "StartColumnNumber": 1,
+        "EndLineNumber": 464,
+        "EndColumnNumber": 5,
+        "Text": "",
+        "Lines": [
+          ""
+        ],
+        "Start": {
+          "Line": 464,
+          "Column": 1
+        },
+        "End": {
+          "Line": 464,
+          "Column": 5
+        }
+      }
+    ],
+    "IsSuppressed": false,
+    "Line": 464,
+    "Column": 1
+  },
+  {
+    "Message": "Function 'New-IFQCContext' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 14,
+        "ColumnNumber": 10,
+        "Line": "function New-IFQCContext {\n",
+        "Offset": 297
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 14,
+        "ColumnNumber": 25,
+        "Line": "function New-IFQCContext {\n",
+        "Offset": 312
+      },
+      "StartLineNumber": 14,
+      "StartColumnNumber": 10,
+      "EndLineNumber": 14,
+      "EndColumnNumber": 25,
+      "Text": "New-IFQCContext",
+      "StartOffset": 297,
+      "EndOffset": 312
+    },
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": null,
+    "IsSuppressed": false,
+    "Line": 14,
+    "Column": 10
+  },
+  {
+    "Message": "Function 'New-IFQCFinding' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Extent": {
+      "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+      "StartScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 142,
+        "ColumnNumber": 10,
+        "Line": "function New-IFQCFinding {\n",
+        "Offset": 4032
+      },
+      "EndScriptPosition": {
+        "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+        "LineNumber": 142,
+        "ColumnNumber": 25,
+        "Line": "function New-IFQCFinding {\n",
+        "Offset": 4047
+      },
+      "StartLineNumber": 142,
+      "StartColumnNumber": 10,
+      "EndLineNumber": 142,
+      "EndColumnNumber": 25,
+      "Text": "New-IFQCFinding",
+      "StartOffset": 4032,
+      "EndOffset": 4047
+    },
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "ScriptName": "IdentityFirst.QuickChecks.psm1",
+    "ScriptPath": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleSuppressionID": null,
+    "SuggestedCorrections": null,
+    "IsSuppressed": false,
+    "Line": 142,
+    "Column": 10
+  }
+]

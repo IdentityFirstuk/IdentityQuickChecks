@@ -1,0 +1,163 @@
+<#
+    Privileged Group Nesting Abuse
+    Walks nested admin groups and flags indirect privilege
+#>
+
+param(
+    [string]$OutputPath = "."
+)
+
+Write-Output "════════════════════════════════════════════════════════════"
+Write-Output "  Privileged Group Nesting Abuse Check"
+Write-Output "════════════════════════════════════════════════════════════"
+Write-Output ""
+Write-Output "  Analyzing nested group membership..."
+Write-Output ""
+
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+}
+catch {
+    Write-Output "  ✗ ActiveDirectory module not available"
+    Write-Output "  ℹ Install RSAT AD tools or run on a Domain Controller"
+    exit 1
+}
+
+$privilegedGroups = @("Domain Admins", "Enterprise Admins", "Schema Admins", "Administrators")
+$nestedResults = @()
+$allDirectMembers = @()
+
+foreach ($group in $privilegedGroups) {
+    Write-Output "  Checking: $group..."
+    
+    try {
+        $directMembers = Get-ADGroupMember $group -ErrorAction Stop | 
+            Where-Object objectClass -eq "user"
+        
+        foreach ($member in $directMembers) {
+            $allDirectMembers += [PSCustomObject]@{
+                Group = $group
+                Name = $member.Name
+                SamAccountName = $member.SamAccountName
+                Type = "Direct"
+            }
+        }
+        
+        $nestedGroups = Get-ADGroupMember $group -Recursive -ErrorAction Stop | 
+            Where-Object objectClass -eq "group"
+        
+        foreach ($nestedGroup in $nestedGroups) {
+            $nestedMembers = Get-ADGroupMember $nestedGroup -ErrorAction Stop | 
+                Where-Object objectClass -eq "user"
+            
+            foreach ($member in $nestedMembers) {
+                $nestedResults += [PSCustomObject]@{
+                    RootGroup = $group
+                    NestedGroup = $nestedGroup.Name
+                    MemberName = $member.Name
+                    MemberSamAccountName = $member.SamAccountName
+                }
+            }
+        }
+    }
+    catch {
+        Write-Output "     ⚠ Unable to access $group"
+    }
+}
+
+Write-Output ""
+Write-Output "  Direct Privileged Access:"
+if ($allDirectMembers) {
+    Write-Output "  Found $($allDirectMembers.Count) direct members"
+    $allDirectMembers | Format-Table -AutoSize
+} else {
+    Write-Output "  ✓ No direct privileged members found"
+}
+
+Write-Output ""
+Write-Output "  Indirect/Nested Privileged Access (hidden blast radius):"
+if ($nestedResults) {
+    Write-Output "  Found $($nestedResults.Count) users with indirect privilege"
+    $nestedResults | Format-Table -AutoSize
+} else {
+    Write-Output "  ✓ No nested privilege detected"
+}
+
+# Export report
+$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$jsonPath = Join-Path $OutputPath "PrivilegedNestingAbuse-$timestamp.json"
+$report = @{
+    check = "Privileged Group Nesting Abuse Check"
+    timestamp = (Get-Date).ToString("o")
+    summary = @{
+        directMembers = ($allDirectMembers | Measure-Object).Count
+        indirectMembers = ($nestedResults | Measure-Object).Count
+    }
+    directMembers = $allDirectMembers
+    nestedMembers = $nestedResults
+}
+$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $jsonPath -Encoding UTF8
+Write-Output ""
+Write-Output "  📄 Report saved: $jsonPath"
+
+Write-Output ""
+Write-Output "  ─────────────────────────────────────────────────────────────"
+Write-Output "  ℹ  Nested privilege = hidden blast radius."
+Write-Output "     Only correlation makes it meaningful. Run IdentityHealthCheck."
+Write-Output "  ─────────────────────────────────────────────────────────────"
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAQ+X4HKgfQKqkd
+# L/p+dZyc/9Ex/m636jyRKgKhb9ngcqCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIJrbCJkFH6LcyXOA5h2eyoywTHDNvjGx
+# O47hqJFkD7xYMA0GCSqGSIb3DQEBAQUABIICALQ6RfA7w6vCdflGhxqNZMnPi3WE
+# EEhrbzAeKBFelztKpV3MWLHS3INOCbuPWWCNTMwRIxWYVripX6PDsdxNpQEXvfr6
+# DqIsvh6fzs8p+o+uMZzhsWvEvw96g2718GQSD27vHI7f/54umsAYTpaeEu+MfKbA
+# rDjQGwcKuDekIl4Kv+UkptuPAoOQk7VzQOPGZpf3Gtn+Img2g5zF5A3v06HOwwLk
+# XN4bu1bPFXtbtm4v3p1iEMJJFRYp4fS9G3ZnEiimty51O7bPTrWrkMdon2b0eMIy
+# 8yhL0BIvE16qPwOIG8z2Pu8miOTSwmrhin5ljOs+ddCYNy8TtBGKQhMBw4CXKNrj
+# 7NsRnDKsr+W/7QhlT0jV1t1EtoLV/fAiKBvL9dLT0Z8splLvwaP7KAb6CSAcSTEG
+# y7/DgowYN7ppu+vjoF4+hEFMusCpJH8VE0eCNWzKS4LT9RTNemRliy+ENIkhm9fD
+# a8CCZvFpbq76EvNz8VOc31jR+PaX6lKo20ZP/svlMMvW1XPgwhEtYjJ+lXAQv/km
+# zuTAWNf5sQ2fiUAFlbNcRIzq8LjHSxQDSy3i/Yzz2BTJjBnajpeM2/wOD8Z/7M5z
+# xgv4lNPLWIdSSuEUXzP4ttHsDLu4YWhmpy4MvZxRbWP7LTvkesenIt008F6facYB
+# QegoKTJO1ddiDr5i
+# SIG # End signature block

@@ -70,12 +70,16 @@ SSL.com may require:
 ### Step 5: Use the Certificate
 
 ```powershell
+
 # Copy to QuickChecks folder
 Copy-Item "C:\Downloads\certificate.pfx" "C:\IdentityFirst-Free\"
 
-# Sign scripts
+# Sign scripts (enter password securely)
 cd C:\IdentityFirst-Free
-.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword "your-password"
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword (Read-Host "PFX password" -AsSecureString)
+
+# Or use PSCredential
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertCredential (Get-Credential)
 
 # Package
 .\Package-QuickChecks.ps1 -Version "1.0.0" -SignScripts
@@ -97,9 +101,9 @@ $cert = New-SelfSignedCertificate `
     -CertStoreLocation "Cert:\CurrentUser\My" `
     -NotAfter (Get-Date).AddYears(3)
 
-# Export to PFX
+# Export to PFX (enter password securely)
 $pfxPath = ".\IdentityFirst-CodeSign.pfx"
-$password = ConvertTo-SecureString -String "SecurePassword123!" -AsPlainText -Force
+$password = Read-Host "PFX export password" -AsSecureString
 Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $password
 
 # Show certificate thumbprint

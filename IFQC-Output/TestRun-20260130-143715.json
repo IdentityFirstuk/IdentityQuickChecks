@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "toolName": "TestRun",
+    "toolVersion": "1.0.0",
+    "runId": "40327c7c-8fc5-423b-92cc-d0d2fa4a19ba",
+    "generatedAtUtc": "2026-01-30T14:37:15.8023853Z",
+    "host": {
+      "computerName": "ENDEAVOUR1-DD",
+      "userName": "MBAhe",
+      "domain": "ENDEAVOUR1-DD",
+      "osCaption": "Microsoft Windows 11 Pro",
+      "osVersion": "10.0.26100",
+      "manufacturer": "SCAN Computers",
+      "model": "AO Core 5080"
+    },
+    "detailLevel": "Normal"
+  },
+  "summary": {
+    "totalFindings": 0,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "data": {},
+  "findings": [],
+  "notes": []
+}

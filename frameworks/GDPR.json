@@ -1,0 +1,14 @@
+{
+  "framework": "GDPR",
+  "version": "UK_GDPR_2018",
+  "controls": [
+    {
+      "controlRef": "Art.32",
+      "assertions": [
+        { "id": "PrivilegedAccountsWithoutMFA", "weight": 10, "overrideSeverity": "critical" },
+        { "id": "OrphanedAccounts", "weight": 7 }
+      ],
+      "policyText": "Security of processing: confidentiality, integrity, availability."
+    }
+  ]
+}

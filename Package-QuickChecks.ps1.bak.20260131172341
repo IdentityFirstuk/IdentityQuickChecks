@@ -1,0 +1,340 @@
+<#
+.SYNOPSIS
+    Package IdentityFirst QuickChecks for distribution.
+
+.DESCRIPTION
+    Creates a ZIP archive of all QuickChecks scripts for easy download
+    and distribution. Optionally signs scripts before packaging.
+
+.OUTPUTS
+    - IdentityFirst.QuickChecks-v{version}.zip
+
+.NOTES
+    Author: IdentityFirst Ltd
+    Requirements: PowerShell 5.1+
+    
+.USAGE
+    # Create package
+    .\Package-QuickChecks.ps1
+    
+    # Create package with signed scripts
+    .\Package-QuickChecks.ps1 -SignScripts
+    
+    # Specify version
+    .\Package-QuickChecks.ps1 -Version "1.0.1"
+    
+    # Skip README/EULA from package
+    .\Package-QuickChecks.ps1 -NoDocumentation
+    
+    # Custom output directory
+    .\Package-QuickChecks.ps1 -OutputPath ".\dist"
+#>
+
+[CmdletBinding()]
+param(
+    [Parameter()]
+    [string]$ModulePath = (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)),
+    
+    [Parameter()]
+    [string]$Version = "1.0.0",
+    
+    [Parameter()]
+    [string]$OutputPath = ".\package",
+    
+    [Parameter()]
+    [switch]$SignScripts,
+    
+    [Parameter()]
+    [switch]$IncludeDocs = $true,
+    
+    [parameter()]
+    [string]$CertPath,
+    
+    [parameter()]
+    [securestring]$CertPassword,
+    [parameter()]
+    [pscredential]$CertCredential,
+    
+    [Parameter()]
+    [switch]$Help
+)
+
+if ($Help) {
+    Write-Output @"
+IdentityFirst QuickChecks - Packaging Script
+=============================================
+
+Creates a ZIP archive of all QuickChecks scripts for distribution.
+
+USAGE:
+  .\Package-QuickChecks.ps1                    # Basic package
+  .\Package-QuickChecks.ps1 -Version "1.0.1"   # Custom version
+  .\Package-QuickChecks.ps1 -SignScripts       # Sign before packaging
+  .\Package-QuickChecks.ps1 -NoDocumentation   # Skip docs
+  .\Package-QuickChecks.ps1 -OutputPath ".\dist"  # Custom output
+
+OUTPUT:
+  IdentityFirst.QuickChecks-v{version}.zip
+  
+CONTENTS:
+  - Module/ (framework scripts)
+  - Checks/ (all check scripts)
+  - Run-AllQuickChecks.ps1 (launcher)
+  - README.md (if included)
+  - EULA.txt (if included)
+
+AFTER PACKAGING:
+1. Test the package by extracting and running
+2. Upload to your website for download
+3. Consider signing scripts for production use
+
+"@
+    exit 0
+}
+
+# Load version from module if not specified
+if ($Version -eq "1.0.0") {
+    $moduleFile = Join-Path $ModulePath "Module\IdentityFirst.QuickChecks.psd1"
+    if (Test-Path $moduleFile) {
+        $moduleData = Import-PowerShellDataFile $moduleFile -ErrorAction SilentlyContinue
+        if ($moduleData.ModuleVersion) {
+            $Version = $moduleData.ModuleVersion
+        }
+    }
+}
+
+$zipName = "IdentityFirst.QuickChecks-v$Version.zip"
+$zipPath = Join-Path $OutputPath $zipName
+
+Write-IFQC -InputObject ([PSCustomObject]@{
+    Timestamp = (Get-Date).ToString('o')
+    Level = 'Info'
+    Action = 'PackageInfo'
+    Version = $Version
+    Output = $zipPath
+    Signing = [bool]$SignScripts
+    IncludeDocs = [bool]$IncludeDocs
+})
+
+# Emit structured packaging start event
+$pkgStart = [PSCustomObject]@{
+    Timestamp = (Get-Date).ToString('o')
+    Level = 'Info'
+    Action = 'PackageStart'
+    ModulePath = $ModulePath
+    Version = $Version
+    OutputPath = $zipPath
+    SignScripts = [bool]$SignScripts
+    IncludeDocs = [bool]$IncludeDocs
+}
+Write-IFQC -InputObject $pkgStart
+
+# Check for required files
+$requiredPaths = @(
+    "Module\IdentityFirst.QuickChecks.psm1",
+    "Checks",
+    "Run-AllQuickChecks.ps1"
+)
+
+foreach ($relPath in $requiredPaths) {
+    $fullPath = Join-Path $ModulePath $relPath
+    if (-not (Test-Path $fullPath)) {
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Error'; Action='MissingPath'; Path=$fullPath })
+        exit 1
+    }
+}
+
+# Create output directory
+if (-not (Test-Path $OutputPath)) {
+    New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CreatedOutputDir'; Path=$OutputPath })
+}
+
+# Create temporary working directory
+$tempDir = Join-Path $OutputPath "temp_$([guid]::NewGuid().ToString('N').Substring(0,8))"
+    New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CreatedTempDir'; Path=$tempDir })
+
+try {
+    # Copy module directory structure
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CopyStart' })
+    
+    $copySpec = @(
+        @{ From = "Module"; To = "Module" }
+        @{ From = "Checks"; To = "Checks" }
+        @{ From = "Run-AllQuickChecks.ps1"; To = "Run-AllQuickChecks.ps1" }
+    )
+    
+    if ($IncludeDocs) {
+        $copySpec += @{ From = "README.md"; To = "README.md" }
+        $copySpec += @{ From = "EULA.txt"; To = "EULA.txt" }
+    }
+    
+    foreach ($item in $copySpec) {
+        $src = Join-Path $ModulePath $item.From
+        $dst = Join-Path $tempDir $item.To
+        
+            if (Test-Path $src) {
+            if (Test-Path $src -PathType Container) {
+                Copy-Item -Path $src -Destination $dst -Recurse -Force
+            } else {
+                Copy-Item -Path $src -Destination $dst -Force
+            }
+                Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='Copied'; Item=$item.From; Destination=$dst })
+        }
+    }
+    
+    # Sign scripts if requested
+    if ($SignScripts) {
+        Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='SigningRequested' })
+        
+        $signScript = Join-Path $ModulePath "Sign-QuickChecks.ps1"
+        if (-not (Test-Path $signScript)) {
+            Write-Output "ERROR: Sign-QuickChecks.ps1 not found"
+            exit 1
+        }
+        
+        # If caller provided IFQC_DEV_PFX_PASSWORD as env var, build a SecureString for signing
+        if ($CertPath -and -not $CertPassword -and $env:IFQC_DEV_PFX_PASSWORD) {
+            $devPwd = $env:IFQC_DEV_PFX_PASSWORD
+            $ss = New-Object System.Security.SecureString
+            foreach ($c in $devPwd.ToCharArray()) { $ss.AppendChar($c) }
+            $ss.MakeReadOnly()
+            $CertPassword = $ss
+            Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='UsingDevPfxPassword'; Source='IFQC_DEV_PFX_PASSWORD' })
+        }
+
+        # If a PSCredential was provided to the packager, forward it to the signing script
+            if ($CertCredential -and -not $CertPassword) {
+            $CertPassword = $CertCredential.Password
+            Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='UsingPfxFromPSCredential' })
+        }
+
+        $signArgs = @("-ModulePath", $tempDir)
+        if ($CertPath) { $signArgs += "-CertPath", $CertPath }
+        if ($CertPassword) { $signArgs += "-CertPassword", $CertPassword }
+        if ($CertCredential) { $signArgs += "-CertCredential", $CertCredential }
+        
+        # Run signing in temp directory context
+            Push-Location $tempDir
+        try {
+            & $signScript @signArgs | ForEach-Object { Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='SignOutput'; Text=$_ }) }
+        } finally {
+            Pop-Location
+        }
+    }
+    
+    # Create ZIP file
+    Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='CreateZip'; Path=$zipPath })
+    
+    # Remove existing ZIP
+    if (Test-Path $zipPath) {
+        Remove-Item $zipPath -Force
+        Write-Output "  Removed existing: $zipName"
+    }
+    
+    # Create ZIP using .NET compression
+    $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
+    
+    try {
+        # Get all files to add
+        $files = Get-ChildItem -Path $tempDir -Recurse -File
+        
+        foreach ($file in $files) {
+            # Calculate relative path within ZIP
+            $relativePath = $file.FullName.Substring($tempDir.Length + 1).Replace('\', '/')
+            
+            # Add to ZIP
+            $entry = $zip.CreateEntry($relativePath)
+            $stream = $entry.Open()
+            try {
+                $file.OpenRead().CopyTo($stream)
+            } finally {
+                $stream.Close()
+            }
+            
+                Write-IFQC -InputObject ([PSCustomObject]@{ Timestamp=(Get-Date).ToString('o'); Level='Info'; Action='ZipAdd'; Path=$relativePath; Size=$file.Length })
+        }
+    } finally {
+        $zip.Dispose()
+    }
+    
+    # Get ZIP size
+    $zipSize = (Get-Item $zipPath).Length
+    $zipSizeStr = if ($zipSize -gt 1MB) { "{0:N1} MB" -f ($zipSize / 1MB) } else { "{0:N0} KB" -f ($zipSize / 1KB) }
+    
+    # Summary
+    Write-IFQC -InputObject ([PSCustomObject]@{
+        Timestamp = (Get-Date).ToString('o')
+        Level = 'Info'
+        Action = 'PackageComplete'
+        File = $zipName
+        Size = $zipSizeStr
+        ScriptCount = $files.Count
+    })
+    Write-Output ([PSCustomObject]@{ Zip = $zipPath; Size = $zipSize; Scripts = $files.Count })
+    
+} finally {
+    # Clean up temp directory
+    if (Test-Path $tempDir) {
+        Remove-Item -Path $tempDir -Recurse -Force
+        Write-Output ""
+        Write-Output "Cleaned up temp directory"
+    }
+}
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBi5awlJtTnWa5D
+# B7DxCBanC8a9sNRK69F4sK9B2QG6pqCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIE2P7RMbnYaqRBr1J8ZqsREKjg4GU+Qx
+# /OrrJKYjrV/HMA0GCSqGSIb3DQEBAQUABIICAENmEXIiVaMuqoQn4lJCAxoxTScO
+# T2iJzfB4Egjke+3iU2FSam6fgdKjE1t9hmMitweipZXnVMp3ZYcoBsrdYJY1xIgh
+# 6YzOjqOCJVaIris0zJhPgDcJ3u8Wrt6Vra7A8yZeA35okFxU6YTn7t67kRD6Stwd
+# HdIn43dqRTONJ7b0M5tBaBEiTj1LPdRDILobNSAGPoCvG7sSzcW2yYiM/fglV1QS
+# mFbqdlSHZOHxZ07J0dDM3ansJtiWd9Z/XudY6fXsUZ0wUWdWmwjbz9+ZokBhpYyf
+# pOk7hnAHjKh5tg0xdnZy4t7gXGVIjHPpVwIHapoPXTETXeeYtmOP4ne/sXDYzfn3
+# S+t7uoRGQJ+890NixvgN1scrKObcye/GZ46by0ZUNL41rpOOEClgUgHku1y/cq3t
+# c7FMu4I9wyearrQLqD1ktI4/VEbwqU2xJlcuk2UiElY/uCMZgtPP9royzSoRJElh
+# uhlNC/sJVy8Xe0WKY9AHWK3zSatflfouh3oEpEtLs+ZYkdpaeFL7oXG5AOvOW9qg
+# /tvKy6SfN3HJadyWETeASh+qnKvEcXFzAwPzRZUsA1/xOhLjt05WHeyjGImoWLeW
+# vzRJbh58kErbdHIgozh0Incxq1/iwtnK4u7q1Dp76+J6qEuc5rqnyRsE/Hmucy4g
+# NS/nDTPPxmE/IF1f
+# SIG # End signature block

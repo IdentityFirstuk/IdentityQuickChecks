@@ -1,0 +1,303 @@
+[
+  {
+    "File": "Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Line": 71,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks."
+  },
+  {
+    "File": "Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Line": 104,
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information."
+  },
+  {
+    "File": "Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Line": 109,
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information."
+  },
+  {
+    "File": "Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 14,
+    "Message": "Function 'New-IFQCContext' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 142,
+    "Message": "Function 'New-IFQCFinding' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 14,
+    "Message": "Function 'New-IFQCContext' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 142,
+    "Message": "Function 'New-IFQCFinding' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 193,
+    "Message": "Function 'Add-IFQCFinding' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 210,
+    "Message": "Function 'Add-IFQCNote' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 43,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 65,
+    "Message": "Invokes state-changing command 'New-SecureLogFile'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 68,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 101,
+    "Message": "Invokes state-changing command 'Add-Content'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 447,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 455,
+    "Message": "Invokes state-changing command 'Set-Acl'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 456,
+    "Message": "Invokes state-changing command 'Set-Acl'."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidUsingConvertToSecureStringWithPlainText",
+    "Severity": 2,
+    "Line": 64,
+    "Message": "File 'IdentityFirst.Security.psm1' uses ConvertTo-SecureString with plaintext. This will expose secure information. Encrypted standard strings should be used instead."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidUsingUsernameAndPasswordParams",
+    "Severity": 2,
+    "Line": 85,
+    "Message": "Function 'Get-CredentialFromInput' has both Username and Password parameters. Either set the type of the Password parameter to SecureString or replace the Username and Password parameters with a Credential parameter of type PSCredential. If using a Credential parameter in PowerShell 4.0 or earlier, please define a credential transformation attribute after the PSCredential type attribute."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidUsingPlainTextForPassword",
+    "Severity": 1,
+    "Line": 51,
+    "Message": "Parameter '$PlainPassword' should not use String type but either SecureString or PSCredential, otherwise it increases the chance to expose this sensitive information."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidUsingPlainTextForPassword",
+    "Severity": 1,
+    "Line": 89,
+    "Message": "Parameter '$PlainPassword' should not use String type but either SecureString or PSCredential, otherwise it increases the chance to expose this sensitive information."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseProcessBlockForPipelineCommand",
+    "Severity": 1,
+    "Line": 21,
+    "Message": "Command accepts pipeline input but has not defined a process block."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 340,
+    "Message": "Function 'New-SecureLogFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 442,
+    "Message": "Function 'New-SecureHtmlReport' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 500,
+    "Message": "Function 'Set-OutputFileSecurity' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Line": 561,
+    "Message": "Function 'New-SecureOutputFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 340,
+    "Message": "Function 'New-SecureLogFile' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 442,
+    "Message": "Function 'New-SecureHtmlReport' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 500,
+    "Message": "Function 'Set-OutputFileSecurity' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 561,
+    "Message": "Function 'New-SecureOutputFile' uses a state-changing verb."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 108,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 326,
+    "Message": "Invokes state-changing command 'Add-Content'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 356,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 360,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 369,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 381,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 383,
+    "Message": "Invokes state-changing command 'Set-Acl'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 532,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 534,
+    "Message": "Invokes state-changing command 'New-Object'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 540,
+    "Message": "Invokes state-changing command 'Set-Acl'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 544,
+    "Message": "Invokes state-changing command 'Set-ItemProperty'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 580,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 584,
+    "Message": "Invokes state-changing command 'New-Item'."
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Line": 587,
+    "Message": "Invokes state-changing command 'Set-OutputFileSecurity'."
+  }
+]

@@ -1,106 +1,137 @@
-<#
-    Password Policy Drift Snapshot
-    Identifies accounts bypassing default password policies
-#>
+param([string]$OutputPath = ".")
 
-param(
-    [string]$OutputPath = "."
-)
+$ErrorActionPreference = "Stop"
 
-Write-Host "════════════════════════════════════════════════════════════"
+Write-Host ""
+Write-Host "========================================================================"
 Write-Host "  Password Policy Drift Snapshot"
-Write-Host "════════════════════════════════════════════════════════════"
-Write-Host ""
-Write-Host "  Identifying password policy exceptions..."
-Write-Host ""
+Write-Host "========================================================================"
 
 try {
     Import-Module ActiveDirectory -ErrorAction Stop
+    Write-Host "  ActiveDirectory module loaded" -ForegroundColor Green
 }
 catch {
-    Write-Host "  ✗ ActiveDirectory module not available" -ForegroundColor Red
-    Write-Host "  ℹ Install RSAT AD tools or run on a Domain Controller" -ForegroundColor Gray
+    Write-Host "  ERROR: ActiveDirectory module not available" -ForegroundColor Red
     exit 1
 }
 
-# Get Fine-Grained Password Policies
-$fgpp = Get-ADFineGrainedPasswordPolicy -Filter * | 
-    Select-Object Name,MinPasswordLength,PasswordHistoryCount,ComplexityEnabled
-
-Write-Host "  Fine-Grained Password Policies configured:"
-if ($fgpp) {
-    $fgpp | Format-Table -AutoSize
-} else {
-    Write-Host "     None configured (using default domain policy)" -ForegroundColor Gray
+try {
+    $fgpp = Get-ADFineGrainedPasswordPolicy -Filter * -ErrorAction Stop
+    Write-Host "  Fine-Grained Password Policies configured: $($fgpp.Count)" -ForegroundColor Gray
+    if ($fgpp) { $fgpp | Format-Table -AutoSize }
 }
+catch {
+    Write-Host "     Unable to retrieve FGPP" -ForegroundColor Yellow
+    $fgpp = @()
+}
+
+try {
+    $users = Get-ADUser -Filter * -Properties PasswordNeverExpires, lastLogonTimestamp
+    Write-Host "  Found $($users.Count) users" -ForegroundColor Gray
+}
+catch {
+    Write-Host "  ERROR: Failed to query users" -ForegroundColor Red
+    exit 1
+}
+
 Write-Host ""
-
-# Find accounts with password never expires
-$users = Get-ADUser -Filter * -Properties PasswordNeverExpires,MemberOf,lastLogonTimestamp
-
-$weakPolicy = $users | Where-Object {
-    $_.PasswordNeverExpires -eq $true
-} | Select-Object SamAccountName,Enabled,
-    @{Name="LastLogon";Expression={
-        if($_.lastLogonTimestamp) {
-            [DateTime]::FromFileTime($_.lastLogonTimestamp).ToString("yyyy-MM-dd")
-        } else { "Never" }
-    }},
-    @{Name="MemberOf";Expression={ ($_.MemberOf | Measure-Object).Count }}
-
 Write-Host "  Accounts with PasswordNeverExpires = True:"
-if ($weakPolicy) {
-    Write-Host "  ⚠ Found $($weakPolicy.Count) accounts with password never expires" -ForegroundColor Yellow
-    Write-Host ""
-    $weakPolicy | Format-Table -AutoSize
-} else {
-    Write-Host "  ✓ No accounts found with password never expires" -ForegroundColor Green
+
+$weakPolicy = @()
+$errors = @()
+
+foreach ($u in $users) {
+    if ($u.PasswordNeverExpires -eq $true) {
+        try {
+            $ll = "Never"
+            if ($u.lastLogonTimestamp) {
+                $ll = [DateTime]::FromFileTime($u.lastLogonTimestamp).ToString("yyyy-MM-dd")
+            }
+            $weakPolicy += New-Object PSObject -Property @{
+                SamAccountName = $u.SamAccountName
+                Enabled = $u.Enabled
+                LastLogon = $ll
+            }
+        }
+        catch {
+            $errors += $_.Exception.Message
+        }
+    }
 }
 
-# Find privileged users with weak policy
-$privilegedGroups = @("Domain Admins", "Enterprise Admins", "Schema Admins", "Administrators")
+if ($weakPolicy) {
+    Write-Host "  Found $($weakPolicy.Count) accounts" -ForegroundColor Yellow
+    $weakPolicy | Format-Table -AutoSize
+}
+else {
+    Write-Host "  No accounts found" -ForegroundColor Green
+}
+
+$privilegedGroups = @("Domain Admins", "Enterprise Admins", "Administrators")
 $privilegedUsers = @()
 
-foreach ($group in $privilegedGroups) {
+foreach ($g in $privilegedGroups) {
     try {
-        $members = Get-ADGroupMember $group -ErrorAction Stop | 
-            Where-Object objectClass -eq "user"
-        foreach ($member in $members) {
-            $user = Get-ADUser $member -Properties PasswordNeverExpires
-            if ($user.PasswordNeverExpires) {
-                $privilegedUsers += [PSCustomObject]@{
-                    SamAccountName = $user.SamAccountName
-                    Group = $group
-                    PasswordNeverExpires = $true
+        $members = Get-ADGroupMember $g -ErrorAction Stop | Where-Object { $_.objectClass -eq "user" }
+        foreach ($m in $members) {
+            try {
+                $u = Get-ADUser $m -Properties PasswordNeverExpires -ErrorAction Stop
+                if ($u.PasswordNeverExpires) {
+                    $privilegedUsers += New-Object PSObject -Property @{
+                        SamAccountName = $u.SamAccountName
+                        Group = $g
+                    }
                 }
+            }
+            catch {
+                $errors += $_.Exception.Message
             }
         }
     }
-    catch { }
+    catch {
+        Write-Host "     WARNING: Unable to access $g" -ForegroundColor Yellow
+    }
 }
 
 if ($privilegedUsers) {
     Write-Host ""
-    Write-Host "  ⚠ Privileged accounts with password never expires:" -ForegroundColor Yellow
+    Write-Host "  Privileged accounts with password never expires:" -ForegroundColor Red
     $privilegedUsers | Format-Table -AutoSize
 }
 
-# Export report
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$jsonPath = Join-Path $OutputPath "PasswordPolicyDrift-$timestamp.json"
-$report = @{
-    check = "Password Policy Drift Snapshot"
-    timestamp = (Get-Date).ToString("o")
-    fineGrainedPolicies = $fgpp
-    weakPolicyAccounts = $weakPolicy
-    privilegedWithWeakPolicy = $privilegedUsers
+if ($errors) {
+    Write-Host ""
+    Write-Host "  Errors encountered:" -ForegroundColor Yellow
+    $errors | ForEach-Object { Write-Host "     - $_" -ForegroundColor Gray }
 }
-$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $jsonPath -Encoding UTF8
-Write-Host ""
-Write-Host "  📄 Report saved: $jsonPath" -ForegroundColor Cyan
+
+$ts = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$rp = Join-Path $OutputPath "PasswordPolicyDrift-$ts.json"
+
+$report = @{
+    CheckName = "Password Policy Drift Snapshot"
+    Timestamp = Get-Date -Format "o"
+    Summary = @{
+        TotalWeakPolicyAccounts = @($weakPolicy).Count
+        PrivilegedWithWeakPolicyCount = @($privilegedUsers).Count
+    }
+    WeakPolicyAccounts = $weakPolicy
+    PrivilegedWithWeakPolicy = $privilegedUsers
+}
+
+try {
+    $json = $report | ConvertTo-Json -Depth 10
+    $json | Set-Content -Path $rp
+    Write-Host ""
+    Write-Host "  Report saved: $rp" -ForegroundColor Cyan
+}
+catch {
+    Write-Host ""
+    Write-Host "  ERROR: Failed to save report" -ForegroundColor Red
+}
 
 Write-Host ""
-Write-Host "  ─────────────────────────────────────────────────────────────"
-Write-Host "  ℹ  Password exceptions exist. Whether they're acceptable"
-Write-Host "     requires governance review. Run IdentityHealthCheck."
-Write-Host "  ─────────────────────────────────────────────────────────────"
+Write-Host "========================================================================"
+
+exit 0

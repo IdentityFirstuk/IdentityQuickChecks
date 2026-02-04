@@ -6,11 +6,33 @@
     CompanyName       = 'IdentityFirst Ltd'
     Copyright         = '(c) IdentityFirst Ltd. Free for commercial and personal use.'
     PowerShellVersion = '5.1'
+    
+    # Required modules (empty - standalone scripts load their own)
     RequiredModules   = @()
-    FunctionsToExport = @('*-IFQC*')
+    
+    # Functions to export - wrapper functions defined in psm1
+    FunctionsToExport = @(
+        'Invoke-BreakGlassReality',
+        'Invoke-IdentityNamingHygiene',
+        'Invoke-PasswordPolicyDrift',
+        'Invoke-PrivilegedNestingAbuse',
+        'Invoke-ExternalTrustMapping',
+        'Invoke-IdentityAttackSurface',
+        'Invoke-IdentityReviewDebt',
+        'Invoke-IdentityLoggingGaps',
+        'Invoke-WeDontUseThatCheck',
+        'Invoke-IdentityOwnershipReality',
+        'Invoke-CrossEnvironmentBoundary',
+        'Invoke-IdentityTieringDrift'
+    )
+    
     CmdletsToExport   = @()
     VariablesToExport = '*'
     AliasesToExport   = @()
+    
+    # Nested modules - the actual scripts
+    NestedModules     = @()
+    
     PrivateData       = @{
         PSData = @{
             Tags         = @('Identity', 'ActiveDirectory', 'EntraID', 'Security', 'Compliance')
@@ -27,15 +49,25 @@ Free PowerShell modules for identity posture visibility.
 - JSON + HTML report output
 - Shared framework for consistent results
 
-### Modules
-- IdentityQuickCheck: Comprehensive identity posture snapshot
-- LifecycleDrift: Joiner/mover/leaver hygiene
-- PrivilegedReality: Privilege inventory and hygiene
-- ServiceAccountExposure: Service account risk signals
-- GuestCreep: External guest lifecycle
-- MfaCoverageGap: MFA registration gaps
-- SystemMismatch: AD vs Entra drift
-- AuditReadinessReality: Audit evidence gaps
+### Quick Start
+```powershell
+Import-Module IdentityFirst.QuickChecks
+Invoke-BreakGlassReality -OutputPath ".\Reports"
+```
+
+### Commands
+- Invoke-BreakGlassReality - Break-glass account detection
+- Invoke-IdentityNamingHygiene - Naming convention checks
+- Invoke-PasswordPolicyDrift - Password policy violations
+- Invoke-PrivilegedNestingAbuse - Nested group analysis
+- Invoke-ExternalTrustMapping - Trust relationship mapping
+- Invoke-IdentityAttackSurface - Attack surface analysis
+- Invoke-IdentityReviewDebt - Review debt detection
+- Invoke-IdentityLoggingGaps - Logging configuration
+- Invoke-WeDontUseThatCheck - Assumption verification
+- Invoke-IdentityOwnershipReality - Ownership verification
+- Invoke-CrossEnvironmentBoundary - Cross-boundary identities
+- Invoke-IdentityTieringDrift - Tiering violations
 '@
         }
     }

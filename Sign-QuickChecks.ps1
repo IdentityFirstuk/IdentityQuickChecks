@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Sign all IdentityFirst QuickChecks PowerShell scripts.
 
@@ -20,10 +20,10 @@
 .USAGE
     # Sign with certificate from local store
     .\Sign-QuickChecks.ps1
-    
-    # Sign with PFX file
-    .\Sign-QuickChecks.ps1 -CertPath ".\cert.pfx" -CertPassword "password"
-    
+
+    # Sign with PFX file (recommended: pass SecureString or set IFQC_DEV_PFX_PASSWORD)
+    .\Sign-QuickChecks.ps1 -CertPath ".\cert.pfx" -CertPassword (Read-Host "PFX password" -AsSecureString)
+
     # Dry run (show what would be signed)
     .\Sign-QuickChecks.ps1 -DryRun
 #>
@@ -32,22 +32,25 @@
 param(
     [Parameter()]
     [string]$ModulePath = (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)),
-    
+
     [Parameter()]
     [string]$CertPath,
-    
+
     [Parameter()]
     [securestring]$CertPassword,
-    
+
     [Parameter()]
     [switch]$DryRun,
-    
+
     [Parameter()]
     [switch]$Help
+    ,
+    [Parameter()]
+    [pscredential]$CertCredential
 )
 
 if ($Help) {
-    Write-Host @"
+    Write-Output @"
 IdentityFirst QuickChecks - Script Signing Tool
 ================================================
 
@@ -60,7 +63,8 @@ PREREQUISITES:
 
 USAGE:
   .\Sign-QuickChecks.ps1                    # Sign with cert from store
-  .\Sign-QuickChecks.ps1 -CertPath ".\cert.pfx" -CertPassword (ConvertTo-SecureString "password" -AsPlainText -Force)
+    .\Sign-QuickChecks.ps1 -CertPath ".\cert.pfx" -CertPassword (Read-Host "PFX password" -AsSecureString)
+    .\Sign-QuickChecks.ps1 -CertPath ".\cert.pfx" -CertCredential (Get-Credential)
   .\Sign-QuickChecks.ps1 -DryRun            # Show what would be signed
 
 WHAT GETS SIGNED:
@@ -95,8 +99,30 @@ $script:skipCount = 0
 function Write-SignedLog {
     param([string]$Message, [string]$Level = "INFO")
     $ts = Get-Date -Format "HH:mm:ss"
-    $color = if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "WARN") { "Yellow" } else { "Gray" }
-    Write-Host "[$ts] [$Level] $Message" -ForegroundColor $color
+    $color = if ($Level -eq "ERROR") { "Red" } elseif ($Level -eq "WARN" -or $Level -eq 'WARNING') { "Yellow" } else { "Gray" }
+    $line = "[$ts] [$Level] $Message"
+
+    # Emit structured log object to pipeline for capture
+    $obj = [PSCustomObject]@{
+        Timestamp = (Get-Date).ToString('o')
+        ShortTimestamp = $ts
+        Level = $Level
+        Message = $Message
+        Text = $line
+        Type = 'Signing'
+    }
+    Write-IFQC -InputObject $obj
+
+    # Also write human-friendly colored output to console
+    try {
+        $oldColor = $null
+        try { $oldColor = $host.UI.RawUI.ForegroundColor } catch { }
+        try { $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::$color } catch { }
+        Write-Output $line
+        if ($oldColor -ne $null) { try { $host.UI.RawUI.ForegroundColor = $oldColor } catch { } }
+    } catch {
+        Write-Output $line
+    }
 }
 
 function Get-Certificate {
@@ -104,15 +130,31 @@ function Get-Certificate {
     .SYNOPSIS
         Gets the code signing certificate.
     #>
-    
+
     # Try PFX file first
     if ($CertPath) {
         Write-SignedLog -Message "Loading certificate from PFX: $CertPath" -Level INFO
-        
+
         if (-not $CertPassword) {
-            $CertPassword = Read-Host "Enter PFX password" -AsSecureString
+            # If caller provided a PSCredential, prefer its `Password` (SecureString)
+            if ($CertCredential -and -not $CertPassword) {
+                $CertPassword = $CertCredential.Password
+                Write-SignedLog -Message "Using PFX password from provided PSCredential" -Level INFO
+            }
+            # Prefer centralized env->SecureString helper
+            $envSecure = $null
+            try { Import-Module -Name Security\IdentityFirst.Security -ErrorAction SilentlyContinue } catch { }
+            if (Get-Command -Name Get-SecureStringFromEnv -ErrorAction SilentlyContinue) {
+                $envSecure = Get-SecureStringFromEnv -EnvVarName 'IFQC_DEV_PFX_PASSWORD'
+            }
+            if ($envSecure) {
+                $CertPassword = $envSecure
+                Write-SignedLog -Message "Using PFX password from IFQC_DEV_PFX_PASSWORD environment variable" -Level INFO
+            } else {
+                $CertPassword = Read-Host "Enter PFX password" -AsSecureString
+            }
         }
-        
+
         try {
             $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
                 $CertPath,
@@ -125,35 +167,35 @@ function Get-Certificate {
             return $null
         }
     }
-    
+
     # Try local machine store
     Write-SignedLog -Message "Searching for Code Signing certificate in Local Machine store..." -Level INFO
-    
+
     $cert = Get-ChildItem -Path Cert:\LocalMachine\My |
         Where-Object {
             $_.NotAfter -gt (Get-Date) -and
             $_.EnhancedKeyUsageList.ObjectIdentifier -contains "1.3.6.1.5.5.7.3.3"
         } | Sort-Object -Property NotAfter -Descending | Select-Object -First 1
-    
+
     if ($cert) {
         Write-SignedLog -Message "Found certificate: $($cert.Subject)" -Level INFO
         return $cert
     }
-    
+
     # Try current user store
     Write-SignedLog -Message "Searching for Code Signing certificate in Current User store..." -Level INFO
-    
+
     $cert = Get-ChildItem -Path Cert:\CurrentUser\My |
         Where-Object {
             $_.NotAfter -gt (Get-Date) -and
             $_.EnhancedKeyUsageList.ObjectIdentifier -contains "1.3.6.1.5.5.7.3.3"
         } | Sort-Object -Property NotAfter -Descending | Select-Object -First 1
-    
+
     if ($cert) {
         Write-SignedLog -Message "Found certificate: $($cert.Subject)" -Level INFO
         return $cert
     }
-    
+
     Write-SignedLog -Message "No Code Signing certificate found." -Level ERROR
     Write-SignedLog -Message "Install a code signing certificate or provide -CertPath to PFX file." -Level WARN
     return $null
@@ -167,16 +209,16 @@ function Set-AuthenticodeSignature {
     param(
         [Parameter(Mandatory=$true)]
         [string]$FilePath,
-        
+
         [Parameter(Mandatory=$true)]
         [System.Security.Cryptography.X509Certificates.X509Certificate2]$Certificate
     )
-    
+
     if ($DryRun) {
         Write-SignedLog -Message "[DRY RUN] Would sign: $FilePath" -Level INFO
         return $true
     }
-    
+
     try {
         # Check if already signed
         $existingSig = Get-AuthenticodeSignature -FilePath $FilePath -ErrorAction SilentlyContinue
@@ -185,10 +227,10 @@ function Set-AuthenticodeSignature {
             $script:skipCount++
             return $true
         }
-        
+
         # Sign the file
         $sig = Set-AuthenticodeSignature -FilePath $FilePath -Certificate $Certificate -TimestampServer "http://timestamp.digicert.com" -ErrorAction Stop
-        
+
         if ($sig.Status -eq "Valid") {
             Write-SignedLog -Message "Signed: $FilePath" -Level INFO
             $script:signCount++
@@ -210,48 +252,41 @@ function Get-ScriptFiles {
         Gets all signable files from the module path.
     #>
     param([string]$Path)
-    
+
     $files = @()
-    
+
     # Get ps1, psm1, psd1 files
     $files += Get-ChildItem -Path $Path -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue
     $files += Get-ChildItem -Path $Path -Recurse -Filter "*.psm1" -ErrorAction SilentlyContinue
     $files += Get-ChildItem -Path $Path -Recurse -Filter "*.psd1" -ErrorAction SilentlyContinue
-    
+
     return $files
 }
 
 # Main execution
-Write-Host ""
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║       IdentityFirst QuickChecks - Script Signing          ║" -ForegroundColor Cyan
-Write-Host "╚════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host ""
+Write-SignedLog -Message "IdentityFirst QuickChecks - Script Signing" -Level INFO
 
 if ($DryRun) {
-    Write-Host "  MODE: DRY RUN (no changes will be made)" -ForegroundColor Yellow
+    Write-SignedLog -Message "MODE: DRY RUN (no changes will be made)" -Level WARN
 }
 
-Write-Host "  Module Path: $ModulePath" -ForegroundColor Gray
-Write-Host ""
+Write-SignedLog -Message "Module Path: $ModulePath" -Level INFO
+
 
 # Get certificate
 $certificate = Get-Certificate
+# Certificate validation
 if (-not $certificate) {
-    Write-Host ""
     Write-SignedLog -Message "Cannot proceed without a valid certificate." -Level ERROR
     exit 1
 }
 
-Write-Host ""
 Write-SignedLog -Message "Certificate: $($certificate.Subject)" -Level INFO
 Write-SignedLog -Message "Expires: $($certificate.NotAfter.ToString('yyyy-MM-dd'))" -Level INFO
-Write-Host ""
 
 # Get all files to sign
 $files = Get-ScriptFiles -Path $ModulePath
 Write-SignedLog -Message "Found $($files.Count) files to process" -Level INFO
-Write-Host ""
 
 # Process files
 foreach ($file in $files) {
@@ -259,15 +294,8 @@ foreach ($file in $files) {
 }
 
 # Summary
-Write-Host ""
-Write-Host "════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host "  Signing Complete" -ForegroundColor White
-Write-Host "════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  Signed:   $script:signCount" -ForegroundColor $(if ($script:signCount -gt 0) { "Green" } else { "Gray" })
-Write-Host "  Skipped:  $script:skipCount" -ForegroundColor Gray
-Write-Host "  Failed:   $script:failCount" -ForegroundColor $(if ($script:failCount -gt 0) { "Red" } else { "Gray" })
-Write-Host ""
+Write-SignedLog -Message "Signing Complete" -Level INFO
+Write-SignedLog -Message "Signed: $script:signCount; Skipped: $script:skipCount; Failed: $script:failCount" -Level INFO
 
 if ($DryRun) {
     Write-SignedLog -Message "Run without -DryRun to actually sign the files." -Level WARN
@@ -279,3 +307,61 @@ if ($script:failCount -gt 0) {
 }
 
 Write-SignedLog -Message "All done!" -Level INFO
+Write-Output ([PSCustomObject]@{ Signed = $script:signCount; Skipped = $script:skipCount; Failed = $script:failCount })
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBV05aYg6xnJ0Rr
+# W3DrOMYU4/oadV7YFEsgxtA8wRFgnaCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIFl7I6QTUR989LckvWgVj809xRyhCMeb
+# YSsmiuVCwJZqMA0GCSqGSIb3DQEBAQUABIICACy9fl5she8jCHXFwiLl9/6WnGpX
+# lmREjTgH1NeXy+cUL9ihVkBChRQf15Yr5/CdRtK1JAFe3DAjk/v0qS8nAWOF7K8s
+# vJHi74lXIBmi/JtE02EV1exX+EUFmItdyi/sGTr49Xi8coSI2sUMYjXf4kukrOcW
+# eABWX/8S9DuXmlqrsQv+99Y55P2aqsvso+aGKM4306NxDP/YfL6Y9gsucP1iW1Pj
+# 5o6g71ApCB80N9UFYa9Qpc+cA01OadMxQletGk8l2Uz4QqGL373+SQPlwZ2UJ7Db
+# ZPwxmT0ZbLFn3lfoW33dOcVhda+11Bi16mkibeCVgCm9pxl9+alaOU7vq4fENasG
+# Pv0rtNh1Z1wbvjqOZjGr9RVqRQiONCIcSIZyPFkaM/AyTYInVQFHJ61UGPwU4LHE
+# 06dTatGUA9gK0rwDMxBaIywurEGivgCKgJfaXXfCabugSvUDKG+Aub/x9VIPSzRg
+# IGWXBXt9u92UdE9JXA7WbR6ezPsdJd4S11O3HEBuhkWG/hCY1t23xAtBeq4T9jxw
+# BrTpqMFQ18/XFpCiz0FXYm2oZidLw4xlbgE5zm0dEU5gTAVNT8wwWfzb/Bmdy0SU
+# 6btX1vkbneEnAvsI5vZo7Zao9CkjflPoXKD09on8nRbKulCjmiVy7+nAXu8E2Kzl
+# SFWIj3UeU4CRqMYz
+# SIG # End signature block
+

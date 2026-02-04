@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>IdentityFirst Ltd</Authors>
+    <Company>IdentityFirst Ltd</Company>
+    <RootNamespace>IdentityFirst.QuickChecks.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

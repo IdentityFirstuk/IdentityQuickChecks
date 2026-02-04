@@ -1,0 +1,2706 @@
+[
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\build_dotnet.ps1",
+    "RuleName": "PSAvoidTrailingWhitespace",
+    "Severity": 0,
+    "Message": "Line has trailing whitespace",
+    "Line": 15,
+    "Column": 72
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\build_dotnet.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-StrictMode'.",
+    "Line": 6,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_fix_report.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'generate_fix_report.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 44,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_fix_report.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Load-Json' uses an unapproved verb.",
+    "Line": 7,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_fix_report.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 17,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_fix_report.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 25,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_signatures.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-StrictMode'.",
+    "Line": 1,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_signatures.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Location'.",
+    "Line": 5,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_signatures.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Content'.",
+    "Line": 25,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "InvalidVariableReferenceWithDrive",
+    "Severity": 3,
+    "Message": "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.",
+    "Line": 202,
+    "Column": 54
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "PSAvoidAssignmentToAutomaticVariable",
+    "Severity": 1,
+    "Message": "The Variable 'pwd' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.",
+    "Line": 96,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "PSAvoidAssignmentToAutomaticVariable",
+    "Severity": 1,
+    "Message": "The Variable 'pwd' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.",
+    "Line": 133,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "PSAvoidUsingConvertToSecureStringWithPlainText",
+    "Severity": 2,
+    "Message": "File 'package_release.ps1' uses ConvertTo-SecureString with plaintext. This will expose secure information. Encrypted standard strings should be used instead.",
+    "Line": 96,
+    "Column": 40
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "PSAvoidUsingConvertToSecureStringWithPlainText",
+    "Severity": 2,
+    "Message": "File 'package_release.ps1' uses ConvertTo-SecureString with plaintext. This will expose secure information. Encrypted standard strings should be used instead.",
+    "Line": 133,
+    "Column": 40
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1",
+    "RuleName": "PSAvoidUsingPlainTextForPassword",
+    "Severity": 1,
+    "Message": "Parameter '$SignPfxPassword' should not use String type but either SecureString or PSCredential, otherwise it increases the chance to expose this sensitive information.",
+    "Line": 5,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 43,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 44,
+    "Column": 89
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 45,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 49,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 50,
+    "Column": 119
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'run_psa_and_tests.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 51,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Install-Module'.",
+    "Line": 6,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'UseCli' has been declared but not used.",
+    "Line": 30,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'adminPatterns' is assigned but never used.",
+    "Line": 113,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 36,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 37,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 38,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 155,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 155,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 166,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 166,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 192,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 192,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Enhanced\\Invoke-EntraEnhancedIdentity.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 30,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Enhanced\\Invoke-EntraEnhancedIdentity.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 31,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Enhanced\\Invoke-EntraEnhancedIdentity.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 79,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Enhanced\\Invoke-EntraEnhancedIdentity.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 79,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 270,
+    "Column": 69
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'moderateRiskScopes' is assigned but never used.",
+    "Line": 69,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'scopeId' is assigned but never used.",
+    "Line": 107,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 34,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 35,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 36,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 37,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 214,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 214,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 227,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 227,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 241,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 241,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'GuestAgeDays' has been declared but not used.",
+    "Line": 29,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 35,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 36,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 37,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 68,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 68,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 79,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 79,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 55,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 65,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 243,
+    "Column": 69
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 33,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 34,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 35,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 36,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 166,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 166,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-TimeSpan'.",
+    "Line": 179,
+    "Column": 28
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 182,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 182,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 194,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 194,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 208,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 208,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 251,
+    "Column": 69
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'LookbackDays' has been declared but not used.",
+    "Line": 31,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 37,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 38,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 39,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 40,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 41,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 205,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 205,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 215,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 215,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 32,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 33,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 34,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 69,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 69,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 82,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 82,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'disabledSas' is assigned but never used.",
+    "Line": 121,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 30,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 31,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 129,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 129,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 139,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 139,
+    "Column": 45
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 40,
+    "Column": 8
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 41,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 42,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 43,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCNote'.",
+    "Line": 44,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-TimeSpan'.",
+    "Line": 80,
+    "Column": 58
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 338,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 338,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 351,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 351,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 364,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 364,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-IFQCFinding'.",
+    "Line": 377,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCFinding'.",
+    "Line": 377,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_aws.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 42,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_entra.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 23,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\wrap_dotnet.ps1",
+    "RuleName": "PSAvoidAssignmentToAutomaticVariable",
+    "Severity": 1,
+    "Message": "The Variable 'Args' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.",
+    "Line": 7,
+    "Column": 15
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\wrap_python.ps1",
+    "RuleName": "PSAvoidAssignmentToAutomaticVariable",
+    "Severity": 1,
+    "Message": "The Variable 'matches' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.",
+    "Line": 30,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\wrap_python.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 41,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\privileged\\apply_safe_fixes.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 80,
+    "Column": 100
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\vault\\get_pfx_from_vault.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 56,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\vault\\get_pfx_from_vault.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 66,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\vault\\get_pfx_from_vault.ps1",
+    "RuleName": "PSUseBOMForUnicodeEncodedFile",
+    "Severity": 1,
+    "Message": "Missing BOM encoding for non-ASCII encoded file 'get_pfx_from_vault.ps1'",
+    "Line": null,
+    "Column": null
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'scriptName' is assigned but never used.",
+    "Line": 163,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 76,
+    "Column": 29
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-SelfSignedCertificate'.",
+    "Line": 78,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-SelfSignedCertificate'.",
+    "Line": 89,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 117,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 176,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 184,
+    "Column": 35
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 203,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityBoundaryQuickChecks\\CrossEnvironmentBoundary.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'boundaryViolations' is assigned but never used.",
+    "Line": 37,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityBoundaryQuickChecks\\IdentityTieringDrift.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 37,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\PasswordPolicyDrift.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 73,
+    "Column": 15
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\PasswordPolicyDrift.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 75,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityTrustQuickChecks\\IdentityAttackSurface.ps1",
+    "RuleName": "PSUseBOMForUnicodeEncodedFile",
+    "Severity": 1,
+    "Message": "Missing BOM encoding for non-ASCII encoded file 'IdentityAttackSurface.ps1'",
+    "Line": null,
+    "Column": null
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "MissingEndParenthesisInExpression",
+    "Severity": 3,
+    "Message": "Missing closing ')' in expression.",
+    "Line": 34,
+    "Column": 25
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "UnexpectedAttribute",
+    "Severity": 3,
+    "Message": "Unexpected attribute 'param'.",
+    "Line": 32,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "UnexpectedToken",
+    "Severity": 3,
+    "Message": "Unexpected token ')' in expression or statement.",
+    "Line": 39,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "InvalidLeftHandSide",
+    "Severity": 3,
+    "Message": "The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.",
+    "Line": 32,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "InvalidLeftHandSide",
+    "Severity": 3,
+    "Message": "The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.",
+    "Line": 34,
+    "Column": 29
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 155,
+    "Column": 86
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'bootstrap_install.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 44,
+    "Column": 33
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'bootstrap_install.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 45,
+    "Column": 36
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'bootstrap_install.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 46,
+    "Column": 33
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'bootstrap_install.ps1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 47,
+    "Column": 32
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 71,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 104,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidUsingWriteHost",
+    "Severity": 1,
+    "Message": "File 'IdentityFirst.QuickChecks.psm1' uses Write-Host. Avoid using Write-Host because it might not work in all hosts, does not work when there is no host, and (prior to PS 5.0) cannot be suppressed, captured, or redirected. Instead, use Write-Output, Write-Verbose, or Write-Information.",
+    "Line": 109,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-IFQCContext' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 14,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-IFQCFinding' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 142,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-IFQCContext' uses a state-changing verb.",
+    "Line": 14,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-IFQCFinding' uses a state-changing verb.",
+    "Line": 142,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Add-IFQCFinding' uses a state-changing verb.",
+    "Line": 193,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Add-IFQCNote' uses a state-changing verb.",
+    "Line": 210,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 43,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-SecureLogFile'.",
+    "Line": 65,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 68,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Content'.",
+    "Line": 101,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 447,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Acl'.",
+    "Line": 455,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Module\\IdentityFirst.QuickChecks.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Acl'.",
+    "Line": 456,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseProcessBlockForPipelineCommand",
+    "Severity": 1,
+    "Message": "Command accepts pipeline input but has not defined a process block.",
+    "Line": 21,
+    "Column": 68
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-SecureLogFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 359,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-SecureHtmlReport' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 461,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'Set-OutputFileSecurity' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 519,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-SecureOutputFile' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 580,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-SecureLogFile' uses a state-changing verb.",
+    "Line": 359,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-SecureHtmlReport' uses a state-changing verb.",
+    "Line": 461,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Set-OutputFileSecurity' uses a state-changing verb.",
+    "Line": 519,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-SecureOutputFile' uses a state-changing verb.",
+    "Line": 580,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 84,
+    "Column": 15
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 126,
+    "Column": 16
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Content'.",
+    "Line": 345,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 375,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 379,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 388,
+    "Column": 25
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 400,
+    "Column": 32
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Acl'.",
+    "Line": 402,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 551,
+    "Column": 18
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 553,
+    "Column": 29
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Acl'.",
+    "Line": 559,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-ItemProperty'.",
+    "Line": 563,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 599,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 603,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Security\\IdentityFirst.Security.psm1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-OutputFileSecurity'.",
+    "Line": 606,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Shared\\ReportFormatter.psm1",
+    "RuleName": "PSProvideCommentHelp",
+    "Severity": 0,
+    "Message": "The cmdlet 'Export-IdentityReport' does not have a help comment.",
+    "Line": 6,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Shared\\ReportFormatter.psm1",
+    "RuleName": "PSProvideCommentHelp",
+    "Severity": 0,
+    "Message": "The cmdlet 'Write-IdentityHeader' does not have a help comment.",
+    "Line": 105,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Shared\\ReportFormatter.psm1",
+    "RuleName": "PSProvideCommentHelp",
+    "Severity": 0,
+    "Message": "The cmdlet 'Write-IdentityResult' does not have a help comment.",
+    "Line": 120,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Shared\\ReportFormatter.psm1",
+    "RuleName": "PSProvideCommentHelp",
+    "Severity": 0,
+    "Message": "The cmdlet 'Get-ReferToIHC' does not have a help comment.",
+    "Line": 137,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-App.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Location'.",
+    "Line": 15,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-App.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 28,
+    "Column": 36
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-ReadOnlyRunner.ps1",
+    "RuleName": "PSUseBOMForUnicodeEncodedFile",
+    "Severity": 1,
+    "Message": "Missing BOM encoding for non-ASCII encoded file 'IFQC-ReadOnlyRunner.ps1'",
+    "Line": null,
+    "Column": null
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-ReadOnlyRunner.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-StrictMode'.",
+    "Line": 21,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-ReadOnlyRunner.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 28,
+    "Column": 42
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\verify_release.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-StrictMode'.",
+    "Line": 6,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'scriptName' is assigned but never used.",
+    "Line": 159,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidOverwritingBuiltInCmdlets",
+    "Severity": 1,
+    "Message": "'Write-Warning' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden",
+    "Line": 34,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidOverwritingBuiltInCmdlets",
+    "Severity": 1,
+    "Message": "'Write-Error' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden",
+    "Line": 39,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 72,
+    "Column": 29
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-SelfSignedCertificate'.",
+    "Line": 74,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-SelfSignedCertificate'.",
+    "Line": 85,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 113,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 172,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 180,
+    "Column": 35
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 199,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Generate-CSR.ps1",
+    "RuleName": "InvalidVariableReferenceWithDrive",
+    "Severity": 3,
+    "Message": "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.",
+    "Line": 109,
+    "Column": 49
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Generate-CSR.ps1",
+    "RuleName": "PSAvoidAssignmentToAutomaticVariable",
+    "Severity": 1,
+    "Message": "The Variable 'args' is an automatic variable that is built into PowerShell, assigning to it might have undesired side effects. If assignment is not by design, please use a different name.",
+    "Line": 197,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 49,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 64,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 136,
+    "Column": 15
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 140,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 168,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 174,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 232,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 248,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 253,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 289,
+    "Column": 11
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 349,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_ReadOnlyMode'.",
+    "Line": 23,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_OriginalCommands'.",
+    "Line": 24,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_ReadOnlyMode'.",
+    "Line": 33,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_OriginalCommands'.",
+    "Line": 34,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_OriginalCommands'.",
+    "Line": 46,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_ReadOnlyMode'.",
+    "Line": 54,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_ReadOnlyMode'.",
+    "Line": 60,
+    "Column": 14
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_OriginalCommands'.",
+    "Line": 61,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_OriginalCommands'.",
+    "Line": 66,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidGlobalVars",
+    "Severity": 1,
+    "Message": "Found global variable 'Global:IFQC_ReadOnlyMode'.",
+    "Line": 67,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Validate-EvidenceItem' uses an unapproved verb.",
+    "Line": 262,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Log-CollectorInvalid' uses an unapproved verb.",
+    "Line": 345,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Apply-FrameworkLens' uses an unapproved verb.",
+    "Line": 469,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'WhatIf' has been declared but not used.",
+    "Line": 15,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'ReadOnly' has been declared but not used.",
+    "Line": 16,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'ReadOnly' has been declared but not used.",
+    "Line": 111,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'New-Dir' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 71,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Invoke-Collectors' uses a plural noun. A singular noun should be used instead.",
+    "Line": 160,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Invoke-ExternalCollectors' uses a plural noun. A singular noun should be used instead.",
+    "Line": 212,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Invoke-Assertions' uses a plural noun. A singular noun should be used instead.",
+    "Line": 353,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Add-CommonAssertions' uses a plural noun. A singular noun should be used instead.",
+    "Line": 399,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Apply-FrameworkLens' uses a plural noun. A singular noun should be used instead.",
+    "Line": 469,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Enable-IFQCReadOnlyMode' uses a state-changing verb.",
+    "Line": 27,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Disable-IFQCReadOnlyMode' uses a state-changing verb.",
+    "Line": 59,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'New-Dir' uses a state-changing verb.",
+    "Line": 71,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Add-Finding' uses a state-changing verb.",
+    "Line": 84,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Add-CommonAssertions' uses a state-changing verb.",
+    "Line": 399,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-StrictMode'.",
+    "Line": 19,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 47,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 63,
+    "Column": 48
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 72,
+    "Column": 35
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Enable-IFQCReadOnlyMode'.",
+    "Line": 163,
+    "Column": 22
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Disable-IFQCReadOnlyMode'.",
+    "Line": 177,
+    "Column": 22
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 243,
+    "Column": 99
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Member'.",
+    "Line": 287,
+    "Column": 46
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Finding'.",
+    "Line": 367,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Finding'.",
+    "Line": 392,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Finding'.",
+    "Line": 413,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Finding'.",
+    "Line": 425,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-Finding'.",
+    "Line": 434,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Dir'.",
+    "Line": 492,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Add-CommonAssertions'.",
+    "Line": 498,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityHealthCheck.ps1",
+    "RuleName": "PSAvoidDefaultValueSwitchParameter",
+    "Severity": 1,
+    "Message": "File 'IdentityHealthCheck.ps1' has a switch parameter default to true.",
+    "Line": 11,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityHealthCheck.ps1",
+    "RuleName": "PSAvoidDefaultValueSwitchParameter",
+    "Severity": 1,
+    "Message": "File 'IdentityHealthCheck.ps1' has a switch parameter default to true.",
+    "Line": 12,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityHealthCheck.ps1",
+    "RuleName": "PSUseBOMForUnicodeEncodedFile",
+    "Severity": 1,
+    "Message": "Missing BOM encoding for non-ASCII encoded file 'IdentityHealthCheck.ps1'",
+    "Line": null,
+    "Column": null
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "InvalidVariableReferenceWithDrive",
+    "Severity": 3,
+    "Message": "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.",
+    "Line": 139,
+    "Column": 56
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 101,
+    "Column": 12
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'ModulesOnly' has been declared but not used.",
+    "Line": 33,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'CliOnly' has been declared but not used.",
+    "Line": 36,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'Force' has been declared but not used.",
+    "Line": 39,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'color' is assigned but never used.",
+    "Line": 95,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'process' is assigned but never used.",
+    "Line": 269,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-QuickChecks.ps1",
+    "RuleName": "TerminatorExpectedAtEndOfString",
+    "Severity": 3,
+    "Message": "The string is missing the terminator: \"@.",
+    "Line": 189,
+    "Column": 18
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidDefaultValueSwitchParameter",
+    "Severity": 1,
+    "Message": "File 'Package-QuickChecks.ps1' has a switch parameter default to true.",
+    "Line": 47,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 149,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 155,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 200,
+    "Column": 19
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 232,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Item'.",
+    "Line": 280,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\pssa_run.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Install-Module'.",
+    "Line": 4,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 98,
+    "Column": 64
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 99,
+    "Column": 84
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 101,
+    "Column": 91
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 196,
+    "Column": 7
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 356,
+    "Column": 73
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 101,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 234,
+    "Column": 20
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 239,
+    "Column": 25
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 244,
+    "Column": 23
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 249,
+    "Column": 18
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 254,
+    "Column": 18
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Step2-Connections' uses a plural noun. A singular noun should be used instead.",
+    "Line": 276,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Step1-Welcome' uses an unapproved verb.",
+    "Line": 205,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Step2-Connections' uses an unapproved verb.",
+    "Line": 276,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Step3-Selection' uses an unapproved verb.",
+    "Line": 365,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseApprovedVerbs",
+    "Severity": 1,
+    "Message": "The cmdlet 'Step4-RunAssessment' uses an unapproved verb.",
+    "Line": 432,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'AutoRun' has been declared but not used.",
+    "Line": 21,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'AsObject' has been declared but not used.",
+    "Line": 80,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'NoNewline' has been declared but not used.",
+    "Line": 128,
+    "Column": 17
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSUseDeclaredVarsMoreThanAssignments",
+    "Severity": 1,
+    "Message": "The variable 'colors' is assigned but never used.",
+    "Line": 61,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidOverwritingBuiltInCmdlets",
+    "Severity": 1,
+    "Message": "'Test-Connection' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden",
+    "Line": 148,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 437,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Clear-Host'.",
+    "Line": 567,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Run-AllQuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 38,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 119,
+    "Column": 60
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 120,
+    "Column": 80
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 122,
+    "Column": 87
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidUsingEmptyCatchBlock",
+    "Severity": 1,
+    "Message": "Empty catch block is used. Please use Write-Error or throw statements in catch blocks.",
+    "Line": 146,
+    "Column": 103
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSPossibleIncorrectComparisonWithNull",
+    "Severity": 1,
+    "Message": "$null should be on the left side of equality comparisons.",
+    "Line": 122,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'CertPath' has been declared but not used.",
+    "Line": 37,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'CertPassword' has been declared but not used.",
+    "Line": 40,
+    "Column": 19
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'CertCredential' has been declared but not used.",
+    "Line": 49,
+    "Column": 19
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'Set-AuthenticodeSignature' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 204,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Get-ScriptFiles' uses a plural noun. A singular noun should be used instead.",
+    "Line": 249,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidOverwritingBuiltInCmdlets",
+    "Severity": 1,
+    "Message": "'Set-AuthenticodeSignature' is a cmdlet that is included with PowerShell (version core-6.1.0-windows) whose definition should not be overridden",
+    "Line": 204,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Set-AuthenticodeSignature' uses a state-changing verb.",
+    "Line": 204,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 159,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 232,
+    "Column": 16
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-AuthenticodeSignature'.",
+    "Line": 293,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\smoke_test_run.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 8,
+    "Column": 50
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\smoke_test_run.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-IFQCContext'.",
+    "Line": 11,
+    "Column": 12
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSUseShouldProcessForStateChangingFunctions",
+    "Severity": 1,
+    "Message": "Function 'Start-ConsoleMode' has verb that could change system state. Therefore, the function has to support 'ShouldProcess'.",
+    "Line": 294,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'Run' has been declared but not used.",
+    "Line": 18,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'Console' has been declared but not used.",
+    "Line": 22,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'Install' has been declared but not used.",
+    "Line": 36,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'Help' has been declared but not used.",
+    "Line": 40,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSReviewUnusedParameter",
+    "Severity": 1,
+    "Message": "The parameter 'NoSign' has been declared but not used.",
+    "Line": 53,
+    "Column": 13
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Get-AvailableChecks' uses a plural noun. A singular noun should be used instead.",
+    "Line": 182,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Invoke-AllChecks' uses a plural noun. A singular noun should be used instead.",
+    "Line": 229,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Export-Results' uses a plural noun. A singular noun should be used instead.",
+    "Line": 443,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Function 'Install-ToSystem' uses a state-changing verb.",
+    "Line": 355,
+    "Column": 1
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 175,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Clear-Host'.",
+    "Line": 299,
+    "Column": 5
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Item'.",
+    "Line": 367,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'New-Object'.",
+    "Line": 375,
+    "Column": 15
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Content'.",
+    "Line": 465,
+    "Column": 51
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Set-Content'.",
+    "Line": 478,
+    "Column": 21
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Install-ToSystem'.",
+    "Line": 510,
+    "Column": 9
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Test-QuickChecks.ps1",
+    "RuleName": "PSUseSingularNouns",
+    "Severity": 1,
+    "Message": "The cmdlet 'Test-Modules' uses a plural noun. A singular noun should be used instead.",
+    "Line": 253,
+    "Column": 10
+  },
+  {
+    "File": "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Test-QuickChecks.ps1",
+    "RuleName": "PSAvoidStateChangingInReadOnlyTools",
+    "Severity": "Warning",
+    "Message": "Invokes state-changing command 'Remove-Module'.",
+    "Line": 171,
+    "Column": 13
+  }
+]

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Microsoft 365 App Consent Patterns Detection.
 
@@ -22,7 +22,7 @@
 param(
     [Parameter()]
     [string]$OutputDirectory = (Join-Path $PWD "IFQC-Output"),
-    
+
     [Parameter()]
     [ValidateSet("Normal","Detailed")]
     [string]$DetailLevel = "Normal"
@@ -50,9 +50,9 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
     } catch {
         throw "Microsoft Graph modules required. Install Microsoft.Graph and connect first."
     }
-    
+
     $ctx.Data.connected = $true
-    
+
     # High-risk permission scopes to watch for
     $highRiskScopes = @(
         "User.ReadWrite.All",           # Write to all user accounts
@@ -65,7 +65,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
         "Contacts.ReadWrite",           # Modify contacts
         "Directory.AccessAsUser.All"    # Act as directory
     )
-    
+
     $moderateRiskScopes = @(
         "User.Read",                    # Sign in and read profile
         "User.ReadBasic.All",           # Read basic profiles
@@ -73,7 +73,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
         "Files.Read",                   # Read files
         "Sites.Read.All"                # Read SharePoint sites
     )
-    
+
     # Collect consent grants
     $consentGrants = @{
         byUser = @{}      # User consents
@@ -83,44 +83,44 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
         adminConsents = @()
         userConsents = @()
     }
-    
+
     Write-IFQCLog -Context $ctx -Level INFO -Message "Fetching service principal consent grants..."
-    
+
     # Get all service principals with oauth2 permission grants
     try {
         $servicePrincipals = Get-MgServicePrincipal -All -ErrorAction SilentlyContinue
-        
+
         foreach ($sp in $servicePrincipals) {
             $appId = $sp.AppId
             $displayName = $sp.DisplayName
-            
+
             # Get app owner
             $owners = Get-MgServicePrincipalOwner -ServicePrincipalId $sp.Id -ErrorAction SilentlyContinue
             $ownerCount = ($owners | Measure-Object).Count
-            
+
             # Check for admin consent (permissions that don't require user assignment)
             $hasHighRiskPermissions = $false
             $permissionDetails = @()
-            
+
             if ($sp.Oauth2PermissionScopes) {
                 foreach ($scope in $sp.Oauth2PermissionScopes) {
                     $scopeId = $scope.Id
                     $scopeValue = $scope.Value
                     $isAdminConsentRequired = $scope.IsAdminConsentRequired
-                    
+
                     $permInfo = [PSCustomObject]@{
                         Scope = $scopeValue
                         AdminConsentRequired = $isAdminConsentRequired
                         IsEnabled = $scope.IsEnabled
                     }
                     $permissionDetails += $permInfo
-                    
+
                     if ($scopeValue -in $highRiskScopes -and $scope.IsEnabled) {
                         $hasHighRiskPermissions = $true
                     }
                 }
             }
-            
+
             # Check delegated permissions used
             $delegatedPermissions = @()
             if ($sp.AppRoles | Where-Object { $_.AllowedMemberTypes -contains "User" }) {
@@ -132,7 +132,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
                     }
                 }
             }
-            
+
             # Store app info
             $consentGrants.byApp[$appId] = [PSCustomObject]@{
                 AppId = $appId
@@ -142,7 +142,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
                 PermissionDetails = $permissionDetails
                 DelegatedPermissions = $delegatedPermissions
             }
-            
+
             if ($hasHighRiskPermissions) {
                 $consentGrants.highRiskApps += [PSCustomObject]@{
                     AppId = $appId
@@ -155,7 +155,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
     } catch {
         Write-IFQCLog -Context $ctx -Level WARN -Message "Failed to fetch service principals: $($_.Exception.Message)"
     }
-    
+
     # Get user consent requests (if available)
     Write-IFQCLog -Context $ctx -Level INFO -Message "Fetching user consent requests..."
     try {
@@ -172,7 +172,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
     } catch {
         Write-IFQCLog -Context $ctx -Level WARN -Message "Failed to fetch consent requests: $($_.Exception.Message)"
     }
-    
+
     # Get oauth2 permission grants (specific consent grants)
     Write-IFQCLog -Context $ctx -Level INFO -Message "Fetching oauth2 permission grants..."
     try {
@@ -185,7 +185,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
                 ConsentType = $grant.ConsentType  # Principal, Global, or Specific
                 PrincipalId = $grant.PrincipalId
             }
-            
+
             if ($grant.ConsentType -eq "Global") {
                 $sp = Get-MgServicePrincipal -Filter "AppId eq '$($grant.ClientId)'" -ErrorAction SilentlyContinue
                 $consentGrants.adminConsents += [PSCustomObject]@{
@@ -199,16 +199,16 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
     } catch {
         Write-IFQCLog -Context $ctx -Level WARN -Message "Failed to fetch oauth2 grants: $($_.Exception.Message)"
     }
-    
+
     $consentGrants.totalGrants = ($consentGrants.byUser.Keys | Measure-Object).Count
-    
+
     $ctx.Data.consents = $consentGrants
-    
+
     # ---------------------------
     # Findings
     # ---------------------------
     $evidenceLimit = Get-EvidenceLimit -DetailLevel $DetailLevel
-    
+
     # Finding: Apps with high-risk permissions
     if ($consentGrants.highRiskApps.Count -gt 0) {
         Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
@@ -221,7 +221,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
             -Recommendation "Review each high-risk application. Verify business need. Remove unnecessary permissions. Consider restricting to specific users."
         )
     }
-    
+
     # Finding: Global admin consents
     if ($consentGrants.adminConsents.Count -gt 0) {
         Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
@@ -234,7 +234,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
             -Recommendation "Review global consent grants. Ensure they are documented and approved. Consider shifting to specific user/group consent."
         )
     }
-    
+
     # Finding: Apps with no owners
     $orphanApps = $consentGrants.byApp.Values | Where-Object { $_.Owners -eq 0 }
     if ($orphanApps.Count -gt 0) {
@@ -248,7 +248,7 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
             -Recommendation "Assign owners to all applications. Remove applications that are no longer needed."
         )
     }
-    
+
     # Summary stats
     $ctx.Data.summary = @{
         totalServicePrincipals = ($consentGrants.byApp.Keys | Measure-Object).Count
@@ -261,10 +261,67 @@ Invoke-IFQCSafe -Context $ctx -Name "App consent patterns detection" -Block {
 
 $output = Save-IFQCReport -Context $ctx
 
-Write-Host ""
-Write-Host "AppConsentReality check complete." -ForegroundColor Green
-Write-Host "  JSON: $($output.Json)" -ForegroundColor Cyan
-Write-Host "  HTML: $($output.Html)" -ForegroundColor Cyan
+# Emit structured logs for automation and keep the report object on the pipeline
+Write-IFQCLog -Context $ctx -Level INFO -Message "AppConsentReality check complete."
+Write-IFQCLog -Context $ctx -Level INFO -Message "Report files: JSON: $($output.Json); HTML: $($output.Html)"
+Write-Output $output
 
 # Cleanup
 try { Disconnect-MgGraph -ErrorAction SilentlyContinue | Out-Null } catch { }
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCWlexCgZsw1jDV
+# 4ANgfwmxC5LkFN7TxUQmkb55pe1HzKCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEILQi20eFs3WBMbxPJ3ZnHqG+UF9OX7/V
+# 48RCgz126+NlMA0GCSqGSIb3DQEBAQUABIICABaJ+1ehohDRWR0VUp2huY8nAoCm
+# Kd6BsWNe6tcTuzfQDTorY4TwvwFYWdC4wzV5x4qQIbW2M1YJQtQWY5d9t2lOOGDn
+# QR1gMkB+NHJ5tEZEoY+flI3lcDa6ve3P87nfrP7mISUEtr3o2vTtoIy/wjlfDOEy
+# ZEAInkpWIpC6ERPisxP9fqty8zg3hOxKIzg0bMaOL07FWWKnudvYiensSn9Nx6kA
+# 0mFkkLFJDLFmxzwSKQ165j7ulMyTCLarMm1OhEqJXow8p7DlN8BWvSBcdEgq0JV+
+# r5wKGQdAXHBMFfCTGwCgee2JheCSmyVQNeKNW+cRxqxgXHKBDWduuTfiYmtqVNjl
+# hMJ/WC0i1UkBf8lv7FI757dipi2iINs/K27Yg3uEAfYRiCxY48eL6EkST7/9ElQ6
+# 0b7tdDw9ZN/IBWnYfWci/nSYv6JDYWpTU99e82uQe2S4uJ5N1bZsH9K+xzItBOnH
+# HpRjQvT/MhSfLSn5J8l0KY4lty81ehauQzGRP1kJ4MokrLIa471uihXoNioOBm8Y
+# 8bzoBGBYLHJ9gUlrUifWUgG62ddnnTj1ZYrbw6odm1vJzox6uY92G5vIj26SMSHN
+# Y0uFhsMI6e1tNlLzLBKB3rKKNLr7v+CNAiUmqSraMJdIRX3lcqjwzwK2ntrIL/ZP
+# MPI9WkIl2rkZfZQM
+# SIG # End signature block
+

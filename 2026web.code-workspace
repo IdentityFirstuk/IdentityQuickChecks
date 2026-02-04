@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../../web-demo-package"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {}
+}

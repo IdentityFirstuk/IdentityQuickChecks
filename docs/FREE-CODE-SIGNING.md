@@ -55,8 +55,11 @@ certutil -mergePFX -pfx certificate.cer -outputFile certificate.pfx
 Once you have your PFX certificate:
 
 ```powershell
-# Run the signing script
-.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword "your-password"
+# Run the signing script (enter password securely)
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertPassword (Read-Host "PFX password" -AsSecureString)
+
+# Or provide a PSCredential
+.\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -CertCredential (Get-Credential)
 
 # Dry run (see what would be signed)
 .\Sign-QuickChecks.ps1 -CertPath ".\certificate.pfx" -DryRun
@@ -152,9 +155,9 @@ For internal distribution (not for external users):
 # Create self-signed certificate
 $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "IdentityFirst QuickChecks" -KeyUsage DigitalSignature -FriendlyName "IdentityFirst Code Signing" -CertStoreLocation "Cert:\CurrentUser\My" -NotAfter (Get-Date).AddYears(5)
 
-# Export PFX
+# Export PFX (enter password securely)
 $pfxPath = ".\identityfirst-selfsigned.pfx"
-$password = ConvertTo-SecureString -String "password123" -AsPlainText -Force
+$password = Read-Host "PFX export password" -AsSecureString
 Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $password
 
 # Import to Trusted Publishers

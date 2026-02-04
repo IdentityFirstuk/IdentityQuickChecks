@@ -1,0 +1,36 @@
+[
+  {
+    "assertionId": "PrivilegedAccountsWithoutMFA",
+    "severity": "critical",
+    "title": "Privileged user without MFA",
+    "entities": [
+      {
+        "upn": "alice@example.com",
+        "type": "entra.user",
+        "id": "sample-entra-1"
+      }
+    ],
+    "evidenceRefs": [
+      "entra.user:sample-entra-1"
+    ],
+    "whyItMatters": "A single credential compromise can lead to tenant-wide compromise.",
+    "remediation": "Require MFA for privileged roles, enforce Conditional Access, remove standing admin access."
+  },
+  {
+    "assertionId": "OrphanedAccounts",
+    "severity": "high",
+    "title": "Active account without HR linkage",
+    "entities": [
+      {
+        "upn": "alice@example.com",
+        "type": "entra.user",
+        "id": "sample-entra-1"
+      }
+    ],
+    "evidenceRefs": [
+      "entra.user:sample-entra-1"
+    ],
+    "whyItMatters": "No joiner/leaver authority",
+    "remediation": "Link identity to HR source of truth and automate deprovisioning."
+  }
+]

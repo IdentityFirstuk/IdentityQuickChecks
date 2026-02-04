@@ -1,107 +1,146 @@
-<#
-    Privileged Group Nesting Abuse
-    Walks nested admin groups and flags indirect privilege
-#>
+param([string]$OutputPath = ".")
 
-param(
-    [string]$OutputPath = "."
-)
+$ErrorActionPreference = "Stop"
 
-Write-Host "════════════════════════════════════════════════════════════"
-Write-Host "  Privileged Group Nesting Abuse Check"
-Write-Host "════════════════════════════════════════════════════════════"
 Write-Host ""
-Write-Host "  Analyzing nested group membership..."
-Write-Host ""
+Write-Host "========================================================================"
+Write-Host "  Privileged Nesting Abuse Check"
+Write-Host "========================================================================"
 
-try {
-    Import-Module ActiveDirectory -ErrorAction Stop
-}
-catch {
-    Write-Host "  ✗ ActiveDirectory module not available" -ForegroundColor Red
-    Write-Host "  ℹ Install RSAT AD tools or run on a Domain Controller" -ForegroundColor Gray
-    exit 1
-}
-
-$privilegedGroups = @("Domain Admins", "Enterprise Admins", "Schema Admins", "Administrators")
-$nestedResults = @()
-$allDirectMembers = @()
-
-foreach ($group in $privilegedGroups) {
-    Write-Host "  Checking: $group..."
+function Get-NestedGroupMembers {
+    param([string]$GroupName)
     
-    try {
-        $directMembers = Get-ADGroupMember $group -ErrorAction Stop | 
-            Where-Object objectClass -eq "user"
+    $members = @()
+    $queue = New-Object System.Collections.Queue
+    $queue.Enqueue($GroupName)
+    $visited = @{}
+    
+    while ($queue.Count -gt 0) {
+        $current = $queue.Dequeue()
+        if ($visited.ContainsKey($current)) { continue }
+        $visited[$current] = $true
         
-        foreach ($member in $directMembers) {
-            $allDirectMembers += [PSCustomObject]@{
-                Group = $group
-                Name = $member.Name
-                SamAccountName = $member.SamAccountName
-                Type = "Direct"
-            }
-        }
-        
-        $nestedGroups = Get-ADGroupMember $group -Recursive -ErrorAction Stop | 
-            Where-Object objectClass -eq "group"
-        
-        foreach ($nestedGroup in $nestedGroups) {
-            $nestedMembers = Get-ADGroupMember $nestedGroup -ErrorAction Stop | 
-                Where-Object objectClass -eq "user"
-            
-            foreach ($member in $nestedMembers) {
-                $nestedResults += [PSCustomObject]@{
-                    RootGroup = $group
-                    NestedGroup = $nestedGroup.Name
-                    MemberName = $member.Name
-                    MemberSamAccountName = $member.SamAccountName
+        try {
+            $grp = Get-ADGroup $current -Properties Members -ErrorAction Stop
+            foreach ($m in $grp.Members) {
+                $members += $m
+                try {
+                    $obj = Get-ADObject $m -ErrorAction Stop
+                    if ($obj.objectClass -eq "group") {
+                        $queue.Enqueue($m)
+                    }
+                }
+                catch {
                 }
             }
         }
+        catch {
+        }
+    }
+    
+    return $members
+}
+
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+    Write-Host "  ActiveDirectory module loaded" -ForegroundColor Green
+}
+catch {
+    Write-Host "  ERROR: ActiveDirectory module not available" -ForegroundColor Red
+    exit 1
+}
+
+$privilegedGroups = @(
+    "Domain Admins",
+    "Enterprise Admins",
+    "Schema Admins",
+    "Administrators",
+    "Account Operators",
+    "Server Operators"
+)
+
+$nestingResults = @()
+$errors = @()
+
+foreach ($g in $privilegedGroups) {
+    Write-Host ""
+    Write-Host "  Checking $g..." -ForegroundColor Gray
+    
+    try {
+        $directMembers = Get-ADGroupMember $g -ErrorAction Stop | Where-Object { $_.objectClass -eq "user" }
+        $nestedGroups = Get-ADGroupMember $g -ErrorAction Stop | Where-Object { $_.objectClass -eq "group" }
+        
+        $allMembers = Get-NestedGroupMembers -GroupName $g
+        $userSids = @()
+        foreach ($m in $allMembers) {
+            try {
+                $obj = Get-ADObject $m -Properties objectClass -ErrorAction Stop
+                if ($obj.objectClass -eq "user") {
+                    $userSids += $obj.ObjectGUID
+                }
+            }
+            catch {
+            }
+        }
+        
+        $nestingResults += New-Object PSObject -Property @{
+            GroupName = $g
+            DirectUsersCount = @($directMembers).Count
+            DirectGroupsCount = @($nestedGroups).Count
+            TotalNestedUsersCount = @($userSids).Count
+            DirectUsers = ($directMembers | ForEach-Object { $_.SamAccountName }) -join ", "
+            DirectGroups = ($nestedGroups | ForEach-Object { $_.SamAccountName }) -join ", "
+            NestedUsers = ($userSids | ForEach-Object { $_ }) -join ", "
+        }
+        
+        if ($nestedGroups) {
+            Write-Host "     WARNING: Contains nested groups" -ForegroundColor Yellow
+            $nestedGroups | ForEach-Object { Write-Host "        - $($_.SamAccountName)" -ForegroundColor Gray }
+        }
     }
     catch {
-        Write-Host "     ⚠ Unable to access $group" -ForegroundColor Yellow
+        Write-Host "     WARNING: Unable to access $g" -ForegroundColor Yellow
+        $errors += $_.Exception.Message
     }
 }
 
 Write-Host ""
-Write-Host "  Direct Privileged Access:"
-if ($allDirectMembers) {
-    Write-Host "  Found $($allDirectMembers.Count) direct members" -ForegroundColor Yellow
-    $allDirectMembers | Format-Table -AutoSize
-} else {
-    Write-Host "  ✓ No direct privileged members found" -ForegroundColor Green
+Write-Host "  Summary:"
+Write-Host "  ========="
+
+foreach ($r in $nestingResults) {
+    $flag = ""
+    if ($r.DirectGroupsCount -gt 0 -or $r.TotalNestedUsersCount -gt $r.DirectUsersCount) {
+        $flag = " NESTED DETECTED"
+    }
+    Write-Host "     $($r.GroupName): $($r.DirectUsersCount) direct, $($r.TotalNestedUsersCount) total$flag"
 }
 
-Write-Host ""
-Write-Host "  Indirect/Nested Privileged Access (hidden blast radius):"
-if ($nestedResults) {
-    Write-Host "  Found $($nestedResults.Count) users with indirect privilege" -ForegroundColor Yellow
-    $nestedResults | Format-Table -AutoSize
-} else {
-    Write-Host "  ✓ No nested privilege detected" -ForegroundColor Green
+if ($errors) {
+    Write-Host ""
+    Write-Host "  Errors encountered:" -ForegroundColor Yellow
+    $errors | ForEach-Object { Write-Host "     - $_" -ForegroundColor Gray }
 }
 
-# Export report
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$jsonPath = Join-Path $OutputPath "PrivilegedNestingAbuse-$timestamp.json"
+$ts = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$rp = Join-Path $OutputPath "PrivilegedNestingAbuse-$ts.json"
+
 $report = @{
-    check = "Privileged Group Nesting Abuse Check"
-    timestamp = (Get-Date).ToString("o")
-    summary = @{
-        directMembers = ($allDirectMembers | Measure-Object).Count
-        indirectMembers = ($nestedResults | Measure-Object).Count
-    }
-    directMembers = $allDirectMembers
-    nestedMembers = $nestedResults
+    CheckName = "Privileged Nesting Abuse"
+    Timestamp = Get-Date -Format "o"
+    Results = $nestingResults
+    Errors = $errors
 }
-$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $jsonPath -Encoding UTF8
-Write-Host ""
-Write-Host "  📄 Report saved: $jsonPath" -ForegroundColor Cyan
 
-Write-Host ""
-Write-Host "  ─────────────────────────────────────────────────────────────"
-Write-Host "  ℹ  Nested privilege = hidden blast radius."
-Write-Host "     Only correlation makes it meaningful. Run IdentityHealthCheck."
-Write-Host "  ─────────────────────────────────────────────────────────────"
+try {
+    $json = $report | ConvertTo-Json -Depth 10
+    $json | Set-Content -Path $rp -ErrorAction Stop
+    Write-Host ""
+    Write-Host "  Report saved: $rp" -ForegroundColor Cyan
+}
+catch {
+    Write-Host ""
+    Write-Host "  ERROR: Failed to save report" -ForegroundColor Red
+}
+
+exit 0

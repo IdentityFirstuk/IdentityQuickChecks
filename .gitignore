@@ -1,31 +1,72 @@
-# PowerShell module artifacts
-*.pssess
-*.log
-*.tmp
+# ============================================================================
+# IdentityFirst QuickChecks - .gitignore
+# ============================================================================
 
-# Output directories
-IFQC-Output/
-Output/
-output/
+# Ignore build outputs
+bin/
+obj/
+*.user
+*.suo
+.dotnet/
 
-# Package output
+# Ignore release files
 *.zip
+*.sha256
+*.checksums.txt
+*.sig
 
-# VS Code
+# Ignore test outputs
+TestResults/
+coverage/
+
+# Ignore IDE files
+.vs/
 .vscode/
-*.code-workspace
-
-# Windows
-Thumbs.db
-desktop.ini
-
-# macOS
+*.swp
+*.swo
+*~
 .DS_Store
+Thumbs.db
 
-# PowerShell
-.profile
-*.ps1.bak
-*.psm1.bak
+# Ignore PowerShell errors
+error*.txt
 
-# Module cache
-$env:USERPROFILE/Documents/WindowsPowerShell/Modules/IdentityFirst.QuickChecks/
+# Ignore local configs
+config/local.psd1
+*.local.psd1
+
+# Ignore modules installed locally
+Modules/
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Ignore PowerShell transcript files
+*.transcript
+
+# Ignore VS Code settings
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Ignore macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore Windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ignore Linux files
+.*
+!.gitignore
+!.gitattributes
+
+# Ignore custom environment files
+*.env
+*.env.local
+*.env.*.local

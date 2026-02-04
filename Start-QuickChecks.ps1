@@ -1,10 +1,10 @@
-# ============================================================================
+﻿# ============================================================================
 # IdentityFirst QuickChecks - Unified Launcher
 # ============================================================================
 # Version: 1.0.0
 # Date: 2026-01-29
 # Description: Simple entry point for all IdentityFirst QuickChecks
-# Usage: 
+# Usage:
 #   .\Start-QuickChecks.ps1                    # Run all checks
 #   .\Start-QuickChecks.ps1 -Console           # Interactive console
 #   .\Start-QuickChecks.ps1 -Check EntraID     # Run specific check
@@ -16,38 +16,38 @@ param(
     # Run all checks (default)
     [Parameter(ParameterSetName = "Run")]
     [switch]$Run,
-    
+
     # Interactive console mode
     [Parameter(ParameterSetName = "Console")]
     [switch]$Console,
-    
+
     # Run specific check
     [Parameter(ParameterSetName = "Check")]
     [ValidateSet(
-        "ActiveDirectory", "EntraID", "AWS", "GCP", 
+        "ActiveDirectory", "EntraID", "AWS", "GCP",
         "All", "GuestCreep", "MfaCoverage", "BreakGlass",
         "NamingHygiene", "PasswordPolicy", "PrivilegedNesting",
         "LegacyAuth", "AppConsent", "HybridSync", "Inactive"
     )]
     [string]$Check,
-    
+
     # Install to system
     [Parameter(ParameterSetName = "Install")]
     [switch]$Install,
-    
+
     # Show help
     [Parameter(ParameterSetName = "Help")]
     [switch]$Help,
-    
+
     # Output format
     [Parameter(ParameterSetName = "Run")]
     [ValidateSet("Console", "JSON", "HTML", "CSV")]
     [string]$Output = "Console",
-    
+
     # Output directory
     [Parameter(ParameterSetName = "Run")]
     [string]$OutputDir = "$PSScriptRoot\Output",
-    
+
     # Skip code signing (for testing)
     [Parameter(ParameterSetName = "Run")]
     [switch]$NoSign
@@ -100,31 +100,32 @@ function Write-Logo {
 
 function Write-Banner {
     param([string]$Message)
-    Write-Host ""
-    Write-Host ("=" * 70) -ForegroundColor Cyan
-    Write-Host " $Message" -ForegroundColor White
-    Write-Host ("=" * 70) -ForegroundColor Cyan
-    Write-Host ""
+    Write-Output ""
+    Write-Output (("=" * 70))
+    Write-Output (" $Message")
+    Write-Output (("=" * 70))
+    Write-Output ""
 }
 
 function Write-Step {
     param([string]$Message)
-    Write-Host "[+] $Message" -ForegroundColor Green
+    Write-Output "[+] $Message"
 }
 
-function Write-Warning {
+# Use named helpers to avoid overwriting built-in cmdlets
+function IFQCWriteWarning {
     param([string]$Message)
-    Write-Host "[!] $Message" -ForegroundColor Yellow
+    Write-Output "[!] $Message"
 }
 
-function Write-Error {
+function IFQCWriteError {
     param([string]$Message)
-    Write-Host "[X] $Message" -ForegroundColor Red
+    Write-Output "[X] $Message"
 }
 
 function Write-Info {
     param([string]$Message)
-    Write-Host "[i] $Message" -ForegroundColor Cyan
+    Write-Output "[i] $Message"
 }
 
 # ============================================================================
@@ -139,7 +140,7 @@ function Initialize-Environment {
         Loads modules, validates paths, and prepares the environment.
     #>
     Write-Info "Initializing IdentityFirst QuickChecks v$script:Version..."
-    
+
     # Load security module
     if (Test-Path $script:SecurityModule) {
         try {
@@ -150,13 +151,13 @@ function Initialize-Environment {
             Write-Warning "Could not load security module: $($_.Exception.Message)"
         }
     }
-    
+
     # Validate checks folder
     if (-not (Test-Path $script:ChecksFolder)) {
         Write-Error "Checks folder not found: $script:ChecksFolder"
         return $false
     }
-    
+
     # Load configuration
     if (Test-Path $script:ConfigFile) {
         try {
@@ -168,12 +169,12 @@ function Initialize-Environment {
             $script:Config = @{}
         }
     }
-    
+
     # Create output directory
     if (-not (Test-Path $OutputDir)) {
         New-Item -Path $OutputDir -ItemType Directory -Force | Out-Null
     }
-    
+
     Write-Step "Environment ready"
     return $true
 }
@@ -184,12 +185,12 @@ function Get-AvailableChecks {
         Returns list of available identity checks.
     #>
     $checks = @()
-    
+
     # Get all PS1 files in Checks folder (recursive)
     Get-ChildItem -Path $script:ChecksFolder -Recurse -Filter "*.ps1" | ForEach-Object {
         $checks += $_.BaseName.Replace("Invoke-", "").Replace("Reality", "").Replace("Check", "")
     }
-    
+
     return $checks | Sort-Object -Unique
 }
 
@@ -199,22 +200,22 @@ function Invoke-Check {
         Runs a specific identity check.
     #>
     param([string]$CheckName)
-    
+
     $scriptName = "Invoke-$CheckName"
     if ($CheckName -match "^(Entra|ActiveDirectory|AWS|GCP)$") {
         $scriptName = "Invoke-$($CheckName)IdentityInventory"
     }
-    
+
     # Find the script
     $scriptPath = Get-ChildItem -Path $script:ChecksFolder -Recurse -Filter "$scriptName.ps1" | Select-Object -First 1
-    
+
     if (-not $scriptPath) {
         Write-Error "Check not found: $CheckName"
         return $null
     }
-    
+
     Write-Info "Running: $CheckName"
-    
+
     try {
         $result = & $scriptPath.FullName -ErrorAction Stop
         return $result
@@ -231,7 +232,7 @@ function Invoke-AllChecks {
         Runs all available identity checks.
     #>
     Write-Banner "Running All Identity Checks"
-    
+
     $results = @{
         Timestamp = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
         Checks = @()
@@ -242,51 +243,51 @@ function Invoke-AllChecks {
             Warnings = 0
         }
     }
-    
+
     $checkCategories = @(
         @{ Name = "Active Directory"; Checks = @("BreakGlassReality", "IdentityNamingHygiene", "PasswordPolicyDrift", "PrivilegedNestingAbuse") }
         @{ Name = "Entra ID"; Checks = @("GuestCreep", "MfaCoverageGap", "LegacyAuthReality", "AppConsentReality", "HybridSyncReality") }
         @{ Name = "Cloud"; Checks = @("AwsIdentityInventory", "GcpIdentityInventory") }
         @{ Name = "Cross-Platform"; Checks = @("InactiveAccountDetection") }
     )
-    
+
     foreach ($category in $checkCategories) {
-        Write-Host ""
-        Write-Host "  $($category.Name)" -ForegroundColor Cyan
-        Write-Host ("-" * 40) -ForegroundColor Gray
-        
+        Write-Output ""
+        Write-Output "  $($category.Name)"
+        Write-Output (("-" * 40))
+
         foreach ($check in $category.Checks) {
             $checkName = $check.Replace("Reality", "").Replace("Gap", "")
             $result = Invoke-Check -CheckName $check
-            
+
             if ($result) {
                 $results.Checks += $result
                 $results.Summary.Total++
-                
+
                 if ($result.Status -eq "Pass") {
                     $results.Summary.Passed++
-                    Write-Host "    [✓] $checkName" -ForegroundColor Green
+                    Write-Step "    [✓] $checkName"
                 }
                 elseif ($result.Status -eq "Warning") {
                     $results.Summary.Warnings++
-                    Write-Host "    [!] $checkName" -ForegroundColor Yellow
+                    IFQCWriteWarning "    [!] $checkName"
                 }
                 else {
                     $results.Summary.Failed++
-                    Write-Host "    [X] $checkName" -ForegroundColor Red
+                    IFQCWriteError "    [X] $checkName"
                 }
             }
         }
     }
-    
+
     # Output summary
-    Write-Host ""
+    Write-Output ""
     Write-Banner "Summary"
-    Write-Host "  Total Checks:  $($results.Summary.Total)" -ForegroundColor White
-    Write-Host "  Passed:        $($results.Summary.Passed)" -ForegroundColor Green
-    Write-Host "  Warnings:      $($results.Summary.Warnings)" -ForegroundColor Yellow
-    Write-Host "  Failed:        $($results.Summary.Failed)" -ForegroundColor Red
-    
+    Write-Output "  Total Checks:  $($results.Summary.Total)"
+    Write-Output "  Passed:        $($results.Summary.Passed)"
+    Write-Output "  Warnings:      $($results.Summary.Warnings)"
+    Write-Output "  Failed:        $($results.Summary.Failed)"
+
     return $results
 }
 
@@ -298,54 +299,54 @@ function Start-ConsoleMode {
     Clear-Host
     Write-Logo
     Write-Banner "Interactive Console"
-    
-    Write-Host "Welcome to IdentityFirst QuickChecks!" -ForegroundColor White
-    Write-Host ""
-    Write-Host "Available commands:" -ForegroundColor Cyan
-    Write-Host "  list    - Show available checks"
-    Write-Host "  run     - Run all checks"
-    Write-Host "  check   - Run specific check (follow prompts)"
-    Write-Host "  export  - Export results"
-    Write-Host "  help    - Show help"
-    Write-Host "  exit    - Quit"
-    Write-Host ""
-    
+
+    Write-Output "Welcome to IdentityFirst QuickChecks!"
+    Write-Output ""
+    Write-Output "Available commands:"
+    Write-Output "  list    - Show available checks"
+    Write-Output "  run     - Run all checks"
+    Write-Output "  check   - Run specific check (follow prompts)"
+    Write-Output "  export  - Export results"
+    Write-Output "  help    - Show help"
+    Write-Output "  exit    - Quit"
+    Write-Output ""
+
     while ($true) {
         $choice = Read-Host "IdentityFirst" -ForegroundColor Green
-        
+
         switch ($choice.ToLower()) {
             "list" {
-                Write-Host ""
-                Write-Host "Available Checks:" -ForegroundColor Cyan
-                Get-AvailableChecks | ForEach-Object { Write-Host "  - $_" -ForegroundColor White }
+                Write-Output ""
+                Write-Output "Available Checks:"
+                Get-AvailableChecks | ForEach-Object { Write-Output "  - $_" }
             }
             "run" {
                 Invoke-AllChecks
             }
             "check" {
-                Write-Host ""
-                $checkName = Read-Host "Enter check name" -ForegroundColor Yellow
+                Write-Output ""
+                $checkName = Read-Host "Enter check name"
                 Invoke-Check -CheckName $checkName
             }
             "export" {
-                Write-Host ""
-                Write-Host "Export formats: JSON, HTML, CSV" -ForegroundColor Cyan
+                Write-Output ""
+                Write-Output "Export formats: JSON, HTML, CSV"
                 $format = Read-Host "Format"
                 Invoke-AllChecks | Export-Results -Format $format -Path $OutputDir
             }
             "help" {
-                Write-Host ""
-                Write-Host "Commands:" -ForegroundColor Cyan
-                Write-Host "  list    - Show available checks"
-                Write-Host "  run     - Run all checks"
-                Write-Host "  check   - Run specific check"
-                Write-Host "  export  - Export results"
-                Write-Host "  help    - Show this help"
-                Write-Host "  exit    - Quit"
+                Write-Output ""
+                Write-Output "Commands:"
+                Write-Output "  list    - Show available checks"
+                Write-Output "  run     - Run all checks"
+                Write-Output "  check   - Run specific check"
+                Write-Output "  export  - Export results"
+                Write-Output "  help    - Show this help"
+                Write-Output "  exit    - Quit"
             }
             "exit" { break }
             default {
-                Write-Warning "Unknown command. Type 'help' for available commands."
+                IFQCWriteWarning "Unknown command. Type 'help' for available commands."
             }
         }
     }
@@ -357,18 +358,18 @@ function Install-ToSystem {
         Installs QuickChecks to the system.
     #>
     Write-Banner "Installing IdentityFirst QuickChecks"
-    
+
     $installPath = "$env:ProgramFiles\IdentityFirst\QuickChecks"
     Write-Info "Installing to: $installPath"
-    
+
     try {
         # Create directory
         New-Item -Path $installPath -ItemType Directory -Force | Out-Null
-        
+
         # Copy files (excluding output and temp)
         $exclude = @("Output", "*.log", "*.pfx", "*.cer")
         Copy-Item -Path "$PSScriptRoot\*" -Destination $installPath -Exclude $exclude -Recurse -Force
-        
+
         # Create shortcut
         $shortcutPath = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\IdentityFirst\QuickChecks.lnk"
         $ws = New-Object -ComObject WScript.Shell
@@ -376,7 +377,7 @@ function Install-ToSystem {
         $shortcut.TargetPath = "$installPath\Start-QuickChecks.ps1"
         $shortcut.WorkingDirectory = $installPath
         $shortcut.Save()
-        
+
         Write-Step "Installed successfully"
         Write-Info "Run: $installPath\Start-QuickChecks.ps1"
     }
@@ -418,16 +419,16 @@ EXAMPLES:
 
 AVAILABLE CHECKS:
     Active Directory:
-        BreakGlassReality, IdentityNamingHygiene, PasswordPolicyDrift, 
+        BreakGlassReality, IdentityNamingHygiene, PasswordPolicyDrift,
         PrivilegedNestingAbuse
-    
+
     Entra ID:
-        GuestCreep, MfaCoverageGap, LegacyAuthReality, 
+        GuestCreep, MfaCoverageGap, LegacyAuthReality,
         AppConsentReality, HybridSyncReality
-    
+
     Cloud:
         AwsIdentityInventory, GcpIdentityInventory
-    
+
     Cross-Platform:
         InactiveAccountDetection
 
@@ -447,17 +448,17 @@ function Export-Results {
     param(
         [Parameter(Mandatory = $true)]
         $Results,
-        
+
         [Parameter(Mandatory = $true)]
         [string]$Format,
-        
+
         [Parameter(Mandatory = $true)]
         [string]$Path
     )
-    
+
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $filename = "IdentityQuickChecks-$timestamp"
-    
+
     switch ($Format.ToUpper()) {
         "JSON" {
             $file = "$Path\$filename.json"
@@ -491,9 +492,9 @@ function Export-Results {
 
 # Display logo
 Write-Logo
-Write-Host " IdentityFirst QuickChecks v$script:Version" -ForegroundColor Cyan
-Write-Host " $($script:ReleaseDate)" -ForegroundColor Gray
-Write-Host ""
+Write-Info "IdentityFirst QuickChecks v$script:Version"
+Write-Info "$($script:ReleaseDate)"
+Write-Info ""
 
 # Process parameters
 switch ($PSCmdlet.ParameterSetName) {
@@ -515,7 +516,7 @@ switch ($PSCmdlet.ParameterSetName) {
     "Run" {
         if (-not (Initialize-Environment)) { exit 1 }
         $results = Invoke-AllChecks
-        
+
         if ($Output -ne "Console") {
             Export-Results -Results $results -Format $Output -Path $OutputDir
         }
@@ -525,3 +526,60 @@ switch ($PSCmdlet.ParameterSetName) {
         Show-Help
     }
 }
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCv7QIiDFnzX25q
+# kLSp+b+4ed/PLfF+9vtDwJXmIrB5d6CCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEICZiYCLjSYUZADBeyz2rEcju7R2ungQm
+# oILHKW1gSUg7MA0GCSqGSIb3DQEBAQUABIICAKp+BDB9GIWyXzL9lTJzzfxKBIfe
+# O8yCB18GEk2DdRi8ICOBl6TO4B2YrgplBmDlTyY4vTld94M0V4TTMh0VJutGiiv5
+# 74hCyz6R/+ithWVDZEk6xyJ8tS0MwphrNksSA1YS30tU64qPIhvT2bJ6drUX2qKk
+# ZBjg1ZAxp+0Ucct10wqGqpYfvLGnQGjD8rbG7j104ZccppdnDMh20nXlqhaWsCrM
+# Zs5at0D/cMgzXWx6ucXf+mkhaB43aoYShFkg2x3lno/39Xc6VGHPR/fQL2kzyH3D
+# cVNpWaD0UYk7dDY3YUWFAS/i3Tzma0HPUZg5S2UODdKnB5+fTQ39OvplNw+YC/gw
+# PFXVw9zevpDpZWqZOXNXhmsA/kr4H6M3G9RxKQhe/yyeoD6fsMDMjcQ8p6tLoy8i
+# J5sDdhGSJWWC2RHd0viH9MGzhkMFm3BZsVmjAJQpC7d/Ij6JvQcUbvFxAHXa6MTC
+# Lmcr5DwKszliWQe5t9w+0UvTzLNgbIemVN3vEqjjOVFPZVGTDRrO9OLBgGLPppPg
+# YfpinI/lzH4yc5vJwD0dEpRS2MXMsIoEO6Zwizdf0pM33eFQ5lAd0DLVK4cGDaFm
+# ZJLoUJcWG9202KYFNVA6hARcHP6nwNLdQbDNvZYxvz1ESA20sYrGlaS89Dv9jfux
+# mH5RI0brgeFMYc/n
+# SIG # End signature block
+

@@ -1,0 +1,47 @@
+{
+  "framework": "GDPR",
+  "version": "UK_GDPR_2018",
+  "overallScore": 70,
+  "controls": [
+    {
+      "controlRef": "Art.32",
+      "score": 70,
+      "findings": [
+        {
+          "assertionId": "PrivilegedAccountsWithoutMFA",
+          "severity": "critical",
+          "title": "Privileged user without MFA",
+          "entities": [
+            {
+              "type": "entra.user",
+              "id": "sample-entra-1",
+              "upn": "alice@example.com"
+            }
+          ],
+          "evidenceRefs": [
+            "entra.user:sample-entra-1"
+          ],
+          "whyItMatters": "A single credential compromise can lead to tenant-wide compromise.",
+          "remediation": "Require MFA for privileged roles, enforce Conditional Access, remove standing admin access."
+        },
+        {
+          "assertionId": "OrphanedAccounts",
+          "severity": "high",
+          "title": "Active account without HR linkage",
+          "entities": [
+            {
+              "type": "entra.user",
+              "id": "sample-entra-1",
+              "upn": "alice@example.com"
+            }
+          ],
+          "evidenceRefs": [
+            "entra.user:sample-entra-1"
+          ],
+          "whyItMatters": "No joiner/leaver authority",
+          "remediation": "Link identity to HR source of truth and automate deprovisioning."
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     GCP Identity Inventory using gcloud CLI.
 
@@ -18,7 +18,7 @@
 param(
     [Parameter()]
     [string]$OutputDirectory = (Join-Path $PWD "IFQC-Output"),
-    
+
     [Parameter()]
     [ValidateSet("Normal","Detailed")]
     [string]$DetailLevel = "Normal"
@@ -41,11 +41,11 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
     } catch {
         throw "gcloud CLI not found."
     }
-    
+
     $defaultProject = (gcloud config get-value project 2>$null).Trim()
     if (-not $defaultProject) { $defaultProject = "Not set" }
     $ctx.Data.defaultProject = $defaultProject
-    
+
     # Get accessible projects
     $projectsToScan = @()
     try {
@@ -54,17 +54,17 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
     } catch {
         $projectsToScan = @($defaultProject)
     }
-    
+
     $ctx.Data.projectsScanned = $projectsToScan.Count
     $allServiceAccounts = @()
     $allKeys = @()
     $externalBindings = @()
     $cutoff = (Get-Date).AddDays(-180)
-    
+
     foreach ($proj in $projectsToScan) {
         Write-IFQCLog -Context $ctx -Level INFO -Message "Scanning: $proj"
         gcloud config set project $proj 2>$null | Out-Null
-        
+
         $saJson = gcloud iam service-accounts list --format=json 2>$null
         if ($saJson) {
             $sas = $saJson | ConvertFrom-Json
@@ -77,7 +77,7 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
                 }
             }
         }
-        
+
         foreach ($sa in $sas) {
             $keysJson = gcloud iam service-accounts keys list --iam-account $sa.email --format=json 2>$null
             if ($keysJson) {
@@ -93,7 +93,7 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
                 }
             }
         }
-        
+
         $policyJson = gcloud projects get-iam-policy $proj --format=json 2>$null
         if ($policyJson) {
             $policy = $policyJson | ConvertFrom-Json
@@ -116,16 +116,16 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
             }
         }
     }
-    
+
     $oldKeys = $allKeys | Where-Object { $_.ValidAfterTime -and [DateTime]$_.ValidAfterTime -lt $cutoff }
     $disabledSas = $allServiceAccounts | Where-Object { $_.Disabled -eq $true }
-    
+
     $ctx.Data.serviceAccountCount = ($allServiceAccounts | Measure-Object).Count
     $ctx.Data.keyCount = ($allKeys | Measure-Object).Count
     $ctx.Data.oldKeyCount = ($oldKeys | Measure-Object).Count
-    
+
     $evidenceLimit = Get-EvidenceLimit
-    
+
     Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
         -Id "GCP-SA-KEYS-OLD" `
         -Title "Service account keys older than 180 days" `
@@ -135,7 +135,7 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
         -Evidence ($oldKeys | Select-Object -First $evidenceLimit) `
         -Recommendation "Rotate service account keys regularly."
     )
-    
+
     Add-IFQCFinding -Context $ctx -Finding (New-IFQCFinding `
         -Id "GCP-IAM-EXTERNAL" `
         -Title "External domain IAM bindings" `
@@ -148,5 +148,71 @@ Invoke-IFQCSafe -Context $ctx -Name "GCP IAM inventory" -Block {
 }
 
 $output = Save-IFQCReport -Context $ctx
-Write-Host ""
-Write-Host "GcpIdentityInventory complete." -ForegroundColor Green
+
+# Emit structured report saved event
+$reportEvent = [PSCustomObject]@{
+    Timestamp = (Get-Date).ToString('o')
+    Level = 'Info'
+    Action = 'ReportSaved'
+    Tool = $ctx.ToolName
+    Json = $output.Json
+    Html = $output.Html
+}
+Write-IFQC -InputObject $reportEvent
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAbm51ljMUztFiv
+# w10B655yvGR7MUm1Xx8+B+GNYpjGcKCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIKwX1IGbodT1Hirma4GzOWXP6ZKFMVV9
+# wwzXUZP3w20pMA0GCSqGSIb3DQEBAQUABIICAA2jsAG1jU+fKg3RK7lPoGehWpvE
+# 3jvOLmYxb2rYhicHCw4u3+c1R79QIqBB89BUyRHOT8RbPpYP6IGtbWGv1CblR3Xb
+# NdOhbg0xhk4Gl/LBL/sRS1jgp2VoGaGH0+CQXm4Z1M6H4QkllK/4F+ex2XXGyhQ/
+# wPRdCnMlt104/xpGg3MVv4A2B03kJTsHVIFDE+fuhr0QM9xZzjOSrpwOreyPXIS0
+# +E51BHXOBScL5xuASiEh/n5mG+blQjJB2rGMlXQdGjrik651alVhdKlKhbx59Lvf
+# kOyrVx/yKgXt445wd4CkiHAW6OqNTN+PtaMJ4z6ozY1reGLVhdB2W3qNgJxGqvT4
+# Ck5tgFk+p5bSAVFhjQgcXcF/PKmRH5Whddp6datApyNJIQrJx0R/EubxYnADQJSA
+# 1fJ/J0hL8oTw+f186Fz/JHXwHFTrwFI5jPr/Zp1CZRHY6uRrzpoiLe/zgVkGVZox
+# qu32GXr+DBBWHeIN90QOfjrzm3o+H/Jrc3hnrjNtjfWkM9Bp72W/RieCUq9l4V4u
+# 8FMMnvcUDeI0VPnABOt1dvAN9ndOTZMWPDAqUWopqzKg8sVT4QMh+K8HgrrDCKpm
+# wODH0mojwWaLNl7v0xU69tnvwVDhtLQGTjfbmOadQ24APxXJtK3hQWx/oDDkp6zC
+# W1WWtkkkee4TmMMH
+# SIG # End signature block
+

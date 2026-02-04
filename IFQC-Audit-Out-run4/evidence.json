@@ -1,0 +1,26 @@
+[
+  "Collector collect_entra.ps1 produced invalid item",
+  "Collector collect_entra.ps1 produced invalid item",
+  "Collector collect_entra.ps1 produced invalid item",
+  "Collector collect_entra.ps1 produced invalid item",
+  "Collector collect_entra.ps1 produced invalid item",
+  {
+    "type": "entra.user",
+    "id": "sample-entra-1",
+    "tenantId": "demo",
+    "displayName": "Alice Example",
+    "upn": "alice@example.com",
+    "accountEnabled": true,
+    "lastSignIn": "2026-01-21T16:46:47.9896948+00:00",
+    "signals": {
+      "mfaRegistered": false,
+      "isPrivileged": true,
+      "pimEligible": false
+    },
+    "source": {
+      "collectedAt": "2026-01-31T16:46:47.9945737+00:00",
+      "collector": "EntraID",
+      "authority": "secondary"
+    }
+  }
+]

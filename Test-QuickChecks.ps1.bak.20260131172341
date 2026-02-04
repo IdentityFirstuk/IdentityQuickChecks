@@ -1,0 +1,454 @@
+# ============================================================================
+# IdentityFirst QuickChecks - Test Suite
+# ============================================================================
+# Version: 1.0.0
+# Date: 2026-01-29
+# Description: Validates QuickChecks installation and functionality
+# ============================================================================
+
+[CmdletBinding()]
+param(
+    [switch]$All,
+    [switch]$Syntax,
+    [switch]$Security,
+    [switch]$Launcher,
+    [switch]$Quick
+)
+
+# ============================================================================
+# Test Results
+# ============================================================================
+
+$script:TestsPassed = 0
+$script:TestsFailed = 0
+$script:TestsTotal = 0
+$script:TestResults = @()
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+function Write-Test {
+    param(
+        [string]$Name,
+        [string]$Description,
+        [string]$Status,
+        [string]$Message = ""
+    )
+    
+    $script:TestsTotal++
+    
+    if ($Status -eq "PASS") {
+        $script:TestsPassed++
+        $msg = ("[PASS] {0}" -f $Name)
+        Write-Output $msg
+    }
+    else {
+        $script:TestsFailed++
+        $msg = ("[FAIL] {0}" -f $Name)
+        Write-Output $msg
+    }
+    
+    $suffix = if ($Message) { " - $Message" } else { "" }
+    $msg = ("[{0}] {1}{2}" -f $Status, $Name, $suffix)
+    Write-Output $msg
+    
+    $script:TestResults += [PSCustomObject]@{
+        Name = $Name
+        Description = $Description
+        Status = $Status
+        Message = $Message
+    }
+}
+
+function Write-Header {
+    param([string]$Message)
+    Write-Output ""
+    Write-Output (("=" * 70))
+    Write-Output (" $Message")
+    Write-Output (("=" * 70))
+    Write-Output ""
+}
+
+# ============================================================================
+# Syntax Tests
+# ============================================================================
+
+function Test-Syntax {
+    Write-Header "Syntax Validation Tests"
+    
+    # Test all PS1 files
+    $ps1Files = Get-ChildItem -Path "$PSScriptRoot" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue
+    
+    foreach ($file in $ps1Files) {
+        $name = $file.FullName.Replace("$PSScriptRoot\", "")
+        
+        try {
+            $errors = $null
+            $null = [System.Management.Automation.PSParser]::Tokenize(
+                (Get-Content -Path $file.FullName -Raw),
+                [ref]$errors
+            )
+            
+            if ($errors.Count -eq 0) {
+                Write-Test -Name $name -Description "Syntax check" -Status "PASS"
+            }
+            else {
+                $errorCount = ($errors | Where-Object { $_.Severity -eq "Error" }).Count
+                if ($errorCount -eq 0) {
+                    Write-Test -Name $name -Description "Syntax check (warnings only)" -Status "PASS"
+                }
+                else {
+                    Write-Test -Name $name -Description "Syntax check" -Status "FAIL" -Message "$errorCount errors"
+                }
+            }
+        }
+        catch {
+            Write-Test -Name $name -Description "Syntax check" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+}
+
+# ============================================================================
+# Security Tests
+# ============================================================================
+
+function Test-Security {
+    Write-Header "Security Module Tests"
+    
+    # Test 1: Module exists
+    $securityModule = "$PSScriptRoot\Security\IdentityFirst.Security.psm1"
+    if (Test-Path $securityModule) {
+        Write-Test -Name "Security module exists" -Description "Verify security module file" -Status "PASS"
+        
+        # Test 2: Module loads
+        try {
+            Import-Module -Name $securityModule -Force -ErrorAction Stop
+            Write-Test -Name "Security module loads" -Description "Import security module" -Status "PASS"
+            
+            # Test 3: Functions available
+            $requiredFunctions = @(
+                'ConvertTo-SecureStringIfNeeded',
+                'Get-CredentialFromInput',
+                'Test-ValidPath',
+                'Write-SecureLog',
+                'Get-SecureHtmlContent',
+                'Set-OutputFileSecurity'
+            )
+            
+            foreach ($func in $requiredFunctions) {
+                if (Get-Command $func -ErrorAction SilentlyContinue) {
+                    Write-Test -Name "Function: $func" -Description "Security function available" -Status "PASS"
+                }
+                else {
+                    Write-Test -Name "Function: $func" -Description "Security function available" -Status "FAIL"
+                }
+            }
+            
+            # Test 4: Secure logging redaction
+            $logOutput = & {
+                $logMsg = Write-SecureLog -Message "API key: secret123" -Level INFO -LogFile $null 2>$null
+                $logMsg
+            } 2>$null
+            
+            if ($logOutput -match '\*\*\*REDACTED\*\*\*') {
+                Write-Test -Name "Credential redaction" -Description "Sensitive data redacted in logs" -Status "PASS"
+            }
+            else {
+                Write-Test -Name "Credential redaction" -Description "Sensitive data redacted in logs" -Status "FAIL"
+            }
+            
+            # Test 5: HTML encoding
+            $encoded = Get-SecureHtmlContent -Content "<script>alert('xss')</script>"
+            if ($encoded -match '&lt;script' -or ($encoded -notmatch '<script>')) {
+                Write-Test -Name "XSS protection" -Description "HTML special characters encoded" -Status "PASS"
+            }
+            else {
+                Write-Test -Name "XSS protection" -Description "HTML special characters encoded" -Status "FAIL"
+            }
+            
+            # Remove module
+            Remove-Module -Name "IdentityFirst.Security" -ErrorAction SilentlyContinue
+        }
+        catch {
+            Write-Test -Name "Security module loads" -Description "Import security module" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+    else {
+        Write-Test -Name "Security module exists" -Description "Verify security module file" -Status "FAIL"
+    }
+}
+
+# ============================================================================
+# Launcher Tests
+# ============================================================================
+
+function Test-Launcher {
+    Write-Header "Launcher Tests"
+    
+    # Test 1: Launcher exists
+    $launcher = "$PSScriptRoot\Start-QuickChecks.ps1"
+    if (Test-Path $launcher) {
+        Write-Test -Name "Launcher exists" -Description "Start-QuickChecks.ps1 found" -Status "PASS"
+        
+        # Test 2: Launcher syntax
+        try {
+            $errors = $null
+            $null = [System.Management.Automation.PSParser]::Tokenize(
+                (Get-Content -Path $launcher -Raw),
+                [ref]$errors
+            )
+            if ($errors.Count -eq 0) {
+                Write-Test -Name "Launcher syntax" -Description "Valid PowerShell syntax" -Status "PASS"
+            }
+            else {
+                Write-Test -Name "Launcher syntax" -Description "Valid PowerShell syntax" -Status "FAIL" -Message "$($errors.Count) issues"
+            }
+        }
+        catch {
+            Write-Test -Name "Launcher syntax" -Description "Valid PowerShell syntax" -Status "FAIL" -Message $_.Exception.Message
+        }
+        
+        # Test 3: Help parameter
+        try {
+            $output = & $launcher -Help -ErrorAction SilentlyContinue 2>&1 | Out-String
+            if ($output -match "USAGE:") {
+                Write-Test -Name "Help parameter" -Description "Help output generated" -Status "PASS"
+            }
+            else {
+                Write-Test -Name "Help parameter" -Description "Help output generated" -Status "FAIL"
+            }
+        }
+        catch {
+            Write-Test -Name "Help parameter" -Description "Help output generated" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+    else {
+        Write-Test -Name "Launcher exists" -Description "Start-QuickChecks.ps1 found" -Status "FAIL"
+    }
+    
+    # Test 4: Certificate script
+    $certScript = "$PSScriptRoot\Create-SelfSignedCert.ps1"
+    if (Test-Path $certScript) {
+        Write-Test -Name "Certificate script exists" -Description "Create-SelfSignedCert.ps1 found" -Status "PASS"
+    }
+    else {
+        Write-Test -Name "Certificate script exists" -Description "Create-SelfSignedCert.ps1 found" -Status "FAIL"
+    }
+    
+    # Test 5: Sign script
+    $signScript = "$PSScriptRoot\Sign-QuickChecks.ps1"
+    if (Test-Path $signScript) {
+        Write-Test -Name "Sign script exists" -Description "Sign-QuickChecks.ps1 found" -Status "PASS"
+    }
+    else {
+        Write-Test -Name "Sign script exists" -Description "Sign-QuickChecks.ps1 found" -Status "FAIL"
+    }
+}
+
+# ============================================================================
+# Module Tests
+# ============================================================================
+
+function Test-Modules {
+    Write-Header "Check Module Tests"
+    
+    $checkCount = 0
+    
+    # Test all check scripts
+    $checkScripts = Get-ChildItem -Path "$PSScriptRoot\Checks" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue
+    
+    foreach ($script in $checkScripts) {
+        $name = $script.FullName.Replace("$PSScriptRoot\", "")
+        $checkCount++
+        
+        # Syntax check
+        try {
+            $errors = $null
+            $null = [System.Management.Automation.PSParser]::Tokenize(
+                (Get-Content -Path $script.FullName -Raw),
+                [ref]$errors
+            )
+            
+            if ($errors.Count -eq 0) {
+                Write-Test -Name $name -Description "Check script syntax" -Status "PASS"
+            }
+            else {
+                Write-Test -Name $name -Description "Check script syntax" -Status "FAIL" -Message "$($errors.Count) issues"
+            }
+        }
+        catch {
+            Write-Test -Name $name -Description "Check script syntax" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+    
+    Write-Output ""
+    Write-Output ("Total check scripts: $checkCount")
+}
+
+# ============================================================================
+# Configuration Tests
+# ============================================================================
+
+function Test-Configuration {
+    Write-Header "Configuration Tests"
+    
+    # Test config file
+    $configFile = "$PSScriptRoot\config\QuickChecks.config.psd1"
+    if (Test-Path $configFile) {
+        try {
+            $config = Import-PowerShellDataFile -Path $configFile -ErrorAction Stop
+            Write-Test -Name "Config file valid" -Description "QuickChecks.config.psd1 loads" -Status "PASS"
+            
+            if ($config.ModuleVersion) {
+                Write-Test -Name "Config version" -Description "Version: $($config.ModuleVersion)" -Status "PASS"
+            }
+        }
+        catch {
+            Write-Test -Name "Config file valid" -Description "QuickChecks.config.psd1 loads" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+    else {
+        Write-Test -Name "Config file exists" -Description "QuickChecks.config.psd1 found" -Status "FAIL"
+    }
+    
+    # Test security manifest
+    $manifestFile = "$PSScriptRoot\Security\IdentityFirst.Security.manifest.psd1"
+    if (Test-Path $manifestFile) {
+        try {
+            $manifest = Import-PowerShellDataFile -Path $manifestFile -ErrorAction Stop
+            Write-Test -Name "Security manifest" -Description "Security manifest loads" -Status "PASS"
+            
+            if ($manifest.SecurityFeatures) {
+                Write-Test -Name "Security features" -Description "Security features defined" -Status "PASS"
+            }
+        }
+        catch {
+            Write-Test -Name "Security manifest" -Description "Security manifest loads" -Status "FAIL" -Message $_.Exception.Message
+        }
+    }
+}
+
+# ============================================================================
+# Summary
+# ============================================================================
+
+function Show-Summary {
+    Write-Header "Test Summary"
+    
+    Write-Output "  Total Tests:   $script:TestsTotal"
+    Write-Output "  Passed:        $script:TestsPassed"
+    Write-Output "  Failed:        $script:TestsFailed"
+    Write-Output ""
+
+    $passRate = if ($script:TestsTotal -gt 0) { [math]::Round(($script:TestsPassed / $script:TestsTotal) * 100, 1) } else { 0 }
+    Write-Output ("  Pass Rate:     $passRate%")
+    Write-Output ""
+
+    if ($script:TestsFailed -eq 0) {
+        Write-Output "  ✓ All tests passed!"
+    }
+    else {
+        Write-Output "  ✗ Some tests failed. Review output above."
+    }
+    
+    # Export results
+    $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+    $reportPath = "$PSScriptRoot\Output\test-results-$timestamp.xml"
+    
+    $script:TestResults | Export-Clixml -Path $reportPath -Force -ErrorAction SilentlyContinue
+    Write-Output ""
+    Write-Output "Results exported to: $reportPath"
+}
+
+# ============================================================================
+# Main Execution
+# ============================================================================
+
+Write-Logo
+Write-Output " IdentityFirst QuickChecks - Test Suite"
+Write-Output (Get-Date -Format 'yyyy-MM-dd')
+Write-Output ""
+
+# Run requested tests
+if ($All -or (-not $Syntax -and -not $Security -and -not $Launcher -and -not $Quick)) {
+    Test-Syntax
+    Test-Security
+    Test-Launcher
+    Test-Modules
+    Test-Configuration
+}
+else {
+    if ($Syntax) { Test-Syntax }
+    if ($Security) { Test-Security }
+    if ($Launcher) { Test-Launcher }
+    if ($Quick) {
+        Test-Syntax
+        Test-Launcher
+    }
+}
+
+# Show summary
+Show-Summary
+
+# Exit with appropriate code
+if ($script:TestsFailed -gt 0) {
+    exit 1
+}
+exit 0
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCCsmLaBHyKEaOF
+# 0v6mqW7X09cwU/XZyRlKiGIibQZzQaCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIEOfYbI6W9TMjY5tet7/HjqYPO76ZYQb
+# ub8tqe+uVNg/MA0GCSqGSIb3DQEBAQUABIICAHBb85l/2YWYwADEaPUhHkJ0k53U
+# yMdluV/QMa0jHHxTrTBaa1UDCz+t6eVHlV15ZpR/TXJHx4tS/RrbZcWUkyWZ7tz/
+# uaKkl5xY9F5h8sYQ38Gug5tLdcKdjf6/GfM/tvlxY8w/htvymVHtM+zxtjG36Aar
+# PDnIzJJgBaGWYnHr+JyTZUjWPCME7/vTckXUriWBw1MoYufZZju4zkSZxQ+W8KLn
+# 8RDuYU1OYknLgj99QtE6lPyAvDeo7MJ7qhMCKtBlQukxNbVg/Pq4nrkfqP0zHTqF
+# Du00rUQiEjnMr3Is5nlgJa3HnDq18+XnQ+X1E9TbeX/Cxvvy6p95PUabrh7Y1XJY
+# mjf+lIy/7N400KupW43sSN5zv9wmLaPX8hpR9A+2tdzsd/3TlQHCcmuLXG/Xi+y1
+# iMs134qPfPl+PnYspbM6kYRwiwi30ngO9GlDcEPipJVIB8avp4shDKPGI6MXH1vi
+# k4aqjMVMPnw7pRCcvmVNaeeoW0UPVgjpwjU/lddh2DRR8LAW0TKK7ONPbuTcDSTE
+# fT1EF/GBGCGi7NSQiYuRospa+ltiyjW7Hnk9ibLl4AEkn32hkbKANxwG4RwD8ZJA
+# mMqaTjZU/aNDclrD+Y8Fy1jTwbWA5KjGYRcbhmLApWlbEPjY7G/Wyds0186yuzuT
+# +L+Jz90lxd3/2dkc
+# SIG # End signature block

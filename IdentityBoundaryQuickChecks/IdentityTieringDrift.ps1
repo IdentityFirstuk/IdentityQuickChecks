@@ -1,4 +1,4 @@
-<#
+﻿<#
     Identity Tiering Drift Check
     Checks if Tier 0 / admin identities touch Tier 1/2 systems
 #>
@@ -7,18 +7,18 @@ param(
     [string]$OutputPath = "."
 )
 
-Write-Host "════════════════════════════════════════════════════════════"
-Write-Host "  Identity Tiering Drift Check"
-Write-Host "════════════════════════════════════════════════════════════"
-Write-Host ""
-Write-Host "  Checking for tiering violations..."
-Write-Host ""
+Write-IFQC -Message "════════════════════════════════════════════════════════════" -Level Info
+Write-IFQC -Message "  Identity Tiering Drift Check" -Level Info
+Write-IFQC -Message "════════════════════════════════════════════════════════════" -Level Info
+Write-IFQC -Message "" -Level Info
+Write-IFQC -Message "  Checking for tiering violations..." -Level Info
+Write-IFQC -Message "" -Level Info
 
 try {
     Import-Module ActiveDirectory -ErrorAction Stop
 }
 catch {
-    Write-Host "  ✗ ActiveDirectory module not available" -ForegroundColor Red
+    Write-IFQC -Message "  ✗ ActiveDirectory module not available" -Level Error
     exit 1
 }
 
@@ -28,7 +28,7 @@ $tier0Members = @()
 
 foreach ($group in $tier0Groups) {
     try {
-        $members = Get-ADGroupMember $group -ErrorAction Stop | 
+        $members = Get-ADGroupMember $group -ErrorAction Stop |
             Where-Object objectClass -eq "user"
         foreach ($member in $members) {
             $tier0Members += $member.SamAccountName
@@ -37,7 +37,7 @@ foreach ($group in $tier0Groups) {
     catch { }
 }
 
-Write-Host "  Tier 0 privileged accounts found: $($tier0Members.Count)"
+Write-IFQC -Message "  Tier 0 privileged accounts found: $($tier0Members.Count)" -Level Info
 
 # Check for admin accounts with potential tiering concerns
 $users = Get-ADUser -Filter * -Properties Description,SamAccountName
@@ -47,13 +47,13 @@ $tieringConcerns = $users | Where-Object {
 }
 
 if ($tieringConcerns) {
-    Write-Host ""
-    Write-Host "  ⚠ Potential tiering concerns (admin in description, no tier prefix):"
+    Write-IFQC -Message "" -Level Info
+    Write-IFQC -Message "  ⚠ Potential tiering concerns (admin in description, no tier prefix):" -Level Warning
     $tieringConcerns | Select-Object SamAccountName,Description | Format-Table -AutoSize
 }
 else {
-    Write-Host ""
-    Write-Host "  ✓ No obvious tiering concerns detected" -ForegroundColor Green
+    Write-IFQC -Message "" -Level Info
+    Write-IFQC -Message "  ✓ No obvious tiering concerns detected" -Level Success
 }
 
 # Export report
@@ -66,11 +66,68 @@ $report = @{
     tieringConcerns = $tieringConcerns
 }
 $report | ConvertTo-Json -Depth 10 | Out-File -FilePath $jsonPath -Encoding UTF8
-Write-Host ""
-Write-Host "  📄 Report saved: $jsonPath" -ForegroundColor Cyan
+Write-IFQC -Message "" -Level Info
+Write-IFQC -Message "  📄 Report saved: $jsonPath" -Level Info
 
-Write-Host ""
-Write-Host "  ─────────────────────────────────────────────────────────────"
-Write-Host "  ℹ  Tiering violations need frequency and context analysis."
-Write-Host "     For tiering governance, run IdentityHealthCheck."
-Write-Host "  ─────────────────────────────────────────────────────────────"
+Write-IFQC -Message "" -Level Info
+Write-IFQC -Message "  ─────────────────────────────────────────────────────────────" -Level Info
+Write-IFQC -Message "  ℹ  Tiering violations need frequency and context analysis." -Level Info
+Write-IFQC -Message "     For tiering governance, run IdentityHealthCheck." -Level Info
+Write-IFQC -Message "  ─────────────────────────────────────────────────────────────" -Level Info
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAvMs0zGAWYgt5P
+# IsK4Pno9Db8/ZmslBe8/5MLRxc/gFKCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEICSt6YPDCqvphA4jiyC+wxp0HTha5MVx
+# Yrjq8TA1rHQSMA0GCSqGSIb3DQEBAQUABIICAG6O1ThsNlNAb8HoWIbbe9dmD8y4
+# FOOI4Qbs5ZQCbF0xnQpyE8oaJc3dEksM4/LhQrWJhc2V2iQHu+V2OxP6z+/HDbJm
+# r0sthxABc0F4fCBOY+o0uB7RnJoxhDlplWrCOhuOa+18RuWcT6UvgxVP0mPJ0362
+# 7LtC0enri+jjqth5i5MOrfbsmgAA8qr+gNqyKgt04e6p4bEFQZm0XY006TQstleN
+# uoLEwIdcs9cXu1rgCgkocnhJScdsEc7nKmt4asTkIwJLUPpjBYfUE2RsBsykNMNt
+# z2HCU7BNhuDQpootDYH49PC3hYDd6sxQGafAnDelLDIsGI5xBZ9ssiIlN19aUn77
+# EmnqivgMGHkLI2vqsGqU0JAsFBWfLF6+lhLd/SS2FTkl7BkM9x1rfiu3ChA3A0i3
+# kW5Pnh3qjgixOOv7Y4evMPB7uudExYYE3NKYVCaK5nvr7ngmsThKOwbYemeFWo8J
+# n+qo8SYveecpSXKfIkgO77msXw4twwOBu4IC2ojR1vY9kVRdRtKfwhcPcaccXS9N
+# gDYsHVPhmpu15kKIQhmO6CqR2W9mUIX+TZZKi2CJmJj2R4I2u3LuT3jRNgRBX/kU
+# /h4jT415Qfyhf8FBXfkXPmXuicVn52Pt9Z/T2+YPH/dUZv97cD0nOhfLMTZ/8COj
+# Slcl3cQyCE2knE1X
+# SIG # End signature block
+
