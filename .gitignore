@@ -70,3 +70,12 @@ Desktop.ini
 *.env
 *.env.local
 *.env.*.local
+
+# Ignore security-sensitive files
+*.pfx
+*.cer
+*.pem
+cert*.pfx
+cert*.cer
+integrity-baseline.json
+*.codesign
