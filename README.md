@@ -301,6 +301,62 @@ For production use, consider:
 | **Windows PowerShell 5.1** | ✅ Fully Supported | Primary target platform |
 | **PowerShell 7.0+** | ✅ Fully Supported | Cross-platform compatibility |
 
+### Compatibility Layer
+
+For seamless cross-platform support, use the Compatibility module:
+
+```powershell
+# Import compatibility layer
+Import-Module IdentityFirst.QuickChecks.Compatibility
+
+# Get platform information
+$platform = Get-CompatiblePlatform
+Write-Host "PowerShell Version: $($platform.PSVersion)"
+Write-Host "Is Windows: $($platform.IsWindows)"
+Write-Host "Is PS7+: $($platform.IsPS7Plus)"
+
+# Cross-platform file hashing
+$hash = Get-FileHashCrossPlatform -Path "./report.json" -Algorithm SHA256
+
+# Cross-platform JSON conversion
+$json = $data | ConvertTo-JsonCrossPlatform -Depth 10
+```
+
+**Compatibility Module Features:**
+
+| Function | Description | Platform |
+|----------|-------------|----------|
+| `Get-CompatiblePlatform` | Returns platform and version info | Cross-platform |
+| `Get-CompatibleCredential` | Gets credentials cross-platform | Cross-platform |
+| `Get-FileHashCrossPlatform` | Cross-platform file hashing | Cross-platform |
+| `Invoke-RestMethodCrossPlatform` | REST API calls | Cross-platform |
+| `ConvertTo-JsonCrossPlatform` | Consistent JSON encoding | Cross-platform |
+| `ConvertFrom-JsonCrossPlatform` | Consistent JSON parsing | Cross-platform |
+| `Get-AuthenticodeSignature` | Code signing verification | Windows only |
+| `Get-WindowsIdentity` | Windows identity info | Windows only |
+| `Test-IsAdministrator` | Admin check | Windows only |
+
+### GitHub Actions CI/CD
+
+Automated testing and quality checks via GitHub Actions:
+
+```yaml
+# .github/workflows/powershell-tests.yml
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ps-version: ['5.1', '7.2', '7.4']
+```
+
+**CI/CD Features:**
+- Multi-version testing (PS 5.1, 7.2, 7.4)
+- PSScriptAnalyzer code quality checks
+- Security scanning for hardcoded secrets
+- Pester unit test execution
+- Automatic module packaging on release
+
 ### Cross-Version Compatibility
 
 All scripts are designed to work on both PowerShell 5.1 and 7+:

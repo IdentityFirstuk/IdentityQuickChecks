@@ -1,89 +1,184 @@
-# IdentityFirst QuickChecks Changelog
+# Changelog
 
-All notable changes to the QuickChecks module are documented here.
+All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-01-29
+## [Unreleased]
 
 ### Added
 
-#### Core Framework
-- `IdentityFirst.QuickChecks.psm1` - Shared framework with:
-  - Context initialization
-  - Safe execution wrappers
-  - Structured finding schema
-  - JSON/HTML report generation
-  - Security hardening (file ACLs, HTML encoding)
-
-#### Active Directory Modules (12 scripts)
-- `Invoke-BreakGlassReality.ps1` - Find and assess break-glass accounts
-- `Invoke-IdentityNamingHygiene.ps1` - Detect naming violations
-- `Invoke-PasswordPolicyDrift.ps1` - Identify accounts bypassing password policies
-- `Invoke-PrivilegedNestingAbuse.ps1` - Find indirect privilege through nested groups
-- `Invoke-ExternalTrustMapping.ps1` - Map AD trusts and external relationships
-- `Invoke-IdentityAttackSurface.ps1` - Identify accounts with elevated exposure
-- `Invoke-IdentityReviewDebt.ps1` - Find privileged access unchanged for years
-- `Invoke-IdentityLoggingGaps.ps1` - Check security logging configuration
-- `Invoke-CrossEnvironmentBoundary.ps1` - Identify identities in multiple environments
-- `Invoke-IdentityTieringDrift.ps1` - Check Tier 0 account violations
-- `Invoke-WeDontUseThatCheck.ps1` - Verify feature assumptions
-- `Invoke-IdentityOwnershipReality.ps1` - Verify ownership can be determined
-
-#### Entra ID Modules (10 scripts)
-- `Invoke-GuestCreep.ps1` - Detect guest user proliferation
-- `Invoke-MfaCoverageGap.ps1` - Identify users without MFA
-- `Invoke-SystemMismatch.ps1` - Find on-prem/cloud attribute mismatches
-- `Invoke-ExternalTrustMapping.ps1` - Map external trust relationships
-- `Invoke-IdentityAttackSurface.ps1` - Identify exposed privileged accounts
-- `Invoke-IdentityReviewDebt.ps1` - Find stale privileged access
-- `Invoke-IdentityLoggingGaps.ps1` - Check Entra ID audit logging
-- `Invoke-HybridSyncReality.ps1` - Azure AD Connect sync status (NEW)
-- `Invoke-LegacyAuthReality.ps1` - Legacy auth detection (NEW)
-- `Invoke-AppConsentReality.ps1` - App consent patterns (NEW)
-
-#### Entra ID Enhanced
-- `Invoke-EntraEnhancedIdentity.ps1` - PIM roles + Conditional Access policies
-
-#### Cloud Adapters
-- `Invoke-AwsIdentityInventory.ps1` - AWS IAM users, access keys, admin roles, MFA
-- `Invoke-GcpIdentityInventory.ps1` - GCP service accounts, keys, IAM bindings
-
-#### Cross-Platform
-- `Invoke-InactiveAccountDetection.ps1` - Inactive account detection across AD, Entra, AWS, GCP (NEW)
-
-#### Tools
-- `Run-AllQuickChecks.ps1` - Master launcher with module discovery
-- `Sign-QuickChecks.ps1` - Digital signing for production deployment (NEW)
-- `Package-QuickChecks.ps1` - ZIP packaging for distribution (NEW)
-
-#### Documentation
-- `README.md` - Complete documentation with examples
-- `EULA.txt` - Friendly end-user license agreement (NEW)
-- `CHANGELOG.md` - Version history (NEW)
-- `VERSION.txt` - Version file (NEW)
+- GitHub Actions CI/CD workflow for automated testing
+- PowerShell 7 compatibility layer (`IdentityFirst.QuickChecks.Compatibility.psm1`)
+- Pester unit tests for core functionality
+- Pester unit tests for EntraID and Azure checks
+- CONTRIBUTING.md with coding standards and guidelines
+- Code review documentation (`docs/CODE-REVIEW.md`)
 
 ### Changed
-- All scripts use consistent IFQC finding schema
-- HTML reports include IdentityHealthCheck upgrade CTA
-- Output files have restrictive ACLs (owner only)
-- Evidence sampling respects DetailLevel parameter
 
-### Security
-- HTML output properly encoded (prevents XSS)
-- Log files created with appropriate permissions
-- No external data transmission (all local processing)
+- Fixed encoding issues in Lite, EntraID, Extended, and Validation modules
+- Improved PowerShell 5.1 syntax compatibility
+- Added configurable thresholds to all modules
+- Added finding helper functions
 
-### Removed
-- Nothing - initial release
+## [1.1.0] - 2026-01-30
+
+### Added
+
+- PowerShell 7 cross-platform support
+- Compatibility layer for Windows-only functions
+- GitHub Actions CI/CD pipeline
+
+### Fixed
+
+- Encoding issues causing PowerShell 5.1 parse errors
+- Unicode character compatibility across PowerShell versions
+
+### Changed
+
+- Improved error handling in all modules
+- Enhanced documentation
+
+## [1.0.0] - 2024-12-01
+
+### Added
+
+- Initial release of IdentityFirst QuickChecks
+- Core identity checks (BreakGlassReality, IdentityNamingHygiene, PasswordPolicyDrift, PrivilegedNestingAbuse)
+- Identity trust checks (ExternalTrustMapping, IdentityAttackSurface)
+- EntraID checks (LegacyAuthReality, AppConsentReality, GuestCreep, MfaCoverageGap, HybridSyncReality)
+- AWS identity inventory
+- GCP identity inventory
+- Module manifest and documentation
 
 ---
 
-## About IdentityFirst QuickChecks
+## Release Procedures
 
-Free PowerShell modules for identity posture visibility. read_to_file-only tools that show what exists without modifying anything.
+### Creating a New Release
 
-**Author:** mark.ahearne@identityfirst.net  
-**Owner:** IdentityFirst Ltd  
-**Website:** https://www.identityfirst.net
+1. **Update version number** in `VERSION.txt`
+
+2. **Update this CHANGELOG.md** with changes since last release
+
+3. **Run tests**:
+   ```powershell
+   Invoke-Pester -Path Tests/ -OutputFormat NUnitXml -OutputFile test-results.xml
+   ```
+
+4. **Create release artifact**:
+   ```powershell
+   .\Package-QuickChecks.ps1 -Version "1.1.0"
+   ```
+
+5. **Create GitHub release**:
+   - Tag: `v1.1.0`
+   - Title: Release 1.1.0
+   - Attach: `IdentityFirst.QuickChecks-v1.1.0.zip`
+
+### Version Numbering
+
+Given a version number MAJOR.MINOR.PATCH, increment the:
+
+1. **MAJOR** version when you make incompatible API changes
+2. **MINOR** version when you add functionality in a backward-compatible manner
+3. **PATCH** version when you make backward-compatible bug fixes
+
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+---
+
+## Categories
+
+Each change should be categorized using these prefixes:
+
+- `Added`: New features
+- `Changed`: Changes in existing functionality
+- `Deprecated`: Soon-to-be removed features
+- `Removed`: Features that have been removed
+- `Fixed`: Bug fixes
+- `Security`: Vulnerability patches
+
+---
+
+## Security Releases
+
+For security-related releases, use the following format:
+
+## [1.0.1] - 2024-12-15 [Security]
+
+### Fixed
+
+- CVE-XXXX-XXXX: Description of vulnerability
+- Related issue: #123
+
+---
+
+## Example Entry
+
+### [1.2.0] - 2026-02-15
+
+### Added
+
+- New `Invoke-GuestCreep.ps1` script for detecting stale guest accounts (#45)
+- PowerShell 7 compatibility for all EntraID modules
+
+### Changed
+
+- Updated `Invoke-MfaCoverageGap.ps1` to prioritize privileged users (#38)
+- Improved error handling in `Invoke-EntraEnhancedIdentity.ps1`
+
+### Fixed
+
+- Resolved encoding issue in `IdentityFirst.QuickChecks.Validation.psm1` (#52)
+- Fixed null reference exception in `Invoke-AppConsentReality.ps1`
+
+### Security
+
+- Added input validation for all Graph API calls
+
+---
+
+## Auto-Generation
+
+This CHANGELOG can be auto-generated from Git commits using:
+
+- [git-changelog](https://github.com/git-changelog/git-changelog)
+- [Conventional Commits](https://www.conventionalcommits.org/)
+
+### Conventional Commits Format
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types:
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes
+- `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to the build process or auxiliary tools
+
+Example:
+```
+feat(EntraID): add guest account age detection
+
+Implement detection of guest accounts older than 180 days
+
+Closes #45
+```
+
+---
+
+## Retention
+
+Keep this changelog for all released versions. Archive old versions by moving them to `docs/CHANGELOG-Archive.md`.
