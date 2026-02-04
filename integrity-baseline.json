@@ -1,0 +1,408 @@
+{
+  "Algorithm": "SHA256",
+  "Scripts": {
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Enhanced\\Invoke-EntraEnhancedIdentity.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:16.2438829Z",
+      "Hash": "676E36560D5F5BEC83E554A804E371045C61EFEE0A07FBD9B2466D2DCFE0893A",
+      "Size": 13624
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\package_release.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:13.3342847Z",
+      "Hash": "7FFF939FBF6A68DB2B6CB045E4725B74BBC44AB4ABBF3FF91EE8FF7B670AE35F",
+      "Size": 18941
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\New-QuickChecksDashboard.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:10.1259839Z",
+      "Hash": "DE24D76F51078BA1D4AA45D174B114174ADC0879A84A76E34B5B9F363CF7B697",
+      "Size": 33880
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Create-SelfSignedCert.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:08.3547718Z",
+      "Hash": "C6924EBE10CED8C4A3986ECCAD08F3B6D781DC91E428ED579D0A52DCAE9F0BBF",
+      "Size": 20229
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-Prerequisites.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:09.2499198Z",
+      "Hash": "726CC77C6C570205501385EB44AB3BC9BBFB1894531CF55FC6E8EC7D1D9B678F",
+      "Size": 23252
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Invoke-QuickChecksHealth.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:09.8980733Z",
+      "Hash": "C4075C68CBE578A6E886353881DEFEA9EF62174529160DCCAE2FB72C7C413AFA",
+      "Size": 36720
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityBoundaryQuickChecks\\IdentityTieringDrift.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:19.4902796Z",
+      "Hash": "75DDC6026F0A7F6BA67146E0EC49AFCB85A5FAF425AB03FA2C9B7548788F1A69",
+      "Size": 13644
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_aws.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:16.9014262Z",
+      "Hash": "6DEBDA600A21CBCA5FD30EDCC0AB7562015205E82523069D1ADD3260056B33DF",
+      "Size": 12175
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\run_psa_and_tests.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:14.2261645Z",
+      "Hash": "EF54548B314B5ABF66CD495B875399D9C98398BE0FBA491EE8931DB644ED3C26",
+      "Size": 12701
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-App.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:22.3302666Z",
+      "Hash": "59CEC6063300E6145D556306F79AB466F73FF941596069C73E468BD58D638596",
+      "Size": 11719
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\pssa_modules_run.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:13.7702082Z",
+      "Hash": "B35B6FAEFCF146D6835C71143987D9C509B156EFF7B2B9231870CC6B783B2796",
+      "Size": 12033
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityAssumptionQuickChecks\\WeDontUseThatCheck.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:19.0448551Z",
+      "Hash": "5D15CD817874762AEFBEE20A15279EB774D6AEF9C7D04F064A3A3E93B61B334D",
+      "Size": 22206
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\pssa_fix_writehost.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:13.5521079Z",
+      "Hash": "C76136C8B48208B685929B66AFC147F99B3DFDDD1D58EAEF7CC06FB6D3346885",
+      "Size": 11108
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-QuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:11.2431546Z",
+      "Hash": "D802645C61386079D6A4A7A90B30027564D5B908CEDF68B96FB90FC637273969",
+      "Size": 20612
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\vault\\get_pfx_from_vault.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:18.6014968Z",
+      "Hash": "AD193CB349B7985814318AB5A1EAF216F0236D4FA470A59A72F43B97886700FF",
+      "Size": 14375
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\IFQC-ReadOnlyRunner.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:22.591127Z",
+      "Hash": "56FAB8B566A3A4AFD40F67B280A337F6508B7A3CBD08D5F735E1920B1C14E4A1",
+      "Size": 16086
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\BreakGlassReality.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:19.7116073Z",
+      "Hash": "3C498E9FF3779D0A7BC8625CF206F8005DDCF015F5516F60C128104AFEE2C3F1",
+      "Size": 30151
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\verify_release.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:23.1038494Z",
+      "Hash": "A7EB551175D357EBA22334168DCA49E69F7DEC6188B639C5BC23E28E78D6763A",
+      "Size": 12162
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Invoke-AllIdentityQuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:09.6815013Z",
+      "Hash": "78817D9FC20ABAA21163581EAC5B4317087659F97033AB8791028B369C6B8A59",
+      "Size": 30541
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\AWS\\Invoke-AwsIdentityInventory.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:14.9109142Z",
+      "Hash": "30F7F52E931A3202AB1B4ED9D2D196402B47D1C3B0C3248F2BB84AA70F4DB502",
+      "Size": 18533
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Identity-Audit-Engine.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:08.8118828Z",
+      "Hash": "A8D648C70CB070C57288C1E2524DA034DECBBF666C7AE5B28876642961D638A8",
+      "Size": 32529
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\installer\\bootstrap_install.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:21.456486Z",
+      "Hash": "2918B787ADA19168862F0AC2AFC257291A271300046D64D4EB8516A4C72E1CC0",
+      "Size": 17056
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityHealthCheck.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:09.0298158Z",
+      "Hash": "0FE8498767ECF9E22AC3955B23D2B365EF07BCCC33C2234FD9E778ECFA3A3AE3",
+      "Size": 13771
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-MfaCoverageGap.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:16.0286754Z",
+      "Hash": "7D33153D7D305FCB3FD5D764C475806659745A0F07D464B50CF6A6DEF9354B1C",
+      "Size": 14147
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Test-QuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:12.2683682Z",
+      "Hash": "B92789702F9F22E5B2AF082A35A1C7038B40484B8C1CCEF8431A24D1F274F637",
+      "Size": 24479
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Tests\\IdentityFirst.QuickChecks.EntraID.Tests.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:21.9015887Z",
+      "Hash": "A2DFA9449B0D0D2AA10B8EB3E2D5BFFB3E4DBF5C4A36FC26C258B7707D4FB57D",
+      "Size": 30491
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\IdentityNamingHygiene.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:19.920085Z",
+      "Hash": "78D1A6F9A9CC123B09FA81EF6DF927585D50740063F0859D5836AEF3EB86F877",
+      "Size": 17059
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\GCP\\Invoke-GcpIdentityInventory.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:16.4683041Z",
+      "Hash": "667FFF9C606CF042E9149358A97E6C5D43DF3E2AD65E07888A349585E08F44FC",
+      "Size": 16068
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Generate-CSR.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:08.5964982Z",
+      "Hash": "E07044C89A3E690BE399497BEF8C922DFD19C5F92ADDF35F852DF7E6756FC02E",
+      "Size": 16980
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-HybridSyncReality.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:15.585081Z",
+      "Hash": "F977D39C4C414DCEFA4732B0647ADF75A3493194F9551A2A12A852CB49F242B9",
+      "Size": 19344
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\wrap_python.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:17.7395877Z",
+      "Hash": "E669B1B8AA6EF6E1877CF1E80AA173B9E541A4020690A17BFE8253266CA2F820",
+      "Size": 11920
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Sign-Scripts.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:11.4567643Z",
+      "Hash": "F98A7937F0263043529DA174E313A7D9BF38ABAD9E5411EEB61371CF21DFA7D3",
+      "Size": 21327
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\tools\\verify_cosign.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:22.874041Z",
+      "Hash": "BCB98635F849AD8ACF11341E9487EC2EDE64A4864DFE1AB551350193D5948E4E",
+      "Size": 11315
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\Create-SelfSignedCert.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:17.9555033Z",
+      "Hash": "9105C5DA70F423E5AEA252001F7DCB8A56B4D9AD25D4A236A7627D491718A1C1",
+      "Size": 20548
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_gcp.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:17.3251047Z",
+      "Hash": "DA59F52828D12A60CECC385EAB441EC1D3CCEADCFAEA0C2B133B658D4BEA5876",
+      "Size": 11321
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityTrustQuickChecks\\IdentityLoggingGaps.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:21.0042415Z",
+      "Hash": "FAE42918E30C0FEE8B2F8DAF3CCE09746CBF333DAB1241840148E57616EAF4C4",
+      "Size": 22287
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityBoundaryQuickChecks\\CrossEnvironmentBoundary.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:19.2603257Z",
+      "Hash": "7C18B2CCAE12B4785302125F1713BC9CA93819D8AF9BA78E2D79C304391B1A49",
+      "Size": 13990
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\QuickChecks-Console.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:10.7973859Z",
+      "Hash": "80DC0BB932C367F12BC68FD533E39ECEC9D5DDB12B1881D9867699850A914EAB",
+      "Size": 33435
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_entra.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:17.1156065Z",
+      "Hash": "20376112F65783CE9D529462BDFB2B5FB1D2F697BF304F184EA5D3BF6743D775",
+      "Size": 11763
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityTrustQuickChecks\\ExternalTrustMapping.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:20.5736568Z",
+      "Hash": "3D3080618EC6616D0DB50206A8C42627FAE74B8786BD0DEC8A85D71FF94C662D",
+      "Size": 17188
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\pssa_run.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:10.5666626Z",
+      "Hash": "5C254CC81AA714175CBC412F23F82FE8804A4518F6365779D0A7A78E835CAF4B",
+      "Size": 11215
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\PrivilegedNestingAbuse.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:20.3609663Z",
+      "Hash": "47FDD06EAC7AC63755314F85DC4FFEF555E2234321F4D45A7E203E3D5A0F1DC8",
+      "Size": 14609
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\wrap_dotnet.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:17.5368505Z",
+      "Hash": "9C2146A7962A19582A54FDA5FD556DAADA14BA6599752D5335B5881F78B32E84",
+      "Size": 10848
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\upgrade_to_identityhealthcheck.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:14.4619789Z",
+      "Hash": "2C86794C4EDA2935C594B5A8DD26F10F1A43EE2E9739E9AB5ED40A039F5F8542",
+      "Size": 14130
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\pssa_readonly_rule.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:13.9844297Z",
+      "Hash": "38CFC44F6CE89777585D5E887CCCD42D80648C096CAE57E35AE870DC243A80CD",
+      "Size": 12156
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\smoke_test_run.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:11.6670295Z",
+      "Hash": "7FE12628B2631A0385261CFB3D3644919359CDCC491C0561C9B3549988EF3EB9",
+      "Size": 11321
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_signatures.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:13.1093926Z",
+      "Hash": "DEF49F568854DBE4F69ADF3B4BDF8374DE24AE5CE89CBB4CCE5F9C99195EAA38",
+      "Size": 11317
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\collectors\\collect_ad.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:16.674963Z",
+      "Hash": "26936305DBA07A2D74C15031BD0EBD9A019F9E726F734F7FBF3095BF6841255C",
+      "Size": 11342
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Tests\\IdentityFirst.QuickChecks.Integration.Tests.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:22.1191824Z",
+      "Hash": "1C2E22EF3FAC04B631A27F6B5FE8E46EFAB8917F6362C80E789C0704D681183A",
+      "Size": 26618
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\generate_fix_report.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:12.8990619Z",
+      "Hash": "B5AEC8EA1F5ABC3595FBBA2E2828F87F0975C06DDCF9FC844C0DF88177B9B635",
+      "Size": 11932
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\apply_safe_fixes.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:12.487Z",
+      "Hash": "14ABACE8ED408AF71CAA973B6372DE4EA639DA512483B506086E683637C1FC69",
+      "Size": 10790
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityTrustQuickChecks\\IdentityReviewDebt.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:21.2187969Z",
+      "Hash": "C94E2C21664DFF833B5CCFD926F4E63CAB36A03516A5D35EF8435D206DD7D6B1",
+      "Size": 22193
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Start-QuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:12.037583Z",
+      "Hash": "283BA3E44D5B351B7137BD820E53ABA75C712356BC06EB3334220B08A37DFC19",
+      "Size": 28440
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Invoke-InactiveAccountDetection.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:14.6825535Z",
+      "Hash": "313D2E3DB52DA4F1A7F9F0728E809F3018E519ED49B5704930167B3ECCE3CF7A",
+      "Size": 28115
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-AppConsentReality.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:15.1418366Z",
+      "Hash": "E9609A3DDC6E990E8768E301D5B0E31CC6D94257B1D87101EBBADDED5707A13C",
+      "Size": 22049
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\privileged\\apply_safe_fixes.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:18.1797179Z",
+      "Hash": "B187A6ECAADA012EE5C5A8CC45BF53E792878F5F22E54E5A2D97144672B982B6",
+      "Size": 13524
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityAssumptionQuickChecks\\IdentityOwnershipReality.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:18.8341784Z",
+      "Hash": "2D51324B6649BEC22525B2D28239943EC72DFF39704C93D0EAFAB6C9BA1721CA",
+      "Size": 22999
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\.scripts\\build_dotnet.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:12.6949182Z",
+      "Hash": "8211EF4423C275B18576F7FF98B6A27F9216D227D550644CA98F951889AEA3FD",
+      "Size": 10825
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Package-QuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:10.3508768Z",
+      "Hash": "98A87269E16FA0A98042478AA7F0B6A8236CB06F4E96DB96ABF3B5C2226B0D99",
+      "Size": 19803
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\dev-tools\\privileged\\pssa_fix_writehost.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:18.3884157Z",
+      "Hash": "B5B43C10F6E5F25308E5B8FF849B25144BA1AD1D4C4D143DE7FB745107BE45EB",
+      "Size": 10804
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-LegacyAuthReality.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:15.805053Z",
+      "Hash": "2337A2E7CD7D3CE3C0D6A83A1A9B31FBFB3826786DE44C47443E4602A0371ECD",
+      "Size": 20168
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Install-QuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:09.4658199Z",
+      "Hash": "352FF941726E220E4ACDC34E849C57C357D56697BCEE40D51D079CF2A4F6CDA2",
+      "Size": 21525
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Tests\\IdentityFirst.QuickChecks.Core.Tests.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:21.6881175Z",
+      "Hash": "3E76968757636B68B55FB59A93526EDC6ED6CF55E30A8FDED1C6F276539A3D2E",
+      "Size": 28012
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityTrustQuickChecks\\IdentityAttackSurface.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:20.7816182Z",
+      "Hash": "4592E667C43D3E18A9B5B61EA21B6D609269A7A45BE407058DC51694B820D009",
+      "Size": 20179
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Checks\\Entra\\Invoke-GuestCreep.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:15.3632594Z",
+      "Hash": "7E7CE89009D2684EEB6356464379726138D455B760CDBB7615E3A07F8247B425",
+      "Size": 13971
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\IdentityQuickChecks\\PasswordPolicyDrift.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:20.1403574Z",
+      "Hash": "9369E519E4D808BF489A8E865075CFF8EB48C4BE552B4001B054F648E09D659E",
+      "Size": 14244
+    },
+    "D:\\IdentityFirst-Ltd\\web\\2026web\\powershell-modules\\Run-AllQuickChecks.ps1": {
+      "Signed": false,
+      "LastModified": "2026-02-04T16:52:11.0176273Z",
+      "Hash": "6D7ABA005506A4FABFC2D0651768CFD319C333CD9A8C8BD35929DB3D9D80279D",
+      "Size": 15741
+    }
+  },
+  "Created": "2026-02-04T16:52:23.1398363Z"
+}
