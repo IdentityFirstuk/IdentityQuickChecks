@@ -1,21 +1,21 @@
 <#
 .SYNOPSIS
-    IdentityFirst QuickChecks - Validation, Trust & Informational Framework
-    
+    IdentityFirst QuickChecks - Validation, Trust and Informational Framework
+
 .DESCRIPTION
     Lite framework ensuring QuickChecks is:
     - SECURE: Safe execution, credential handling, dependency validation
     - TRUSTED: Code signing verification, integrity checks, audit logging
     - VALIDATED: Input validation, connection testing, prerequisite checks
     - INFORMATIVE: Progress indicators, summary reports, actionable output
-    
+
 .NOTES
     Author: mark.ahearne@identityfirst.net
     Requirements: PowerShell 5.1+
 #>
 
 # =============================================================================
-# SECURE: Credential & Secret Handling
+# SECURE: Credential and Secret Handling
 # =============================================================================
 
 function Test-SecureCredentialHandling {
@@ -25,20 +25,20 @@ function Test-SecureCredentialHandling {
     #>
     param($Context)
     $findings = @()
-    
+
     # Check for hardcoded credentials in scripts
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptDir = Split-Path $scriptPath -Parent
-    
+
     $dangerousPatterns = @(
         @{ Pattern = 'password\s*=\s*["''][^"'']+["'']'; Severity = 'Critical'; Name = 'Hardcoded password' },
         @{ Pattern = 'secret\s*=\s*["''][^"'']+["'']'; Severity = 'Critical'; Name = 'Hardcoded secret' },
         @{ Pattern = 'api[_-]?key\s*=\s*["''][^"'']+["'']'; Severity = 'Critical'; Name = 'Hardcoded API key' },
         @{ Pattern = 'connection[_-]?string\s*=\s*["''][^"'']+["'']'; Severity = 'High'; Name = 'Hardcoded connection string' }
     )
-    
+
     $psFiles = Get-ChildItem -Path $scriptDir -Filter '*.ps1' -Recurse -ErrorAction SilentlyContinue
-    
+
     foreach ($file in $psFiles) {
         $content = Get-Content $file.FullName -Raw -ErrorAction SilentlyContinue
         if ($content) {
@@ -52,8 +52,8 @@ function Test-SecureCredentialHandling {
                             RuleId = "SEC-CRED-001"; Source = "Security"; CheckName = "CredentialHandlingCheck";
                             AffectedCount = 0; Remediation = "" }
                     $f.Remediation = "Use secure credential storage (Azure Key Vault, Windows Credential Manager, or environment variables)."
-                    $f.RemediationSteps = @("Replace hardcoded values with Get-Credential", 
-                                           "Use environment variables with \$env:",
+                    $f.RemediationSteps = @("Replace hardcoded values with Get-Credential",
+                                           "Use environment variables (e.g. `$env:VAR_NAME)",
                                            "Integrate with Azure Key Vault",
                                            "Implement secret management")
                     Add-FindingObject $f $file.Name
@@ -62,7 +62,7 @@ function Test-SecureCredentialHandling {
             }
         }
     }
-    
+
     return $findings
 }
 
@@ -73,13 +73,13 @@ function Test-LeastPrivilegeExecution {
     #>
     param($Context)
     $findings = @()
-    
+
     # Check current execution context
     $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
     $isAdmin = (New-Object System.Security.Principal.WindowsPrincipal $currentUser).IsInRole(
         [System.Security.Principal.WindowsBuiltInRole]::Administrator
     )
-    
+
     if ($isAdmin) {
         $f = @{ Id = "SEC-PRIV-001"; Title = "Running with administrator privileges";
                 Description = "Script is executing with elevated privileges";
@@ -95,7 +95,7 @@ function Test-LeastPrivilegeExecution {
         Add-FindingObject $f $currentUser.Name
         $findings += $f
     }
-    
+
     # Check for dangerous PowerShell settings
     $executionPolicy = Get-ExecutionPolicy -Scope CurrentUser -ErrorAction SilentlyContinue
     if ($executionPolicy -eq 'Bypass' -or $executionPolicy -eq 'Unrestricted') {
@@ -107,18 +107,18 @@ function Test-LeastPrivilegeExecution {
                 RuleId = "SEC-POL-001"; Source = "Security"; CheckName = "ExecutionPolicyCheck";
                 AffectedCount = 0; Remediation = "" }
         $f.Remediation = "Use RemoteSigned or AllSigned for production. Document why Bypass is needed."
-        $f.RemediationSteps = @("Set ExecutionPolicy to RemoteSigned", 
+        $f.RemediationSteps = @("Set ExecutionPolicy to RemoteSigned",
                                "Digitally sign all scripts",
                                "Document exception justification")
         Add-FindingObject $f "Execution Policy: $executionPolicy"
         $findings += $f
     }
-    
+
     return $findings
 }
 
 # =============================================================================
-# TRUSTED: Code Signing & Integrity Verification
+# TRUSTED: Code Signing and Integrity Verification
 # =============================================================================
 
 function Test-CodeSignature {
@@ -128,11 +128,11 @@ function Test-CodeSignature {
     #>
     param($Context)
     $findings = @()
-    
+
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptDir = Split-Path $scriptPath -Parent
     $psFiles = Get-ChildItem -Path $scriptDir -Filter '*.ps1' -Recurse -ErrorAction SilentlyContinue
-    
+
     $unsignedCount = 0
     foreach ($file in $psFiles) {
         try {
@@ -145,7 +145,7 @@ function Test-CodeSignature {
             $unsignedCount++
         }
     }
-    
+
     if ($unsignedCount -gt 0) {
         $f = @{ Id = "TRUST-SIGN-001"; Title = "$unsignedCount scripts are not digitally signed";
                 Description = "Scripts without valid digital signatures may have been tampered with";
@@ -162,7 +162,7 @@ function Test-CodeSignature {
         Add-FindingObject $f "$unsignedCount unsigned scripts"
         $findings += $f
     }
-    
+
     return $findings
 }
 
@@ -173,23 +173,23 @@ function Test-FileIntegrity {
     #>
     param($Context)
     $findings = @()
-    
+
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptDir = Split-Path $scriptPath -Parent
-    
+
     # Calculate hashes for core scripts
     $knownGoodHashes = @{}  # In production, would store known hashes
-    
+
     $psFiles = Get-ChildItem -Path $scriptDir -Filter '*.ps1' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 20
-    
+
     foreach ($file in $psFiles) {
         try {
             $hash = (Get-FileHash $file.FullName -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
-            
+
             # Check for modified files (simple heuristic - future hashes would be stored)
             $fileAge = (Get-Date) - $file.LastWriteTime
             if ($fileAge.Days -gt 365) {
-                $f = @{ Id = "TRUST-INT-001"; Title = "Script hasn't been updated in over a year";
+                $f = @{ Id = "TRUST-INT-001"; Title = "Script has not been updated in over a year";
                         Description = "$($file.Name) was last modified $($fileAge.Days) days ago";
                         Severity = 'Low'; Category = "Trust_FileIntegrity";
                         Timestamp = [datetime]::UtcNow; AffectedObjects = @(); Evidence = @();
@@ -208,12 +208,12 @@ function Test-FileIntegrity {
             # Skip files we can't hash
         }
     }
-    
+
     return $findings
 }
 
 # =============================================================================
-# VALIDATED: Prerequisites & Configuration Checks
+# VALIDATED: Prerequisites and Configuration Checks
 # =============================================================================
 
 function Test-Prerequisites {
@@ -223,7 +223,7 @@ function Test-Prerequisites {
     #>
     param($Context)
     $findings = @()
-    
+
     # Check PowerShell version
     $psVersion = $PSVersionTable.PSVersion
     if ($psVersion.Major -lt 5) {
@@ -235,12 +235,12 @@ function Test-Prerequisites {
                 RuleId = "VAL-PS-001"; Source = "Validation"; CheckName = "PrerequisitesCheck";
                 AffectedCount = 0; Remediation = "" }
         $f.Remediation = "Upgrade to PowerShell 5.1 or later (7.x recommended)."
-        $f.RemediationSteps = @("Install Windows Management Framework 5.1", 
+        $f.RemediationSteps = @("Install Windows Management Framework 5.1",
                                "Or install PowerShell 7+ from GitHub")
         Add-FindingObject $f "Version: $psVersion"
         $findings += $f
     }
-    
+
     # Check required modules
     $requiredModules = @('Microsoft.Graph', 'Az.Accounts', 'ActiveDirectory')
     foreach ($mod in $requiredModules) {
@@ -260,7 +260,7 @@ function Test-Prerequisites {
             $findings += $f
         }
     }
-    
+
     # Check .NET version
     try {
         $netVersion = [System.Environment]::GetVersion()
@@ -283,7 +283,7 @@ function Test-Prerequisites {
     catch {
         # Skip .NET check if fails
     }
-    
+
     return $findings
 }
 
@@ -294,7 +294,7 @@ function Test-ConnectionValidity {
     #>
     param($Context)
     $findings = @()
-    
+
     # Test Microsoft Graph connectivity
     try {
         $graphConnected = $false
@@ -308,7 +308,7 @@ function Test-ConnectionValidity {
             $graphConnected = $false
             $graphError = $_.Exception.Message
         }
-        
+
         if (-not $graphConnected) {
             $f = @{ Id = "VAL-CON-001"; Title = "Cannot connect to Microsoft Graph";
                     Description = "Graph connection failed: $graphError";
@@ -329,7 +329,7 @@ function Test-ConnectionValidity {
     catch {
         # Module not available, skip
     }
-    
+
     # Test Azure connectivity
     try {
         $azConnected = $false
@@ -342,7 +342,7 @@ function Test-ConnectionValidity {
             $azConnected = $false
             $azError = $_.Exception.Message
         }
-        
+
         if (-not $azConnected) {
             $f = @{ Id = "VAL-CON-002"; Title = "Cannot connect to Azure";
                     Description = "Azure connection failed: $azError";
@@ -362,7 +362,7 @@ function Test-ConnectionValidity {
     catch {
         # Module not available, skip
     }
-    
+
     return $findings
 }
 
@@ -373,10 +373,10 @@ function Test-ConfigurationValidity {
     #>
     param($Context)
     $findings = @()
-    
+
     # Check for required environment variables
     $requiredEnvVars = @()
-    
+
     # Validate output directory is writable
     $outputDir = ".\QuickChecks-Output"
     if (Test-Path $outputDir) {
@@ -401,12 +401,12 @@ function Test-ConfigurationValidity {
             $findings += $f
         }
     }
-    
+
     return $findings
 }
 
 # =============================================================================
-# INFORMATIVE: Progress, Logging & Reporting
+# INFORMATIVE: Progress, Logging and Reporting
 # =============================================================================
 
 function New-ProgressAssessment {
@@ -415,11 +415,11 @@ function New-ProgressAssessment {
         Creates a progress tracking assessment.
     #>
     param($Findings)
-    
+
     # Group findings by category
     $byCategory = $Findings | Group-Object Category
     $bySeverity = $Findings | Group-Object Severity
-    
+
     return @{
         Timestamp = [datetime]::UtcNow
         TotalFindings = $Findings.Count
@@ -442,81 +442,92 @@ function New-ExecutiveSummary {
         $Duration,
         $ModulesScanned
     )
-    
+
     $critCount = ($Findings | Where-Object { $_.Severity -eq 'Critical' }).Count
     $highCount = ($Findings | Where-Object { $_.Severity -eq 'High' }).Count
-    
-    $summary = @"
-═══════════════════════════════════════════════════════════════════════════════════
-                     IDENTITYFIRST QUICKCHECKS - EXECUTIVE SUMMARY
-═══════════════════════════════════════════════════════════════════════════════════
 
-Assessment Completed: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') UTC
-Duration: $Duration seconds
-Modules Scanned: $($ModulesScanned -join ', ')
+    $summaryBuilder = [System.Text.StringBuilder]::new()
 
-OVERALL STATUS: $(if ($critCount -gt 0) { 'CRITICAL - Immediate action required' } elseif ($highCount -gt 0) { 'WARNING - Review required' } else { 'HEALTHY - No critical issues' })
+    [void]$summaryBuilder.AppendLine("================================================================================")
+    [void]$summaryBuilder.AppendLine("                     IDENTITYFIRST QUICKCHECKS - EXECUTIVE SUMMARY")
+    [void]$summaryBuilder.AppendLine("================================================================================")
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("Assessment Completed: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') UTC")
+    [void]$summaryBuilder.AppendLine("Duration: $Duration seconds")
+    [void]$summaryBuilder.AppendLine("Modules Scanned: $($ModulesScanned -join ', ')")
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("OVERALL STATUS: $(if ($critCount -gt 0) { 'CRITICAL - Immediate action required' } elseif ($highCount -gt 0) { 'WARNING - Review required' } else { 'HEALTHY - No critical issues' })")
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("FINDINGS SUMMARY")
+    [void]$summaryBuilder.AppendLine("-------------------------------------------------------------------------------")
 
-FINDINGS SUMMARY
-────────────────────────────────────────────────────────────────────────────────
-  CRITICAL:   $critCount   $(if ($critCount -gt 0) { '⚠️ IMMEDIATE ACTION REQUIRED' } else { '✓ No critical findings' })
-  HIGH:       $highCount   $(if ($highCount -gt 0) { '⚠️ Review within 7 days' } else { '✓ No high findings' })
-  MEDIUM:     $(($Findings | Where-Object { $_.Severity -eq 'Medium' }).Count)   Review within 30 days
-  LOW:        $(($Findings | Where-Object { $_.Severity -eq 'Low' }).Count)    Informational
+    $medCount = ($Findings | Where-Object { $_.Severity -eq 'Medium' }).Count
+    $lowCount = ($Findings | Where-Object { $_.Severity -eq 'Low' }).Count
 
-BY CATEGORY
-────────────────────────────────────────────────────────────────────────────────
-"@
-    
+    if ($critCount -gt 0) {
+        [void]$summaryBuilder.AppendLine("  CRITICAL:   $critCount   [!!] IMMEDIATE ACTION REQUIRED")
+    }
+    else {
+        [void]$summaryBuilder.AppendLine("  CRITICAL:   $critCount   [OK] No critical findings")
+    }
+
+    if ($highCount -gt 0) {
+        [void]$summaryBuilder.AppendLine("  HIGH:       $highCount   [!] Review within 7 days")
+    }
+    else {
+        [void]$summaryBuilder.AppendLine("  HIGH:       $highCount   [OK] No high findings")
+    }
+
+    [void]$summaryBuilder.AppendLine("  MEDIUM:     $medCount   Review within 30 days")
+    [void]$summaryBuilder.AppendLine("  LOW:        $lowCount   Informational")
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("BY CATEGORY")
+    [void]$summaryBuilder.AppendLine("-------------------------------------------------------------------------------")
+
     $byCategory = $Findings | Group-Object Category | Sort-Object Count -Descending
     foreach ($group in $byCategory) {
-        $summary += "  $($group.Name): $($group.Count) findings`n"
+        [void]$summaryBuilder.AppendLine("  $($group.Name): $($group.Count) findings")
     }
-    
-    $summary += @"
 
-TOP PRIORITY ACTIONS
-────────────────────────────────────────────────────────────────────────────────
-"@
-    
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("TOP PRIORITY ACTIONS")
+    [void]$summaryBuilder.AppendLine("-------------------------------------------------------------------------------")
+
     $criticalFindings = $Findings | Where-Object { $_.Severity -eq 'Critical' } | Select-Object -First 5
     if ($criticalFindings) {
         foreach ($f in $criticalFindings) {
-            $summary += "  [!] $($f.Title)`n"
-            $summary += "      Category: $($f.Category)`n"
-            $summary += "      Action: $($f.Remediation)`n`n"
+            [void]$summaryBuilder.AppendLine("  [!!] $($f.Title)")
+            [void]$summaryBuilder.AppendLine("      Category: $($f.Category)")
+            [void]$summaryBuilder.AppendLine("      Action: $($f.Remediation)")
+            [void]$summaryBuilder.AppendLine("")
         }
     }
     else {
-        $summary += "  ✓ No critical findings requiring immediate action`n"
+        [void]$summaryBuilder.AppendLine("  [OK] No critical findings requiring immediate action")
     }
-    
-    $summary += @"
 
-RECOMMENDATIONS
-────────────────────────────────────────────────────────────────────────────────
-"@
-    
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("RECOMMENDATIONS")
+    [void]$summaryBuilder.AppendLine("-------------------------------------------------------------------------------")
+
     if ($critCount -gt 0) {
-        $summary += "  1. Address all CRITICAL findings immediately`n"
-        $summary += "  2. Review and remediate HIGH findings within 7 days`n"
-        $summary += "  3. Schedule review of MEDIUM findings within 30 days`n"
+        [void]$summaryBuilder.AppendLine("  1. Address all CRITICAL findings immediately")
+        [void]$summaryBuilder.AppendLine("  2. Review and remediate HIGH findings within 7 days")
+        [void]$summaryBuilder.AppendLine("  3. Schedule review of MEDIUM findings within 30 days")
     }
     elseif ($highCount -gt 0) {
-        $summary += "  1. Review HIGH findings within 7 days`n"
-        $summary += "  2. Address MEDIUM findings within 30 days`n"
+        [void]$summaryBuilder.AppendLine("  1. Review HIGH findings within 7 days")
+        [void]$summaryBuilder.AppendLine("  2. Address MEDIUM findings within 30 days")
     }
     else {
-        $summary += "  1. Continue regular security assessments`n"
-        $summary += "  2. Monitor for new findings`n"
+        [void]$summaryBuilder.AppendLine("  1. Continue regular security assessments")
+        [void]$summaryBuilder.AppendLine("  2. Monitor for new findings")
     }
-    
-    $summary += @"
 
-═══════════════════════════════════════════════════════════════════════════════════
-"@
-    
-    return $summary
+    [void]$summaryBuilder.AppendLine("")
+    [void]$summaryBuilder.AppendLine("================================================================================")
+
+    return $summaryBuilder.ToString()
 }
 
 function Write-ProgressIndicator {
@@ -530,15 +541,15 @@ function Write-ProgressIndicator {
         [string]$Activity,
         [string[]]$Messages
     )
-    
+
     $percent = [int](($Current / $Total) * 100)
     $filled = [int]($percent / 5)
     $empty = 20 - $filled
     $bar = ("#" * $filled) + ("-" * $empty)
-    
+
     Write-Host "`r[$bar] $percent% - $Activity" -NoNewline -ForegroundColor Cyan
     if ($Current -eq $Total) {
-        Write-Host " ✓" -ForegroundColor Green
+        Write-Host " [OK]" -ForegroundColor Green
     }
 }
 
@@ -553,7 +564,7 @@ function New-AuditLog {
         [string]$Result,
         [string]$Details
     )
-    
+
     $logEntry = @{
         Timestamp = [datetime]::UtcNow
         Operation = $Operation
@@ -562,7 +573,7 @@ function New-AuditLog {
         Details = $Details
         SessionId = [guid]::NewGuid().ToString().Substring(0, 8)
     }
-    
+
     return $logEntry
 }
 
@@ -583,11 +594,11 @@ function Invoke-QuickChecksValidation {
         [switch]$SkipValidation,
         [switch]$Help
     )
-    
+
     if ($Help) {
         Write-Host @"
-IdentityFirst QuickChecks - Validation & Trust Framework
-=====================================================
+IdentityFirst QuickChecks - Validation and Trust Framework
+=========================================================
 Ensures QuickChecks is SECURE, TRUSTED, VALIDATED, and INFORMATIVE.
 
 SECURE Checks:
@@ -620,15 +631,15 @@ FLAGS:
 "@
         return
     }
-    
-    Write-Host "`n╔═══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "║  IdentityFirst QuickChecks - Security, Trust & Validation Framework         ║" -ForegroundColor Cyan
-    Write-Host "╚═══════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
-    
+
+    Write-Host "`n+================================================================================+" -ForegroundColor Cyan
+    Write-Host "|  IdentityFirst QuickChecks - Security, Trust and Validation Framework        |" -ForegroundColor Cyan
+    Write-Host "+================================================================================+" -ForegroundColor Cyan
+
     $startTime = Get-Date
     $context = @{ StartTime = $startTime; Log = @() }
     $allFindings = @()
-    
+
     # Security Checks
     if (-not $SkipSecurity) {
         Write-Host "`n[SECURITY] Running security checks..." -ForegroundColor Yellow
@@ -638,7 +649,7 @@ FLAGS:
         $allFindings += Test-LeastPrivilegeExecution -Context $context
         Write-Host "  [3/3] Security checks complete" -ForegroundColor Green
     }
-    
+
     # Trust Checks
     if (-not $SkipTrust) {
         Write-Host "`n[TRUST] Running trust verification..." -ForegroundColor Yellow
@@ -648,7 +659,7 @@ FLAGS:
         $allFindings += Test-FileIntegrity -Context $context
         Write-Host "  Trust verification complete" -ForegroundColor Green
     }
-    
+
     # Validation Checks
     if (-not $SkipValidation) {
         Write-Host "`n[VALIDATION] Running validation..." -ForegroundColor Yellow
@@ -660,23 +671,23 @@ FLAGS:
         $allFindings += Test-ConfigurationValidity -Context $context
         Write-Host "  Validation complete" -ForegroundColor Green
     }
-    
+
     $endTime = Get-Date
     $duration = ($endTime - $startTime).TotalSeconds
-    
+
     # Generate reports
     Write-Host "`n[REPORT] Generating reports..." -ForegroundColor Yellow
-    
+
     if (-not (Test-Path $OutputDir)) {
         New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
     }
-    
+
     $timestamp = $startTime.ToString('yyyyMMdd-HHmmss')
-    
+
     # Executive Summary
     $summary = New-ExecutiveSummary -Findings $allFindings -Duration $duration -ModulesScanned @('Security', 'Trust', 'Validation')
     Write-Host $summary
-    
+
     # Save JSON report
     if ($Format -eq 'Json') {
         $report = @{
@@ -689,30 +700,31 @@ FLAGS:
         $report | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $OutputDir "Validation-Report-$timestamp.json") -Encoding UTF8
         Write-Host "JSON Report: $(Join-Path $OutputDir "Validation-Report-$timestamp.json")" -ForegroundColor Green
     }
-    
+
     # Save executive summary
     $summary | Set-Content -Path (Join-Path $OutputDir "Executive-Summary-$timestamp.txt") -Encoding UTF8
     Write-Host "Summary: $(Join-Path $OutputDir "Executive-Summary-$timestamp.txt")" -ForegroundColor Green
-    
+
     # Display statistics
     $crit = ($allFindings | Where-Object { $_.Severity -eq 'Critical' }).Count
     $high = ($allFindings | Where-Object { $_.Severity -eq 'High' }).Count
-    
-    Write-Host "`n═══════════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+
+    Write-Host "`n================================================================================" -ForegroundColor Cyan
     Write-Host " VALIDATION SUMMARY " -ForegroundColor White
-    Write-Host "═══════════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host "`n  Duration: $([math]::Round($duration, 2)) seconds"
+    Write-Host "================================================================================" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  Duration: $([math]::Round($duration, 2)) seconds"
     Write-Host "  Total Findings: $($allFindings.Count)"
     Write-Host "  Critical: $crit" -ForegroundColor $(if ($crit -gt 0) { 'Red' } else { 'Green' })
     Write-Host "  High: $high" -ForegroundColor $(if ($high -gt 0) { 'DarkRed' } else { 'Green' })
     Write-Host "  Medium: $(($allFindings | Where-Object { $_.Severity -eq 'Medium' }).Count)" -ForegroundColor Yellow
     Write-Host "  Low: $(($allFindings | Where-Object { $_.Severity -eq 'Low' }).Count)" -ForegroundColor Cyan
     Write-Host ""
-    
+
     $exitCode = if ($crit -gt 0) { 2 } elseif ($high -gt 0) { 1 } else { 0 }
     Write-Host "Exit Code: $exitCode" -ForegroundColor Gray
     Write-Host ""
-    
+
     return @{ Findings = $allFindings; ExitCode = $exitCode; Duration = $duration }
 }
 

@@ -1,3 +1,160 @@
+
+# ============================================================================
+# Finding Helper Functions
+# ============================================================================
+
+function New-Finding {
+    <#.SYNOPSIS
+        Creates a standardized finding object for security assessments.
+    .DESCRIPTION
+        This helper function creates a consistent finding structure.
+    .PARAMETER Id
+        Unique identifier for the finding.
+    .PARAMETER Title
+        Brief descriptive title of the finding.
+    .PARAMETER Description
+        Detailed explanation of what was found.
+    .PARAMETER Severity
+        Severity level: Critical, High, Medium, Low, or Info.
+    .PARAMETER Category
+        Category for grouping related findings.
+    .OUTPUTS
+        Hashtable representing a standardized finding object.
+    #>
+    param(
+        [Parameter(Mandatory = $true, HelpMessage = "Unique finding identifier")]
+        [ValidateNotNullOrEmpty()]
+        [string]$Id,
+        [Parameter(Mandatory = $true, HelpMessage = "Brief finding title")]
+        [ValidateNotNullOrEmpty()]
+        [string]$Title,
+        [Parameter(Mandatory = $true, HelpMessage = "Detailed description")]
+        [ValidateNotNullOrEmpty()]
+        [string]$Description,
+        [Parameter(Mandatory = $true, HelpMessage = "Severity level")]
+        [ValidateSet("Critical", "High", "Medium", "Low", "Info")]
+        [string]$Severity,
+        [Parameter(Mandatory = $true, HelpMessage = "Finding category")]
+        [ValidateNotNullOrEmpty()]
+        [string]$Category
+    )
+    return @{
+        Id = $Id; Title = $Title; Description = $Description; Severity = $Severity; Category = $Category
+        Timestamp = [datetime]::UtcNow; AffectedObjects = @(); Evidence = @(); RemediationSteps = @()
+        IsResolved = $false; Confidence = "Medium"; RuleId = $Id; RuleDescription = ""; Source = ""; CheckName = ""
+        AffectedCount = 0; Remediation = ""; RemediationUrl = ""
+    }
+}
+
+function Add-FindingObject {
+    <#.SYNOPSIS
+        Adds an affected object to a finding.
+    .PARAMETER Finding
+        The finding hashtable to modify.
+    .PARAMETER Object
+        The object identifier to add.
+    #>
+    param([Parameter(Mandatory)] [hashtable]$Finding, [Parameter(Mandatory)] [AllowEmptyString()] [string]$Object)
+    { $Finding.AffectedObjects += $Object; $Finding.AffectedCount = $Finding.AffectedObjects.Count }
+}
+
+function Add-FindingEvidence {
+    <#.SYNOPSIS
+        Adds evidence to a finding.
+    .PARAMETER Finding
+        The finding hashtable to modify.
+    .PARAMETER Source
+        The data source or command that generated the evidence.
+    .PARAMETER Detail
+        Specific evidence details.
+    .PARAMETER Confidence
+        Confidence level: High, Medium, or Low.
+    #>
+    param([Parameter(Mandatory)] [hashtable]$Finding, [Parameter(Mandatory)] [ValidateNotNullOrEmpty()] [string]$Source,
+        [Parameter(Mandatory)] [ValidateNotNullOrEmpty()] [string]$Detail, [Parameter()] [ValidateSet("High", "Medium", "Low")] [string]$Confidence = "Medium")
+    { $Finding.Evidence += @{ Source = $Source; Detail = $Detail; Confidence = $Confidence; Timestamp = [datetime]::UtcNow }; $Finding.Confidence = $Confidence }
+}
+
+function Add-FindingRemediation {
+    <#.SYNOPSIS
+        Adds remediation guidance to a finding.
+    .PARAMETER Finding
+        The finding hashtable to modify.
+    .PARAMETER Remediation
+        Summary of remediation actions.
+    .PARAMETER Steps
+        Array of step-by-step remediation instructions.
+    #>
+    param([Parameter(Mandatory)] [hashtable]$Finding, [Parameter(Mandatory)] [ValidateNotNullOrEmpty()] [string]$Remediation, [Parameter()] [string[]]$Steps)
+    { $Finding.Remediation = $Remediation; if ($Steps) { $Finding.RemediationSteps = $Steps } }
+}
+
+function New-AssessmentContext {
+    <#.SYNOPSIS
+        Creates a new assessment context object.
+    .OUTPUTS
+        Hashtable representing the assessment context.
+    #>
+    { @{ StartTime = [datetime]::UtcNow; Configuration = @(); CollectorResults = @(); Log = @() } }
+}
+
+function Add-AssessmentLog {
+    <#.SYNOPSIS
+        Adds a log entry to the assessment context.
+    .PARAMETER Context
+        The assessment context object.
+    .PARAMETER Message
+        Log message content.
+    .PARAMETER Level
+        Severity level: Debug, Info, Warning, Error.
+    #>
+    param([Parameter(Mandatory)] [hashtable]$Context, [Parameter(Mandatory)] [ValidateNotNullOrEmpty()] [string]$Message,
+        [Parameter()] [ValidateSet("Debug", "Info", "Warning", "Error")] [string]$Level = "Info")
+    { $Context.Log += @{ Timestamp = [datetime]::UtcNow; Level = $Level; Message = $Message } }
+}
+
+function New-AssessmentReport {
+    <#.SYNOPSIS
+        Generates an assessment report from findings.
+    .DESCRIPTION
+        Calculates overall score, health status, and summary statistics.
+    .PARAMETER Findings
+        Array of finding hashtables.
+    .PARAMETER Config
+        Assessment configuration hashtable.
+    #>
+    param([Parameter(Mandatory)] [array]$Findings, [Parameter(Mandatory)] [hashtable]$Config)
+    {
+        $score = 100
+        foreach ($f in $Findings) { switch ($f.Severity) { "Critical" { $score -= 25 } "High" { $score -= 10 } "Medium" { $score -= 5 } "Low" { $score -= 2 } } }
+        $score = [Math]::Max(0, [Math]::Min(100, $score))
+        $crit = ($Findings | Where-Object { $_.Severity -eq 'Critical' }).Count
+        $high = ($Findings | Where-Object { $_.Severity -eq 'High' }).Count
+        $status = $script:HealthStatus.Healthy
+        if ($crit -ge $Config.CriticalThreshold) { $status = $script:HealthStatus.Critical }
+        elseif ($high -ge $Config.HighThreshold) { $status = $script:HealthStatus.Warning }
+        return @{
+            ReportId = [guid]::NewGuid().ToString().Substring(0,8); Timestamp = [datetime]::UtcNow; Version = "1.1.0"
+            OverallScore = $score; HealthStatus = $status; TotalFindings = $Findings.Count
+            CriticalCount = $crit; HighCount = $high; MediumCount = ($Findings | Where-Object { $_.Severity -eq 'Medium' }).Count
+            LowCount = ($Findings | Where-Object { $_.Severity -eq 'Low' }).Count; Findings = $Findings; Configuration = $Config
+        }
+    }
+}
+# ============================================================================
+# Configurable Thresholds
+# ============================================================================
+# These thresholds can be adjusted based on organizational requirements.
+# Module Type: Federation
+
+$script:DefaultThresholds = @{
+    WsFedTokenLifetime = 60
+    SamlTokenLifetime = 60
+}
+
+# Severity and Status Definitions
+$script:FindingSeverity = @{ Critical = "Critical"; High = "High"; Medium = "Medium"; Low = "Low"; Info = "Info" }
+$script:HealthStatus = @{ Healthy = "Healthy"; Warning = "Warning"; Critical = "Critical" }
 # ============================================================================
 # IdentityFirst QuickChecks - Federation, Backup & APIM Module
 # ============================================================================
