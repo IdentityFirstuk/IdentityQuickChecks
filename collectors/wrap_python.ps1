@@ -1,3 +1,15 @@
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
 <#
 Wrapper to run a Python collector safely and print JSON to stdout.
 Usage: .\wrap_python.ps1 -CollectorPath .\my_collector.py -Env @{KEY='VAL'}

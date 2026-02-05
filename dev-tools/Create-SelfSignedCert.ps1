@@ -1,4 +1,16 @@
-﻿#!/usr/bin/env pwsh
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
+#!/usr/bin/env pwsh
 # IdentityFirst Maximum Security Self-Signed Certificate Generator
 # Developer helper — creates 4096-bit RSA certificate for local code signing
 # THIS SCRIPT IS FOR MAINTAINERS ONLY. Do NOT distribute this script

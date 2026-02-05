@@ -1,3 +1,15 @@
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
 # IdentityFirst QuickChecks - Configuration Template
 # Copy this file to QuickChecks.config.ps1 and modify values
 
@@ -134,23 +146,3 @@
     }
 }
 
-# =========================================================================
-# Usage Instructions
-# =========================================================================
-# 
-# To use this configuration:
-#
-# 1. Copy this file to QuickChecks.config.ps1
-# 2. Modify values as needed
-# 3. In your scripts, import config before running:
-#
-#    $configPath = ".\QuickChecks.config.ps1"
-#    if (Test-Path $configPath) {
-#        $script:IFQCConfig = . $configPath
-#    }
-#
-# 4. Reference config values in scripts:
-#
-#    $inactiveDays = $IFQCConfig.InactiveDaysThreshold
-#
-# =========================================================================

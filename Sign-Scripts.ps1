@@ -1,3 +1,15 @@
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
 <#
 .SYNOPSIS
     Sign all PowerShell scripts in a directory
@@ -78,13 +90,20 @@ function Test-Certificate {
     param([string]$CertPath, [SecureString]$CertPassword)
 
     try {
-        $cert = Get-PfxCertificate -FilePath $CertPath -Password $CertPassword -ErrorAction Stop
+        # Load certificate with or without password
+        if ($CertPassword) {
+            $cert = Get-PfxCertificate -FilePath $CertPath -Password $CertPassword -ErrorAction Stop
+        }
+        else {
+            $cert = Get-PfxCertificate -FilePath $CertPath -ErrorAction Stop
+        }
 
         # Check if certificate is valid for code signing
-        $keyUsage = $cert.EnhancedKeyUsageList | Where-Object { $_.FriendlyName -eq "Code Signing" }
-
-        if (-not $keyUsage) {
-            Write-Host "  WARNING: Certificate may not be configured for code signing" -ForegroundColor $Yellow
+        if ($cert.EnhancedKeyUsageList) {
+            $keyUsage = $cert.EnhancedKeyUsageList | Where-Object { $_.FriendlyName -eq "Code Signing" }
+            if (-not $keyUsage) {
+                Write-Host "  WARNING: Certificate may not be configured for code signing" -ForegroundColor $Yellow
+            }
         }
 
         return $cert
@@ -299,20 +318,36 @@ else {
         exit 1
     }
 
-    if (-not $Password) {
-        Write-Host "[ERROR] Certificate password required" -ForegroundColor $Red
-        Write-Host "        Use: .\Sign-Scripts.ps1 -CertificatePath '.\cert.pfx' -Password (ConvertTo-SecureString 'password' -AsPlainText -Force)" -ForegroundColor $Gray
+    # Verify certificate file exists
+    if (-not (Test-Path $CertificatePath -PathType Leaf)) {
+        Write-Host "[ERROR] Certificate file not found: $CertificatePath" -ForegroundColor $Red
+        Write-Host "        Please provide a valid path to a .pfx file" -ForegroundColor $Gray
         exit 1
     }
 
-    # Load certificate
-    Write-Host "[INFO] Loading certificate: $CertificatePath" -ForegroundColor $Gray
-    $cert = Test-Certificate -CertPath $CertificatePath -CertPassword $Password
-    if (-not $cert) {
-        exit 1
+    if (-not $Password) {
+        # Try loading certificate without password first
+        try {
+            $cert = Get-PfxCertificate -FilePath $CertificatePath -ErrorAction Stop
+            Write-Host "  [INFO] Certificate loaded (no password required)" -ForegroundColor $Gray
+        }
+        catch {
+            Write-Host "[ERROR] Certificate password required or invalid certificate" -ForegroundColor $Red
+            Write-Host "        File: $CertificatePath" -ForegroundColor $Gray
+            Write-Host "        Use: .\Sign-Scripts.ps1 -CertificatePath '.\cert.pfx' -Password (ConvertTo-SecureString 'password' -AsPlainText -Force)" -ForegroundColor $Gray
+            exit 1
+        }
     }
-    Write-Host "  Certificate loaded: $($cert.Subject)" -ForegroundColor $Green
-    Write-Host "  Valid from: $($cert.NotBefore) to $($cert.NotAfter)" -ForegroundColor $Gray
+    else {
+        # Load certificate with password
+        Write-Host "[INFO] Loading certificate: $CertificatePath" -ForegroundColor $Gray
+        $cert = Test-Certificate -CertPath $CertificatePath -CertPassword $Password
+        if (-not $cert) {
+            exit 1
+        }
+        Write-Host "  Certificate loaded: $($cert.Subject)" -ForegroundColor $Green
+        Write-Host "  Valid from: $($cert.NotBefore) to $($cert.NotAfter)" -ForegroundColor $Gray
+    }
     Write-Host ""
 
     # Sign all scripts

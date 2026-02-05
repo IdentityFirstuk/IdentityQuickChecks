@@ -1,3 +1,15 @@
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
 @{
     RootModule        = 'IdentityFirst.QuickChecks.psm1'
     ModuleVersion     = '1.1.0'
@@ -14,45 +26,58 @@
 
     # Functions to export - wrapper functions defined in psm1
     FunctionsToExport = @(
-        # Core Identity Checks
+        # Core Identity QuickChecks
         'Invoke-BreakGlassReality',
         'Invoke-IdentityNamingHygiene',
         'Invoke-PasswordPolicyDrift',
         'Invoke-PrivilegedNestingAbuse',
 
-        # Trust Checks
+        # AD Security QuickChecks
+        'Invoke-AdCsAssessment',
+        'Invoke-KerberosReality',
+        'Invoke-LapsReality',
+        'Invoke-SidHistoryDetection',
+        'Invoke-DcsyncRights',
+        'Invoke-AdminSdHolderAssessment',
+        'Invoke-OuGpInheritanceBlocked',
+        'Invoke-AdEmptyGroups',
+        'Invoke-PrivilegedGroupMembership',
+        'Invoke-MemberServerHealth',
+        'Invoke-TrustRelationshipAnalysis',
+        'Invoke-CertificateTemplateInventory',
+        'Invoke-UserAccountHealth',
+
+        # Trust QuickChecks
         'Invoke-ExternalTrustMapping',
         'Invoke-IdentityAttackSurface',
-        'Invoke-IdentityReviewDebt',
-        'Invoke-IdentityLoggingGaps',
 
-        # Assumption Checks
-        'Invoke-WeDontUseThatCheck',
-        'Invoke-IdentityOwnershipReality',
-
-        # Boundary Checks
+        # Boundary QuickChecks
         'Invoke-CrossEnvironmentBoundary',
         'Invoke-IdentityTieringDrift',
 
-        # EntraID Checks
+        # EntraID QuickChecks
         'Invoke-LegacyAuthReality',
         'Invoke-AppConsentReality',
         'Invoke-GuestCreep',
         'Invoke-MfaCoverageGap',
         'Invoke-HybridSyncReality',
+        'Invoke-EntraEnhancedIdentity',
 
-        # Cloud Inventory
+        # Cloud Inventory QuickChecks
         'Invoke-AwsIdentityInventory',
         'Invoke-GcpIdentityInventory',
 
-        # Cross-Platform
+        # Cross-Platform QuickChecks
         'Invoke-InactiveAccountDetection',
 
         # Validation Framework
         'Invoke-QuickChecksValidation',
 
-        # Enhanced EntraID
-        'Invoke-EntraEnhancedIdentity'
+        # Azure AD Connect QuickChecks
+        'Invoke-AzureAdConnectAssessment',
+
+        # Delegation Analysis QuickChecks
+        'Invoke-DelegationAnalysis'
     )
 
     CmdletsToExport   = @()
@@ -63,9 +88,12 @@
     )
     AliasesToExport   = @()
 
-    # Nested modules - supporting modules
+    # Nested modules - supporting modules (use relative paths)
     NestedModules     = @(
-        'IdentityFirst.QuickChecks.Compatibility'
+        'Shared\IdentityFirst.Data.psm1',
+        'Shared\IdentityFirst.Help.psm1',
+        'Shared\ReportFormatter.psm1',
+        'Shared\Invoke-QuickChecksApi.ps1'
     )
 
     # External dependencies - loaded dynamically
@@ -120,7 +148,7 @@ Get-Command -Module IdentityFirst.QuickChecks
 ### Commands Added
 - Invoke-QuickChecksValidation - Validation and trust framework
 - Invoke-EntraEnhancedIdentity - Enhanced EntraID identity checks
-'@
+'
             Prerequisites = @'
 ## Prerequisites
 
@@ -137,7 +165,7 @@ Get-Command -Module IdentityFirst.QuickChecks
 - Microsoft.Graph (PowerShell 7+)
 - AWS Tools for PowerShell (optional)
 - gcloud CLI (optional, for GCP)
-'@
+'
         }
     }
 

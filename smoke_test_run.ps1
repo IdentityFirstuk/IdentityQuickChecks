@@ -1,3 +1,15 @@
+# ============================================================================
+# ATTRIBUTION
+# ============================================================================
+# Author: Mark Ahearne
+# Email: mark.ahearne@identityfirst.net
+# Company: IdentityFirst Ltd
+#
+# This script is provided by IdentityFirst Ltd for identity security assessment.
+# All rights reserved.
+#
+# License: See EULA.txt for license terms.
+# ============================================================================
 try {
     $modulePath = 'd:\IdentityFirst-Ltd\web\2026web\powershell-modules\Module\IdentityFirst.QuickChecks.psm1'
     Write-Output "Importing module: $modulePath"
