@@ -1,0 +1,280 @@
+name: Release Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        required: false
+        type: boolean
+        default: false
+      create_tag:
+        description: 'Create git tag'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup PowerShell
+      uses: actions/powershell@v4
+      with:
+        shell: pwsh
+        version: 5.1
+    
+    - name: Determine version
+      id: version
+      shell: pwsh
+      run: |
+        $version = '${{ github.event.inputs.version }}'
+        if (-not $version) {
+          # Try to get from VERSION.txt
+          if (Test-Path 'VERSION.txt') {
+            $version = (Get-Content 'VERSION.txt' -Raw).Trim()
+          }
+          else {
+            $version = "1.0.0"
+          }
+        }
+        # Validate version format
+        if ($version -notmatch '^\d+\.\d+\.\d+(-[a-z0-9.]+)?$') {
+          Write-Error "Invalid version format: $version"
+          exit 1
+        }
+        Write-Output "version=$version" >> $env:GITHUB_OUTPUT
+    
+    - name: Generate changelog
+      id: changelog
+      shell: pwsh
+      run: |
+        $version = '${{ steps.version.outputs.version }}'
+        
+        # Get changelog content
+        if (Test-Path 'CHANGELOG.md') {
+          $changelog = Get-Content 'CHANGELOG.md' -Raw
+          
+          # Extract section for this version
+          $lines = $changelog -split '\r?\n'
+          $output = @()
+          $capture = $false
+          
+          foreach ($line in $lines) {
+            if ($line -match "^##\s+\[?$version\]?") {
+              $capture = $true
+              $output += $line
+            }
+            elseif ($line -match '^##\s+\[') {
+              if ($capture) { break }
+            }
+            elseif ($capture) {
+              $output += $line
+            }
+          }
+          
+          $result = $output -join "`n"
+          if (-not $result.Trim()) {
+            $result = "Release version $version`n`nSee [CHANGELOG.md](CHANGELOG.md) for details."
+          }
+        }
+        else {
+          $result = "Release version $version"
+        }
+        
+        # Escape for GitHub output
+        $result = $result -replace '`n', '%0A' -replace '`r', ''
+        Write-Output "changelog=$result" >> $env:GITHUB_OUTPUT
+    
+    - name: Update VERSION.txt
+      if: github.event.inputs.create_tag == 'true'
+      shell: pwsh
+      run: |
+        $version = '${{ steps.version.outputs.version }}'
+        Set-Content -Path 'VERSION.txt' -Value $version -NoNewline
+        
+        # Commit version change
+        git config user.name 'github-actions'
+        git config user.email 'github-actions@github.com'
+        git add VERSION.txt
+        git commit -m "Release version $version"
+        git push origin main
+
+  build:
+    name: Build Release Package
+    runs-on: windows-latest
+    needs: prepare-release
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+    
+    - name: Setup PowerShell
+      uses: actions/powershell@v4
+      with:
+        shell: pwsh
+        version: 5.1
+    
+    - name: Install dependencies
+      shell: pwsh
+      run: |
+        # Install required modules for build
+        Install-Module Az.Accounts -Scope CurrentUser -Force -AllowPrerelease
+        Install-Module Az.Resources -Scope CurrentUser -Force
+        Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force
+        Install-Module AWS.Tools.Common -Scope CurrentUser -Force
+    
+    - name: Create release package
+      shell: pwsh
+      env:
+        VERSION: ${{ needs.prepare-release.outputs.version }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        
+        $version = $env:VERSION
+        Write-Host "Building release package v$version" -ForegroundColor Cyan
+        
+        # Create output directory
+        $outputDir = "release-build"
+        New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+        
+        # Copy module files
+        $moduleDir = "$outputDir\IdentityFirst.QuickChecks"
+        New-Item -ItemType Directory -Path $moduleDir -Force | Out-Null
+        
+        # Get all psm1 and psd1 files
+        Get-ChildItem -Path . -Filter '*.psm1' -Recurse | Where-Object {
+          $_.Directory.Name -notin @('.git', '.github', 'docs', 'sample-output')
+        } | Copy-Item -Destination $moduleDir -Recurse -Force
+        
+        Get-ChildItem -Path . -Filter '*.psd1' -Recurse | Where-Object {
+          $_.Directory.Name -notin @('.git', '.github', 'docs', 'sample-output')
+        } | Copy-Item -Destination $moduleDir -Recurse -Force
+        
+        # Copy scripts
+        $scriptsDir = "$outputDir\scripts"
+        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        
+        Get-ChildItem -Path . -Filter '*.ps1' -File | Where-Object {
+          $_.Name -notin @('Install-Prerequisites.ps1', 'Run-AllQuickChecks.bat')
+        } | Copy-Item -Destination $scriptsDir -Force
+        
+        # Copy docs
+        $docsDir = "$outputDir\docs"
+        New-Item -ItemType Directory -Path $docsDir -Force | Out-Null
+        
+        Get-ChildItem -Path docs -Filter '*.md' | Copy-Item -Destination $docsDir -Force
+        
+        # Copy root files
+        Copy-Item 'README.md' -Destination $outputDir
+        Copy-Item 'CHANGELOG.md' -Destination $outputDir
+        Copy-Item 'EULA.txt' -Destination $outputDir
+        Copy-Item 'VERSION.txt' -Destination $outputDir
+        
+        # Create ZIP
+        $zipPath = "IdentityFirst.QuickChecks-$version.zip"
+        Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
+        
+        Write-Host "Created: $zipPath" -ForegroundColor Green
+        Write-Host "Size: $((Get-Item $zipPath).Length / 1MB) MB" -ForegroundColor Gray
+        
+        # Upload artifact
+        Write-Host "##vso[artifact.upload artifactname=release]$zipPath"
+    
+    - name: Generate checksum
+      shell: pwsh
+      env:
+        VERSION: ${{ needs.prepare-release.outputs.version }}
+      run: |
+        $version = $env:VERSION
+        $zipPath = "IdentityFirst.QuickChecks-$version.zip"
+        
+        $checksum = (Get-FileHash $zipPath -Algorithm SHA256).Hash
+        
+        # Create checksum file
+        "$zipPath`nSHA256: $checksum" | Out-File -FilePath "IdentityFirst.QuickChecks-$version.sha256"
+        
+        Write-Host "Checksum: $checksum" -ForegroundColor Gray
+        Write-Host "##vso[artifact.upload artifactname=checksum]IdentityFirst.QuickChecks-$version.sha256"
+    
+    - name: Upload release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: release
+        path: IdentityFirst.QuickChecks-*.zip
+        retention-days: 30
+    
+    - name: Upload checksum
+      uses: actions/upload-artifact@v4
+      with:
+        name: checksum
+        path: IdentityFirst.QuickChecks-*.sha256
+        retention-days: 30
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [prepare-release, build]
+    
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: release
+        path: artifacts
+    
+    - name: Download checksum
+      uses: actions/download-artifact@v4
+      with:
+        name: checksum
+        path: artifacts
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          artifacts/*.zip
+          artifacts/*.sha256
+        name: Release v${{ needs.prepare-release.outputs.version }}
+        body: ${{ needs.prepare-release.outputs.changelog }}
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease }}
+        tag: v${{ needs.prepare-release.outputs.version }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: create-release
+    
+    steps:
+    - name: Success notification
+      if: success()
+      run: |
+        echo "✅ Release v${{ needs.prepare-release.outputs.version }} created successfully!"
+        echo "📦 Uploaded: IdentityFirst.QuickChecks-${{ needs.prepare-release.outputs.version }}.zip"
+    
+    - name: Failure notification
+      if: failure()
+      run: |
+        echo "❌ Release creation failed!"
+        echo "📋 Check workflow logs for details"

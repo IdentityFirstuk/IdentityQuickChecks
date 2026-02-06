@@ -1,9 +1,10 @@
 {
   "meta": {
-    "toolName": "BreakGlassReality",
-    "toolVersion": "1.0.0",
+    "toolName": "IdentityFirst.QuickChecks",
+    "toolVersion": "1.1.0",
     "runId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "generatedAtUtc": "2026-01-29T12:00:00.000Z",
+    "generatedAtUtc": "2026-02-06T14:39:00.000Z",
+    "schemaVersion": "1.1",
     "host": {
       "computerName": "DC01",
       "userName": "admin",
@@ -16,26 +17,69 @@
     "detailLevel": "Normal"
   },
   "summary": {
-    "totalFindings": 2,
-    "critical": 0,
-    "high": 2,
-    "medium": 0,
-    "low": 0
-  },
-  "data": {
-    "breakGlassAccountsFound": 3,
-    "breakGlassEnabled": 3,
-    "passwordNeverExpires": 2,
-    "mfaEnabled": 1
+    "totalFindings": 4,
+    "resolvedFindings": 0,
+    "openFindings": 4,
+    "severityBreakdown": {
+      "critical": 1,
+      "high": 2,
+      "medium": 1,
+      "low": 0,
+      "informational": 0
+    },
+    "confidenceBreakdown": {
+      "high": 2,
+      "medium": 1,
+      "low": 1
+    },
+    "evidenceBreakdown": {
+      "direct": 2,
+      "indirect": 1,
+      "inferred": 1
+    },
+    "reliabilityBreakdown": {
+      "highReliability": 2,
+      "mediumReliability": 1,
+      "lowReliability": 1
+    },
+    "overallConfidenceScore": 67,
+    "weightedSeverityScore": 73,
+    "highConfidencePercentage": 50,
+    "directEvidencePercentage": 50,
+    "highPriorityCount": 3
   },
   "findings": [
     {
       "id": "BG-001",
+      "ruleId": "SEC-EMERG-001",
       "title": "Break-glass accounts with password never expires",
-      "severity": "High",
-      "description": "Break-glass accounts should have regular password rotation. Password never expires increases compromise risk.",
-      "count": 2,
-      "recommendation": "Implement 90-day password rotation for break-glass accounts. Consider using PIM for just-in-time access instead.",
+      "description": "Break-glass accounts should have regular password rotation. Password never expires increases compromise risk by providing attackers with unlimited time to crack or misuse credentials.",
+      "severity": "Critical",
+      "severityValue": 5,
+      "confidence": "High",
+      "confidenceValue": 3,
+      "evidenceQuality": "Direct",
+      "evidenceQualityValue": 3,
+      "reliabilityScore": 100,
+      "priorityScore": 100,
+      "affectedObjects": ["BG-Admin1", "breakglass"],
+      "remediation": "Implement 90-day password rotation for break-glass accounts. Consider using Microsoft Entra ID Privileged Identity Management for just-in-time access instead.",
+      "remediationSteps": [
+        "Review all break-glass accounts currently in the environment",
+        "Enable password expiration policies for break-glass accounts",
+        "Implement 90-day password rotation schedule",
+        "Enable PIM for just-in-time privileged access",
+        "Configure alerts for break-glass account usage"
+      ],
+      "timestamp": "2026-02-06T14:39:00.000Z",
+      "source": "BreakGlassReality",
+      "category": "EmergencyAccess",
+      "isResolved": false,
+      "metadata": {
+        "toolName": "IdentityFirst.QuickChecks",
+        "toolVersion": "1.1.0",
+        "schemaVersion": "1.1"
+      },
       "evidence": [
         {
           "SamAccountName": "BG-Admin1",
@@ -55,27 +99,187 @@
     },
     {
       "id": "BG-002",
+      "ruleId": "SEC-MFA-002",
       "title": "Break-glass accounts without MFA",
+      "description": "Break-glass accounts should have MFA enabled. MFA provides critical protection for emergency access accounts by requiring a second factor even when used from unusual locations.",
       "severity": "High",
-      "description": "Break-glass accounts should have MFA enabled. MFA provides critical protection for emergency access accounts.",
-      "count": 2,
-      "recommendation": "Enable MFA on all break-glass accounts. Consider using Microsoft Entra ID Privileged Identity Management for conditional MFA requirements.",
+      "severityValue": 4,
+      "confidence": "High",
+      "confidenceValue": 3,
+      "evidenceQuality": "Direct",
+      "evidenceQualityValue": 3,
+      "reliabilityScore": 100,
+      "priorityScore": 80,
+      "affectedObjects": ["BG-Admin1", "breakglass", "emergency-admin"],
+      "remediation": "Enable MFA on all break-glass accounts using Microsoft Entra ID Conditional Access policies or per-user MFA settings.",
+      "remediationSteps": [
+        "Enable per-user MFA for all break-glass accounts",
+        "Configure Conditional Access policy to require MFA for break-glass group",
+        "Test break-glass account login with MFA enforcement",
+        "Document break-glass account MFA bypass procedures for emergencies"
+      ],
+      "timestamp": "2026-02-06T14:39:00.000Z",
+      "source": "BreakGlassReality",
+      "category": "Authentication",
+      "isResolved": false,
+      "metadata": {
+        "toolName": "IdentityFirst.QuickChecks",
+        "toolVersion": "1.1.0",
+        "schemaVersion": "1.1"
+      },
       "evidence": [
         {
           "SamAccountName": "BG-Admin1",
           "Name": "Break Glass Admin 1",
-          "MFAEnabled": false
+          "MFAEnabled": false,
+          "StrongAuthenticationMethods": []
         },
         {
           "SamAccountName": "breakglass",
           "Name": "Emergency Break Glass",
-          "MFAEnabled": false
+          "MFAEnabled": false,
+          "StrongAuthenticationMethods": []
         }
       ]
+    },
+    {
+      "id": "AD-003",
+      "ruleId": "SEC-PRIV-003",
+      "title": "Enterprise Admin group has unauthorized members",
+      "description": "Enterprise Admins group membership should be tightly controlled. Unauthorized members could have domain-wide administrative access.",
+      "severity": "High",
+      "severityValue": 4,
+      "confidence": "Medium",
+      "confidenceValue": 2,
+      "evidenceQuality": "Indirect",
+      "evidenceQualityValue": 2,
+      "reliabilityScore": 44,
+      "priorityScore": 53,
+      "affectedObjects": ["Domain\Enterprise Admins"],
+      "remediation": "Review and remove unauthorized Enterprise Admin memberships. Implement tiered administration model.",
+      "remediationSteps": [
+        "Review current Enterprise Admin membership",
+        "Identify accounts that should not be in Enterprise Admins",
+        "Remove unauthorized members after approval",
+        "Implement tiered admin model to reduce Enterprise Admin scope",
+        "Set up monitoring for Enterprise Admin group changes"
+      ],
+      "timestamp": "2026-02-06T14:39:00.000Z",
+      "source": "Invoke-EnterpriseAdminMembers",
+      "category": "PrivilegeManagement",
+      "isResolved": false,
+      "metadata": {
+        "toolName": "IdentityFirst.QuickChecks",
+        "toolVersion": "1.1.0",
+        "schemaVersion": "1.1"
+      },
+      "notes": "Detection based on AD group enumeration. Cross-reference with approved access lists recommended."
+    },
+    {
+      "id": "HYB-004",
+      "ruleId": "SEC-SYNC-004",
+      "title": "Potential hybrid identity synchronization issues",
+      "description": "Accounts showing signs of synchronization delays or conflicts between on-premises AD and Entra ID.",
+      "severity": "Medium",
+      "severityValue": 3,
+      "confidence": "Low",
+      "confidenceValue": 1,
+      "evidenceQuality": "Inferred",
+      "evidenceQualityValue": 1,
+      "reliabilityScore": 11,
+      "priorityScore": 20,
+      "affectedObjects": ["sync accounts"],
+      "remediation": "Review Azure AD Connect configuration and health. Investigate synchronization errors.",
+      "remediationSteps": [
+        "Check Azure AD Connect sync health status",
+        "Review synchronization error logs in Event Viewer",
+        "Verify directory attribute consistency",
+        "Check for duplicate proxyAddresses or UPN conflicts"
+      ],
+      "timestamp": "2026-02-06T14:39:00.000Z",
+      "source": "Invoke-HybridSyncReality",
+      "category": "IdentitySynchronization",
+      "isResolved": false,
+      "metadata": {
+        "toolName": "IdentityFirst.QuickChecks",
+        "toolVersion": "1.1.0",
+        "schemaVersion": "1.1"
+      },
+      "notes": "Heuristic-based detection. Manual verification of specific accounts recommended."
     }
   ],
+  "executiveSummary": {
+    "reportTitle": "QuickChecks Report",
+    "generatedAt": "2026-02-06T14:39:00.000Z",
+    "toolName": "IdentityFirst.QuickChecks",
+    "toolVersion": "1.1.0",
+    "totalFindings": 4,
+    "resolvedFindings": 0,
+    "openFindings": 4,
+    "severityBreakdown": {
+      "critical": 1,
+      "high": 2,
+      "medium": 1,
+      "low": 0,
+      "informational": 0
+    },
+    "confidenceBreakdown": {
+      "high": 2,
+      "medium": 1,
+      "low": 1
+    },
+    "evidenceBreakdown": {
+      "direct": 2,
+      "indirect": 1,
+      "inferred": 1
+    },
+    "reliabilityBreakdown": {
+      "highReliability": 2,
+      "mediumReliability": 1,
+      "lowReliability": 1
+    },
+    "overallConfidenceScore": 67,
+    "weightedSeverityScore": 73,
+    "highConfidencePercentage": 50,
+    "directEvidencePercentage": 50,
+    "highPriorityCount": 3,
+    "highPriorityFindings": [
+      {
+        "id": "BG-001",
+        "title": "Break-glass accounts with password never expires",
+        "severity": "Critical",
+        "confidence": "High"
+      },
+      {
+        "id": "BG-002",
+        "title": "Break-glass accounts without MFA",
+        "severity": "High",
+        "confidence": "High"
+      }
+    ],
+    "remediationIncluded": true,
+    "topRemediations": [
+      {
+        "findingId": "BG-001",
+        "title": "Break-glass accounts with password never expires",
+        "severity": "Critical",
+        "confidence": "High",
+        "remediation": "Implement 90-day password rotation for break-glass accounts. Consider using Microsoft Entra ID Privileged Identity Management for just-in-time access instead."
+      },
+      {
+        "findingId": "BG-002",
+        "title": "Break-glass accounts without MFA",
+        "severity": "High",
+        "confidence": "High",
+        "remediation": "Enable MFA on all break-glass accounts using Microsoft Entra ID Conditional Access policies or per-user MFA settings."
+      }
+    ]
+  },
   "notes": [
-    "This check identifies accounts with 'break', 'glass', 'emergency', or 'incident' in the name.",
-    "This script shows break-glass accounts exist. It cannot answer: Who approved them? When tested? What controls exist?"
+    "This report was generated using IdentityFirst QuickChecks version 1.1.0",
+    "Confidence levels: High (direct evidence, multiple sources), Medium (some corroboration), Low (inferred/heuristic)",
+    "Evidence quality: Direct (directory queries), Indirect (API responses), Inferred (calculated)",
+    "Reliability scores above 80% indicate high-confidence findings suitable for immediate action",
+    "Findings with Low confidence or Inferred evidence should be verified manually before remediation"
   ]
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "File": "dev-tools/Create-SelfSignedCert.ps1",
+    "RuleName": "InvalidLeftHandSide",
+    "Severity": 3,
+    "Message": "The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments.",
+    "Line": 10,
+    "Column": 23
+  },
+  {
+    "File": "Generate-CSR.ps1",
+    "RuleName": "InvalidVariableReferenceWithDrive",
+    "Severity": 3,
+    "Message": "Variable reference is not valid. Consider using ${} to delimit the name.",
+    "Line": 109,
+    "Column": 49
+  },
+  {
+    "File": "Install-Prerequisites.ps1",
+    "RuleName": "InvalidVariableReferenceWithDrive",
+    "Severity": 3,
+    "Message": "Variable reference is not valid. Consider using ${} to delimit the name.",
+    "Line": 139,
+    "Column": 56
+  },
+  {
+    "File": "Install-QuickChecks.ps1",
+    "RuleName": "TerminatorExpectedAtEndOfString",
+    "Severity": 3,
+    "Message": "The string is missing the terminator: \"@.",
+    "Line": 189,
+    "Column": 18
+  }
+]

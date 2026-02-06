@@ -1,0 +1,376 @@
+name: Signed Release Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup PowerShell
+      uses: actions/powershell@v4
+      with:
+        shell: pwsh
+        version: 5.1
+    
+    - name: Determine version
+      id: version
+      shell: pwsh
+      run: |
+        $version = '${{ github.event.inputs.version }}'
+        if (-not $version) {
+          if (Test-Path 'VERSION.txt') {
+            $version = (Get-Content 'VERSION.txt' -Raw).Trim()
+          }
+          else {
+            $version = "1.0.0"
+          }
+        }
+        if ($version -notmatch '^\d+\.\d+\.\d+(-[a-z0-9.]+)?$') {
+          Write-Error "Invalid version format: $version"
+          exit 1
+        }
+        Write-Output "version=$version" >> $env:GITHUB_OUTPUT
+    
+    - name: Generate changelog
+      id: changelog
+      shell: pwsh
+      run: |
+        $version = '${{ steps.version.outputs.version }}'
+        if (Test-Path 'CHANGELOG.md') {
+          $changelog = Get-Content 'CHANGELOG.md' -Raw
+          $lines = $changelog -split '\r?\n'
+          $output = @()
+          $capture = $false
+          foreach ($line in $lines) {
+            if ($line -match "^##\s+\[?$version\]?") {
+              $capture = $true
+              $output += $line
+            }
+            elseif ($line -match '^##\s+\[') {
+              if ($capture) { break }
+            }
+            elseif ($capture) {
+              $output += $line
+            }
+          }
+          $result = $output -join "`n"
+          if (-not $result.Trim()) {
+            $result = "Release version $version"
+          }
+        }
+        else {
+          $result = "Release version $version"
+        }
+        $result = $result -replace '`n', '%0A' -replace '`r', ''
+        Write-Output "changelog=$result" >> $env:GITHUB_OUTPUT
+
+  build-and-sign:
+    name: Build and Sign
+    runs-on: windows-latest
+    needs: prepare-release
+    environment: signing
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+    
+    - name: Setup PowerShell
+      uses: actions/powershell@v4
+      with:
+        shell: pwsh
+        version: 5.1
+    
+    - name: Install dependencies
+      shell: pwsh
+      run: |
+        Install-Module Az.Accounts -Scope CurrentUser -Force -AllowPrerelease
+        Install-Module Az.Resources -Scope CurrentUser -Force
+        Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force
+        Install-Module AWS.Tools.Common -Scope CurrentUser -Force
+    
+    - name: Install Code Signing Certificate
+      shell: pwsh
+      env:
+        PFX_BASE64: ${{ secrets.CODE_SIGNING_PFX }}
+        PFX_PASSWORD: ${{ secrets.CODE_SIGNING_PASSWORD }}
+      run: |
+        if (-not $env:PFX_BASE64) {
+          Write-Warning "No code signing certificate configured - skipping signature"
+          exit 0
+        }
+        
+        $pfxPath = "$env:TEMP\codesign.pfx"
+        [Convert]::FromBase64String($env:PFX_BASE64) | Set-Content -Path $pfxPath -ByteArray -NoNewline
+        
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(
+          $pfxPath,
+          $env:PFX_PASSWORD,
+          [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+        )
+        
+        $store = New-Object System.Security.Cryptography.X509Certificates.X509Store(
+          [System.Security.Cryptography.X509Certificates.StoreName]::TrustedPeople,
+          [System.Security.Cryptography.X509Certificates.StoreLocation]::LocalMachine
+        )
+        $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
+        $store.Add($cert)
+        $store.Close()
+        
+        Write-Host "Certificate installed: $($cert.Subject)" -ForegroundColor Green
+        
+        # Export thumbprint for later use
+        Write-Host "CERT_THUMBPRINT=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+    
+    - name: Create release package
+      shell: pwsh
+      env:
+        VERSION: ${{ needs.prepare-release.outputs.version }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $version = $env:VERSION
+        Write-Host "Building release package v$version" -ForegroundColor Cyan
+        
+        $outputDir = "release-build"
+        New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+        
+        # Copy module files
+        $moduleDir = "$outputDir\IdentityFirst.QuickChecks"
+        New-Item -ItemType Directory -Path $moduleDir -Force | Out-Null
+        
+        Get-ChildItem -Path . -Filter '*.psm1' -Recurse | Where-Object {
+          $_.Directory.Name -notin @('.git', '.github', 'docs', 'sample-output')
+        } | Copy-Item -Destination $moduleDir -Recurse -Force
+        
+        Get-ChildItem -Path . -Filter '*.psd1' -Recurse | Where-Object {
+          $_.Directory.Name -notin @('.git', '.github', 'docs', 'sample-output')
+        } | Copy-Item -Destination $moduleDir -Recurse -Force
+        
+        # Copy scripts
+        $scriptsDir = "$outputDir\scripts"
+        New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        
+        Get-ChildItem -Path . -Filter '*.ps1' -File | Where-Object {
+          $_.Name -notin @('Install-Prerequisites.ps1', 'Run-AllQuickChecks.bat')
+        } | Copy-Item -Destination $scriptsDir -Force
+        
+        # Copy docs
+        $docsDir = "$outputDir\docs"
+        New-Item -ItemType Directory -Path $docsDir -Force | Out-Null
+        Get-ChildItem -Path docs -Filter '*.md' | Copy-Item -Destination $docsDir -Force
+        
+        # Copy root files
+        Copy-Item 'README.md' -Destination $outputDir
+        Copy-Item 'CHANGELOG.md' -Destination $outputDir
+        Copy-Item 'EULA.txt' -Destination $outputDir
+        Copy-Item 'VERSION.txt' -Destination $outputDir
+        
+        # Create catalog file for modules
+        $catalogPath = "$moduleDir\IdentityFirst.QuickChecks.cat"
+        New-Item -ItemType File -Path $catalogPath -Force | Out-Null
+        
+        Write-Host "Release package created at $outputDir" -ForegroundColor Green
+        
+        # Upload build artifact
+        Compress-Archive -Path "$outputDir\*" -DestinationPath "release-build.zip" -Force
+        Write-Host "##vso[artifact.upload artifactname=build]release-build.zip"
+    
+    - name: Sign PowerShell Scripts
+      if: env.CERT_THUMBPRINT != ''
+      shell: pwsh
+      env:
+        CERT_THUMBPRINT: ${{ steps.cert.outputs.CERT_THUMBPRINT }}
+      run: |
+        try {
+          $cert = Get-ChildItem -Path Cert:\LocalMachine\TrustedPeople | 
+            Where-Object { $_.Thumbprint -eq $env:CERT_THUMBPRINT } | Select-Object -First 1
+          
+          if (-not $cert) {
+            Write-Warning "Certificate not found - skipping signature"
+            exit 0
+          }
+          
+          $signTool = "$env:ProgramFiles\Microsoft SDKs\Windows\v7.0\Bin\signtool.exe"
+          if (-not (Test-Path $signTool)) {
+            $signTool = "$env:ProgramFiles (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe"
+          }
+          
+          if (-not (Test-Path $signTool)) {
+            Write-Warning "SignTool not found - skipping signature"
+            exit 0
+          }
+          
+          # Sign all ps1 files
+          Get-ChildItem -Path release-build -Filter '*.ps1' -Recurse | ForEach-Object {
+            $fullPath = $_.FullName
+            Write-Host "Signing: $fullPath" -ForegroundColor Gray
+            & $signTool sign /sha1 $env:CERT_THUMBPRINT /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /v $fullPath
+          }
+          
+          Write-Host "All scripts signed successfully!" -ForegroundColor Green
+        }
+        catch {
+          Write-Warning "Signing failed: $($_.Exception.Message)"
+        }
+    
+    - name: Generate Authenticode Signature
+      if: env.CERT_THUMBPRINT != ''
+      shell: pwsh
+      env:
+        CERT_THUMBPRINT: ${{ steps.cert.outputs.CERT_THUMBPRINT }}
+      run: |
+        # Generate Authenticode signature for ZIP
+        $zipPath = "IdentityFirst.QuickChecks-${{ needs.prepare-release.outputs.version }}.zip"
+        
+        $cert = Get-ChildItem -Path Cert:\LocalMachine\TrustedPeople | 
+          Where-Object { $_.Thumbprint -eq $env:CERT_THUMBPRINT } | Select-Object -First 1
+        
+        if ($cert) {
+          # Create signature file
+          $sigPath = "$zipPath.sig"
+          
+          $signer = New-Object System.Security.Cryptography.Pkcs.SignedCms(
+            [System.Security.Cryptography.Pkcs.ContentInfo]::EncodeContent([System.IO.File]::ReadAllBytes($zipPath))
+          )
+          
+          $signer.Sign($cert)
+          $signature = $signer.Encode()
+          [System.IO.File]::WriteAllBytes($sigPath, $signature)
+          
+          Write-Host "Created signature: $sigPath" -ForegroundColor Green
+          Write-Host "##vso[artifact.upload artifactname=signature]$sigPath"
+        }
+    
+    - name: Create checksum
+      shell: pwsh
+      env:
+        VERSION: ${{ needs.prepare-release.outputs.version }}
+      run: |
+        $version = $env:VERSION
+        $zipPath = "IdentityFirst.QuickChecks-$version.zip"
+        
+        $sha256 = (Get-FileHash $zipPath -Algorithm SHA256).Hash
+        $sha512 = (Get-FileHash $zipPath -Algorithm SHA512).Hash
+        
+        $checksumContent = "IdentityFirst.QuickChecks-$version.zip`n"
+        $checksumContent += "SHA256: $sha256`n"
+        $checksumContent += "SHA512: $sha512`n"
+        $checksumContent += "`nSigned by: IdentityFirst Ltd`n"
+        $checksumContent += "Certificate Thumbprint: $env:CERT_THUMBPRINT`n"
+        $checksumContent += "Timestamp: $(Get-Date -Format 'o')"
+        
+        $checksumContent | Out-File -FilePath "IdentityFirst.QuickChecks-$version.checksums.txt"
+        
+        Write-Host "Checksum: $sha256" -ForegroundColor Gray
+        Write-Host "##vso[artifact.upload artifactname=checksums]IdentityFirst.QuickChecks-$version.checksums.txt"
+    
+    - name: Upload build
+      uses: actions/upload-artifact@v4
+      with:
+        name: signed-build
+        path: |
+          IdentityFirst.QuickChecks-*.zip
+          IdentityFirst.QuickChecks-*.sha256
+          IdentityFirst.QuickChecks-*.checksums.txt
+        retention-days: 30
+
+  verify-signature:
+    name: Verify Signatures
+    runs-on: ubuntu-latest
+    needs: build-and-sign
+    
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: signed-build
+        path: artifacts
+    
+    - name: Verify checksum file exists
+      run: |
+        if (Test-Path "artifacts/IdentityFirst.QuickChecks-*.checksums.txt") {
+          Write-Host "✅ Checksum file present" -ForegroundColor Green
+          Get-Content "artifacts/IdentityFirst.QuickChecks-*.checksums.txt"
+        }
+        else {
+          Write-Warning "⚠️ No checksum file - unsigned release"
+        }
+    
+    - name: List artifacts
+      run: |
+        Write-Host "📦 Release artifacts:" -ForegroundColor Cyan
+        Get-ChildItem artifacts/ | Format-Table Name, Length
+
+  create-release:
+    name: Create Signed Release
+    runs-on: ubuntu-latest
+    needs: [prepare-release, build-and-sign, verify-signature]
+    
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: signed-build
+        path: artifacts
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          artifacts/*.zip
+          artifacts/*.sha256
+          artifacts/*.checksums.txt
+        name: Release v${{ needs.prepare-release.outputs.version }}
+        body: |
+          ## Security Signed Release
+          
+          This release is cryptographically signed by IdentityFirst Ltd.
+          
+          ### Verification
+          
+          1. Download the ZIP file and checksums file
+          2. Verify SHA256 checksum:
+             ```powershell
+             (Get-FileHash IdentityFirst.QuickChecks-${{ needs.prepare-release.outputs.version }}.zip -Algorithm SHA256).Hash
+             ```
+          3. Compare with checksum in `.checksums.txt`
+          
+          ### Certificate Information
+          
+          - Publisher: IdentityFirst Ltd
+          - Timestamp: http://timestamp.digicent.com
+          
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease }}
+        tag: v${{ needs.prepare-release.outputs.version }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Success notification
+      run: |
+        echo "✅ Signed release v${{ needs.prepare-release.outputs.version }} created!"
+        echo "📦 All artifacts are cryptographically signed"

@@ -1,0 +1,82 @@
+name: QuickChecks CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  release:
+    types: [created]
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Install PSScriptAnalyzer
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+        
+    - name: Lint Scripts
+      shell: pwsh
+      run: |
+        $scripts = Get-ChildItem -Path . -Recurse -Include *.ps1, *.psm1, *.psd1 -Exclude node_modules
+        foreach ($script in $scripts) {
+          Write-Host "Linting: $($script.FullName)"
+          Invoke-ScriptAnalyzer -Path $script.FullName -Severity Error, Warning
+        }
+        
+    - name: Test Module Import
+      shell: pwsh
+      run: |
+        Import-Module ./Module/IdentityFirst.QuickChecks.psm1 -Force
+        Get-Command -Module IdentityFirst.QuickChecks | Format-Table Name, CommandType
+        
+  package:
+    needs: validate
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Read Version
+      id: version
+      run: |
+        version=$(cat VERSION.txt 2>/dev/null || echo "1.0.0")
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "Version: $version"
+        
+    - name: Create Package
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.version }}"
+        ./Package-QuickChecks.ps1 -Version $version -OutputPath ./package
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: quickchecks-${{ steps.version.outputs.version }}.zip
+        path: package/*.zip
+        
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: quickchecks-${{ steps.version.outputs.version }}.zip
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ${{ steps.version.outputs.version }}.zip
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

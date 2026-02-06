@@ -1,0 +1,83 @@
+<#
+Safe interactive fixer for `Write-Host` usages.
+
+Usage (run manually):
+  pwsh -NoProfile -ExecutionPolicy Bypass -File .\.scripts\pssa_fix_writehost.ps1 -Root . -Interactive
+
+Behavior:
+- Scans `*.ps1` and `*.psm1` under `-Root` for `Write-Host` invocations.
+- Automatically replaces only the simple forms that have no named parameters (no `-ForegroundColor`, `-NoNewline`, etc.).
+- Reports lines that contain `Write-Host` with parameters and leaves them for manual review.
+- Creates a `.bak` backup for each file before editing.
+- Requires `-Interactive` to proceed; refuses to run non-interactively to avoid accidental automation.
+#>
+
+param(
+    [string]$Root = '.',
+    [switch]$PreferIfqc,
+    [switch]$Interactive
+)
+
+if(-not $Interactive){
+    Write-Host 'This fixer must be run interactively by a user. Re-run with -Interactive to proceed.' -ForegroundColor Yellow
+    exit 2
+}
+
+$files = Get-ChildItem -Path $Root -Include *.ps1,*.psm1 -Recurse -File -ErrorAction SilentlyContinue
+$summary = [System.Collections.Generic.List[object]]::new()
+
+foreach($file in $files){
+    $content = Get-Content -Raw -LiteralPath $file.FullName -ErrorAction Continue
+    if(-not $content) { continue }
+
+    $lines = $content -split "\r?\n"
+    $modified = $false
+    $newLines = @()
+    $safeReplacements = 0
+    $manualHits = @()
+
+    for($i=0; $i -lt $lines.Count; $i++){
+        $line = $lines[$i]
+        if($line -match '\bWrite-Host\b'){
+            $idx = $line.IndexOf('Write-Host')
+            $rest = $line.Substring($idx + 10) # after Write-Host
+            if($rest -notmatch '-'){ 
+                # safe: no named params detected on the same line
+                $replacement = $PreferIfqc.IsPresent ? 'Write-IFQC' : 'Write-Output'
+                $newLine = $line.Substring(0,$idx) + $line.Substring($idx).Replace('Write-Host', $replacement, 1)
+                $newLines += $newLine
+                $modified = $true
+                $safeReplacements++
+            } else {
+                $newLines += $line
+                $manualHits += [PSCustomObject]@{ Line = $i+1; Text = $line }
+            }
+        } else {
+            $newLines += $line
+        }
+    }
+
+    if($modified){
+        Write-Host "File: $($file.FullName) — safe replacements: $safeReplacements, manual hits: $($manualHits.Count)"
+        if($manualHits.Count -gt 0){
+            Write-Host "  Lines needing manual review: $($manualHits | ForEach-Object { $_.Line } -join ', ')" -ForegroundColor Yellow
+        }
+
+        $apply = Read-Host "Apply safe replacements to $($file.Name)? (Y/N)"
+        if($apply -match '^[Yy]'){
+            $bak = "$($file.FullName).bak"
+            Copy-Item -LiteralPath $file.FullName -Destination $bak -Force
+            $newContent = ($newLines -join "`r`n")
+            Set-Content -LiteralPath $file.FullName -Value $newContent -Encoding utf8
+            Write-Host "Updated $($file.FullName) (backup: $bak)" -ForegroundColor Green
+            $summary.Add([PSCustomObject]@{ File = $file.FullName; Replacements = $safeReplacements; Manual = $manualHits.Count }) | Out-Null
+        } else {
+            Write-Host "Skipped $($file.FullName)" -ForegroundColor Cyan
+        }
+    }
+}
+
+Write-Host "Fixer run complete. Modified files: $($summary.Count)" -ForegroundColor Green
+if($summary.Count -gt 0){
+    $summary | Format-Table -AutoSize
+}

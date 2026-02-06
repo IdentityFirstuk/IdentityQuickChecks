@@ -1,0 +1,52 @@
+# Run PSScriptAnalyzer across repository and run smoke tests + health check
+
+# Ensure PSScriptAnalyzer is installed
+if(-not (Get-Module -ListAvailable PSScriptAnalyzer)){
+    Write-Host 'PSScriptAnalyzer not found; installing to CurrentUser scope'
+    Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction SilentlyContinue
+}
+
+$files = Get-ChildItem -Path . -Include *.ps1,*.psm1 -Recurse -File -ErrorAction SilentlyContinue
+$results = @()
+foreach($f in $files){
+    try{
+        $r = Invoke-ScriptAnalyzer -Path $f.FullName -ErrorAction SilentlyContinue
+    } catch {
+        $r = @()
+    }
+    foreach($i in $r){
+        $results += [PSCustomObject]@{ File = $f.FullName; RuleName = $i.RuleName; Severity = $i.Severity; Message = $i.Message; Line = $i.Line; Column = $i.Column }
+    }
+    # Run custom read-only/state-changing check and include results
+    $customRule = Join-Path -Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath 'pssa_readonly_rule.ps1'
+    try{
+        $cust = & $customRule -Path $f.FullName 2>$null
+    } catch {
+        $cust = @()
+    }
+    foreach($c in $cust){
+        $results += [PSCustomObject]@{ File = $c.File; RuleName = $c.RuleName; Severity = $c.Severity; Message = $c.Message; Line = $c.Line; Column = $c.Column }
+    }
+}
+
+$reportPath = Join-Path -Path (Get-Location) -ChildPath 'pssa-report.json'
+$results | ConvertTo-Json -Depth 6 | Out-File -Encoding utf8 $reportPath
+if($results.Count -eq 0){
+    Write-Host 'PSScriptAnalyzer: no findings' 
+} else {
+    $results | Sort-Object Severity | Format-Table -AutoSize
+}
+
+# Run smoke tests
+if(Test-Path .\Test-QuickChecks.ps1){
+    Write-Host "Running Test-QuickChecks.ps1"
+    try{ pwsh -NoProfile -ExecutionPolicy Bypass -File .\Test-QuickChecks.ps1 } catch { Write-Host "Test-QuickChecks failed: $($_.Exception.Message)" }
+} else { Write-Host 'No Test-QuickChecks.ps1 found' }
+
+# Run health check
+if(Test-Path .\IdentityHealthCheck.ps1){
+    Write-Host "Running IdentityHealthCheck.ps1"
+    try{ pwsh -NoProfile -ExecutionPolicy Bypass -File .\IdentityHealthCheck.ps1 -Frameworks GDPR -ReadOnly } catch { Write-Host "IdentityHealthCheck failed: $($_.Exception.Message)" }
+} else { Write-Host 'No IdentityHealthCheck.ps1 found' }
+
+Write-Host 'Run complete. Reports: pssa-report.json (root)'

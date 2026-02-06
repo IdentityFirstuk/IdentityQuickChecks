@@ -1,0 +1,39 @@
+name: Identity Health CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 2 * * *' # daily at 02:00 UTC
+
+jobs:
+  health-check:
+    name: Identity Health Check
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning,Error
+
+      - name: Run IdentityHealthCheck
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -ExecutionPolicy Bypass -File .\IdentityHealthCheck.ps1 -Frameworks GDPR
+
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ifqc-audit-out
+          path: IFQC-Audit-Out

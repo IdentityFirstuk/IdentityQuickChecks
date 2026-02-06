@@ -1,0 +1,143 @@
+name: IdentityFirst QuickChecks CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+
+env:
+  MODULE_NAME: 'IdentityFirst.QuickChecks'
+  POWERShell_VERSION: 'latest'
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PowerShell
+        uses: actions/powershell@v2
+        with:
+          pwsh-version: ${{ env.POWERShell_VERSION }}
+          
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          
+      - name: Run PSSA Analysis
+        shell: pwsh
+        run: |
+          $pssaResults = @()
+          $scripts = Get-ChildItem -Path . -Recurse -Filter '*.ps1' -Exclude 'Obfuscated/*'
+          foreach ($script in $scripts) {
+            $result = Invoke-ScriptAnalyzer -Path $script.FullName -Severity Error,Warning
+            if ($result) {
+              $pssaResults += $result
+            }
+          }
+          if ($pssaResults) {
+            $pssaResults | Format-Table | Out-File -FilePath pssa-results.txt
+            Write-Error "PSSA found $($pssaResults.Count) issues"
+          }
+          
+      - name: Run Unit Tests
+        shell: pwsh
+        run: |
+          Import-Module Pester
+          $result = Invoke-Pester -Path ./Tests -OutputFormat NUnitXml -OutputFile test-results.xml -PassThru
+          if ($result.FailedCount -gt 0) {
+            exit 1
+          }
+          
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.xml
+          
+  build-module:
+    runs-on: windows-latest
+    needs: quality-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PowerShell
+        uses: actions/powershell@v2
+        with:
+          pwsh-version: ${{ env.POWERShell_VERSION }}
+          
+      - name: Import Module
+        shell: pwsh
+        run: |
+          Import-Module ./Module/IdentityFirst.QuickChecks.psd1 -Force
+          Get-Module -Name IdentityFirst.QuickChecks
+          
+      - name: Build Distribution Package
+        shell: pwsh
+        run: |
+          .\Package-QuickChecks.ps1 -OutputPath ./build -Version "ci-${{ github.run_id }}"
+          
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build/
+          
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run Security Scan
+        uses: github/codeql-action/analyze@v2
+        with:
+          languages: powershell
+          queries: security-extended
+          
+      - name: Upload Vulnerability Results
+        uses: github/codeql-action/upload-results@v2
+        if: always()
+
+  publish-gallery:
+    runs-on: ubuntu-latest
+    needs: [build-module, security-scan]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build/
+          
+      - name: Publish to PowerShell Gallery
+        shell: pwsh
+        run: |
+          $modulePath = Get-ChildItem -Path build -Filter "*.zip" | Select-Object -First 1
+          Expand-Archive -Path $modulePath -Destination ./publish
+          
+          # Publish to Gallery (requires API key)
+          Publish-Module -Path ./publish -NuGetApiKey ${{ secrets.PS_GALLERY_API_KEY }} -Verbose
+        env:
+          NuGetApiKey: ${{ secrets.PS_GALLERY_API_KEY }}
+          
+  notify:
+    runs-on: ubuntu-latest
+    needs: [quality-checks, build-module, security-scan]
+    if: always()
+    steps:
+      - name: Send Notification
+        run: |
+          echo "Workflow completed with status: ${{ job.status }}"

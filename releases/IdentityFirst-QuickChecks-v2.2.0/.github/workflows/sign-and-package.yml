@@ -1,0 +1,55 @@
+name: Sign and Package (example)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PowerShell
+        uses: microsoft/setup-powershell@v2
+
+      - name: Fetch PFX from Vault
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+        run: |
+          pwsh -NoProfile -File .\dev-tools\vault\get_pfx_from_vault.ps1 -SecretPath '${{ secrets.VAULT_SECRET_PATH }}' -OutputPath $env:RUNNER_TEMP\identityfirst.pfx
+
+      - name: Package and sign
+        env:
+          PFX_PASSWORD: ${{ secrets.PFX_PASSWORD }}
+        run: |
+          pwsh -NoProfile -File .\.scripts\package_release.ps1 -HtmlOnly -SignPfxPath $env:RUNNER_TEMP\identityfirst.pfx -SignPfxPassword $env:PFX_PASSWORD -OutputRoot releases -DeleteTempPfx
+
+      - name: Install cosign
+        env:
+          REKOR_URL: ${{ secrets.REKOR_URL || 'https://rekor.sigstore.dev' }}
+        run: |
+          powershell -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/sigstore/cosign/releases/latest/download/cosign-windows-amd64.exe' -OutFile $env:RUNNER_TEMP\cosign.exe"
+
+      - name: Sign artifacts with cosign (keyless)
+        env:
+          REKOR_URL: ${{ secrets.REKOR_URL || 'https://rekor.sigstore.dev' }}
+        run: |
+          pwsh -NoProfile -Command "Get-ChildItem -Path releases -Filter '*.zip' -File | ForEach-Object { & $env:RUNNER_TEMP\cosign.exe sign --keyless --rekor $env:REKOR_URL $_.FullName 2>&1 | Out-File -FilePath releases\cosign-$(Split-Path $_.FullName -Leaf).log -Encoding UTF8 -Append }"
+
+      - name: Collect Rekor entries
+        run: |
+          pwsh -NoProfile -Command "Get-ChildItem -Path releases -Filter 'cosign-*.log' -File | ForEach-Object { Get-Content $_.FullName | Select-String -Pattern 'Rekor|Entry created|tlog entry created|Upload to Rekor|Bundle uploaded' | ForEach-Object { \"$($_.Line)\" } } | Out-File -FilePath releases\REKOR-ENTRIES-${{ github.run_id }}.txt -Encoding UTF8"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ifqc-release
+          path: releases

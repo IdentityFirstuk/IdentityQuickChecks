@@ -1,0 +1,529 @@
+<#
+    IdentityFirst QuickChecks Framework
+    Shared utilities for structured identity posture checks
+    
+    Provides:
+    - Context initialization
+    - Safe script execution with logging
+    - Structured finding creation
+    - JSON/HTML report generation
+#>
+
+#Requires -Version 5.1
+
+function New-IFQCContext {
+    <#
+    .SYNOPSIS
+        Creates a new IFQC (IdentityFirst QuickCheck) context for a check run.
+    
+    .DESCRIPTION
+        Initialises output directory, log file, and returns a context object
+        used by all other IFQC functions.
+    
+    .OUTPUTS
+        PSObject - Context object with ToolName, OutputDirectory, LogPath, Findings, etc.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ToolName,
+        
+        [Parameter()]
+        [string]$ToolVersion = "1.0.0",
+        
+        [Parameter()]
+        [string]$OutputDirectory = (Join-Path $PWD "IFQC-Output"),
+        
+        [Parameter()]
+        [ValidateSet("Normal","Detailed")]
+        [string]$DetailLevel = "Normal"
+    )
+
+    if (-not (Test-Path -LiteralPath $OutputDirectory)) {
+        New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
+    }
+
+    $runStamp = (Get-Date).ToString("yyyyMMdd-HHmmss")
+    $logPath  = Join-Path $OutputDirectory "$ToolName-$runStamp.log"
+
+    $ctx = [PSCustomObject]@{
+        ToolName        = $ToolName
+        ToolVersion     = $ToolVersion
+        OutputDirectory = $OutputDirectory
+        RunStamp        = $runStamp
+        LogPath         = $logPath
+        DetailLevel     = $DetailLevel
+        RunId           = [guid]::NewGuid().ToString()
+        GeneratedAtUtc  = (Get-Date).ToUniversalTime().ToString("o")
+        Findings        = [System.Collections.Generic.List[object]]::new()
+        Notes           = [System.Collections.Generic.List[string]]::new()
+        Data            = [ordered]@{}
+    }
+    # Ensure log file exists; prefer secure creation if helper available
+    try {
+        if (Get-Command -Name New-SecureLogFile -ErrorAction SilentlyContinue) {
+            New-SecureLogFile -LogPath $logPath | Out-Null
+        }
+        else {
+            New-Item -Path $logPath -ItemType File -Force | Out-Null
+        }
+    }
+    catch {
+        # Best-effort: ignore and continue; Write-IFQCLog will fallback to console
+    }
+
+    Write-IFQCLog -Context $ctx -Level INFO -Message "Run started. Tool=$ToolName Version=$ToolVersion Output=$OutputDirectory"
+    return $ctx
+}
+
+function Write-IFQCLog {
+    <#
+    .SYNOPSIS
+        Writes a timestamped message to the IFQC log file.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Context,
+        
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("INFO","WARN","ERROR")]
+        [string]$Level,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Message
+    )
+    
+    $ts = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    $line = "[$ts] [$Level] $Message"
+    try {
+        if ($Context -and $Context.LogPath) {
+            Add-Content -Path $Context.LogPath -Value $line -ErrorAction Stop
+        }
+        else {
+            Write-Host $line
+        }
+    }
+    catch {
+        # Fallback: write to host but do not throw
+        Write-Host $line
+    }
+}
+
+function Invoke-IFQCSafe {
+    <#
+    .SYNOPSIS
+        Executes a script block with error handling and logging.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Context,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Name,
+        
+        [Parameter(Mandatory=$true)]
+        [scriptblock]$Block
+    )
+    
+    try {
+        Write-IFQCLog -Context $Context -Level INFO -Message "Starting: $Name"
+        $result = & $Block
+        Write-IFQCLog -Context $Context -Level INFO -Message "Completed: $Name"
+        return $result
+    }
+    catch {
+        Write-IFQCLog -Context $Context -Level ERROR -Message "Failed: $Name | $($_.Exception.Message)"
+        return $null
+    }
+}
+
+function New-IFQCFinding {
+    <#
+    .SYNOPSIS
+        Creates a structured finding object for inclusion in reports.
+    
+    .DESCRIPTION
+        Findings are the core output of IFQC checks. Each finding contains:
+        - id: Unique identifier
+        - title: Short descriptive title
+        - severity: Low/Medium/High/Critical
+        - description: Detailed explanation
+        - count: Number of items found
+        - evidence: Sample data (limited based on DetailLevel)
+        - recommendation: Suggested remediation
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Id,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Title,
+        
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Low","Medium","High","Critical")]
+        [string]$Severity,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Description,
+        
+        [Parameter(Mandatory=$true)]
+        [int]$Count,
+        
+        [Parameter()]
+        [object[]]$Evidence = @(),
+        
+        [Parameter()]
+        [string]$Recommendation = ""
+    )
+    
+    [PSCustomObject]@{
+        id             = $Id
+        title          = $Title
+        severity       = $Severity
+        description    = $Description
+        count          = $Count
+        recommendation = $Recommendation
+        evidence       = $Evidence
+    }
+}
+
+function Add-IFQCFinding {
+    <#
+    .SYNOPSIS
+        Adds a finding to the IFQC context.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Context,
+        
+        [Parameter(Mandatory=$true)]
+        [object]$Finding
+    )
+    
+    $Context.Findings.Add($Finding) | Out-Null
+}
+
+function Add-IFQCNote {
+    <#
+    .SYNOPSIS
+        Adds a note to the report (e.g., explaining limitations).
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Context,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Note
+    )
+    
+    $Context.Notes.Add($Note) | Out-Null
+}
+
+function Get-IFQCHostInfo {
+    <#
+    .SYNOPSIS
+        Gets basic host/machine information for report metadata.
+    #>
+    try {
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction SilentlyContinue
+        $cs = Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction SilentlyContinue
+    }
+    catch {
+        $os = $null
+        $cs = $null
+    }
+    
+    [PSCustomObject]@{
+        computerName = if ($env:COMPUTERNAME) { $env:COMPUTERNAME } else { "Unknown" }
+        userName     = if ($env:USERNAME) { $env:USERNAME } else { "Unknown" }
+        domain       = if ($env:USERDOMAIN) { $env:USERDOMAIN } else { "Unknown" }
+        osCaption    = if ($os) { $os.Caption } else { "Unknown" }
+        osVersion    = if ($os) { $os.Version } else { "Unknown" }
+        manufacturer = if ($cs) { $cs.Manufacturer } else { "Unknown" }
+        model        = if ($cs) { $cs.Model } else { "Unknown" }
+        # Note: Host info included for audit purposes. Remove if not needed.
+    }
+}
+
+function ConvertTo-IFQCSafeHtml {
+    <#
+    .SYNOPSIS
+        Escapes special HTML characters for safe rendering.
+    #>
+    param([string]$Text)
+    
+    if ($null -eq $Text) { return "" }
+    try {
+        return [System.Net.WebUtility]::HtmlEncode($Text)
+    }
+    catch {
+        # Fallback naive replacements if HtmlEncode unavailable
+        return ($Text -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;')
+    }
+}
+
+function Save-IFQCReport {
+    <#
+    .SYNOPSIS
+        Generates JSON and HTML reports from the IFQC context.
+    
+    .DESCRIPTION
+        Creates structured output files with:
+        - Metadata (tool version, run info, host details)
+        - Summary counts by severity
+        - All findings with evidence
+        - Notes about limitations
+    
+    .NOTES
+        Security: Output files contain potentially sensitive identity data.
+        Reports should be stored securely and deleted when no longer needed.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Context,
+        
+        [Parameter()]
+        [hashtable]$AdditionalMeta = @{}
+    )
+
+    # Calculate summary
+    $summary = [ordered]@{
+        totalFindings = $Context.Findings.Count
+        critical      = ($Context.Findings | Where-Object severity -eq "Critical" | Measure-Object).Count
+        high          = ($Context.Findings | Where-Object severity -eq "High"     | Measure-Object).Count
+        medium        = ($Context.Findings | Where-Object severity -eq "Medium"   | Measure-Object).Count
+        low           = ($Context.Findings | Where-Object severity -eq "Low"      | Measure-Object).Count
+    }
+
+    # Build metadata
+    $meta = [ordered]@{
+        toolName        = $Context.ToolName
+        toolVersion     = $Context.ToolVersion
+        runId           = $Context.RunId
+        generatedAtUtc  = $Context.GeneratedAtUtc
+        host            = (Get-IFQCHostInfo)
+        detailLevel     = $Context.DetailLevel
+    }
+
+    foreach ($k in $AdditionalMeta.Keys) { $meta[$k] = $AdditionalMeta[$k] }
+
+    # Build report object
+    $report = [ordered]@{
+        meta     = $meta
+        summary  = $summary
+        data     = $Context.Data
+        findings = $Context.Findings
+        notes    = $Context.Notes
+    }
+
+    # Paths
+    $jsonPath = Join-Path $Context.OutputDirectory "$($Context.ToolName)-$($Context.RunStamp).json"
+    $htmlPath = Join-Path $Context.OutputDirectory "$($Context.ToolName)-$($Context.RunStamp).html"
+
+    # Write JSON
+    ($report | ConvertTo-Json -Depth 10) | Out-File -FilePath $jsonPath -Encoding utf8
+
+    # Generate HTML
+    $findingsHtml = foreach ($f in $Context.Findings) {
+        $sev   = ConvertTo-IFQCSafeHtml $f.severity
+        $title = ConvertTo-IFQCSafeHtml $f.title
+        $desc  = ConvertTo-IFQCSafeHtml $f.description
+        $rec   = ConvertTo-IFQCSafeHtml $f.recommendation
+        $count = [int]$f.count
+
+        $evidenceBlock = ""
+        if ($f.evidence -and $f.evidence.Count -gt 0) {
+            $evJson = ($f.evidence | ConvertTo-Json -Depth 8)
+            try {
+                $encodedEv = [System.Net.WebUtility]::HtmlEncode($evJson)
+            }
+            catch {
+                $encodedEv = $evJson -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;'
+            }
+            $evidenceBlock = "<details><summary>Evidence (sample)</summary><pre>$encodedEv</pre></details>"
+        }
+
+@"
+<section class='card sev-$sev'>
+  <div class='row'>
+    <div class='sev'>$sev</div>
+    <div class='title'>$title</div>
+    <div class='count'>Count: $count</div>
+  </div>
+  <p class='desc'>$desc</p>
+  <p class='rec'><strong>Recommendation:</strong> $rec</p>
+  $evidenceBlock
+</section>
+"@
+    }
+
+    $notesHtml = ($Context.Notes | ForEach-Object { "<li>$(ConvertTo-IFQCSafeHtml $_)</li>" }) -join "`n"
+
+    $html = @"
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>$($Context.ToolName)</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; margin: 24px; background: #f6f7f9; }
+  .header { background: #fff; border-radius: 12px; padding: 16px 18px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; margin-top: 12px; }
+  .pill { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  .pill .n { font-size: 22px; font-weight: 700; }
+  .pill .l { font-size: 12px; opacity: .75; }
+  .card { background: #fff; border-radius: 12px; padding: 14px 16px; margin: 12px 0; box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 6px solid #999; }
+  .row { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .sev { font-weight: 700; }
+  .title { font-size: 16px; font-weight: 700; flex: 1; }
+  .count { font-size: 12px; opacity: .75; }
+  .desc, .rec { margin: 10px 0; }
+  details { margin-top: 8px; }
+  pre { overflow: auto; background: #0f172a; color: #e2e8f0; padding: 10px; border-radius: 10px; font-size: 12px; }
+  .sev-Critical { border-left-color: #7f1d1d; }
+  .sev-High     { border-left-color: #b45309; }
+  .sev-Medium   { border-left-color: #1d4ed8; }
+  .sev-Low      { border-left-color: #166534; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1 style="margin:0 0 6px 0;">$($Context.ToolName)</h1>
+  <div style="opacity:.8; font-size: 13px;">
+    Generated (UTC): $($Context.GeneratedAtUtc)<br/>
+    Run ID: $($Context.RunId)
+  </div>
+
+  <div class="grid">
+    <div class="pill"><div class="n">$($summary.totalFindings)</div><div class="l">Total findings</div></div>
+    <div class="pill"><div class="n">$($summary.critical)</div><div class="l">Critical</div></div>
+    <div class="pill"><div class="n">$($summary.high)</div><div class="l">High</div></div>
+    <div class="pill"><div class="n">$($summary.medium)</div><div class="l">Medium</div></div>
+  </div>
+
+  <h3 style="margin:16px 0 6px 0;">What this does not do</h3>
+  <ul style="margin:0; padding-left: 18px;">
+    $notesHtml
+  </ul>
+</div>
+
+<h2 style="margin-top:18px;">Findings</h2>
+$($findingsHtml -join "`n")
+
+<p style="margin-top: 18px; opacity:.8; font-size: 12px;">
+  Snapshot only. Full correlation, ownership, compliance mapping and continuous control belongs in IdentityHealthCheck / IdentityFirst.
+</p>
+
+<div style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); color: white; padding: 20px; border-radius: 12px; margin-top: 30px; text-align: center;">
+  <h3 style="margin: 0 0 10px 0;">Ready for Full Identity Governance?</h3>
+  <p style="margin: 0 0 15px 0; opacity: 0.9;">
+    These free scripts show what exists. <strong>IdentityHealthCheck</strong> explains what it means.
+  </p>
+  <a href="https://www.identityfirst.net" style="display: inline-block; background: white; color: #1a73e8; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+    Upgrade to IdentityHealthCheck
+  </a>
+</div>
+
+</body>
+</html>
+"@
+
+    $html | Out-File -FilePath $htmlPath -Encoding utf8
+
+    # Attempt to apply restrictive ACLs on Windows only (best-effort)
+    try {
+        if ($IsWindows) {
+            $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+            $acl = Get-Acl -Path $jsonPath
+            $acl.SetAccessRuleProtection($true, $false)
+            $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+                $currentUser,
+                [System.Security.AccessControl.FileSystemRights]::ReadAndExecute -bor [System.Security.AccessControl.FileSystemRights]::ReadData -bor [System.Security.AccessControl.FileSystemRights]::Write,
+                [System.Security.AccessControl.InheritanceFlags]::None,
+                [System.Security.AccessControl.PropagationFlags]::None,
+                [System.Security.AccessControl.AccessControlType]::Allow
+            )
+            $acl.ResetAccessRule($rule)
+            Set-Acl -Path $jsonPath -AclObject $acl
+            Set-Acl -Path $htmlPath -AclObject $acl
+        }
+    }
+    catch {
+        Write-IFQCLog -Context $Context -Level WARN -Message "Could not set restrictive ACLs on output files: $($_.Exception.Message)"
+    }
+
+    Write-IFQCLog -Context $Context -Level INFO -Message "Reports written. JSON=$jsonPath HTML=$htmlPath"
+    
+    [PSCustomObject]@{
+        Json = $jsonPath
+        Html = $htmlPath
+        Log  = $Context.LogPath
+    }
+}
+
+# Export all functions
+Export-ModuleMember -Function *-IFQC*
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCeHDkBrCsvgZ/B
+# uwDxPmrrFw1INZPCZxzCdTFGNYT+K6CCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIJyead20tRbmyg/DXe0Pfeb8GL8EZoks
+# YAWrl1JZsBCNMA0GCSqGSIb3DQEBAQUABIICAHswge++gybcfeewm0UlzvvjDX55
+# AYpE4OehJqj0EdSH2PmtgkSdunWIIKtjscFu1yZylYkqQHPgvB5WPYB4ZDr7Wj3w
+# 3AlqwQfFDC1aXBpOP3xIQZWSToiAipOSIo+JRuwR+fV+23KnpYxg0cRX35t28qfN
+# 1GF4PiNYTWXKfOZJiBW5QZztwXlsif4mXu3AycEsExQ2nU0iWHWfjVCHxzbLd4AU
+# xyv7ZsvyxDsjFoKwuamOG76HoHSNL3F5O9aWWOUVgoSoPK59PRnrZnMIpaY32xw9
+# fB0uMySg6rAUu3IYDjdniJTzmT+MHEz1iPXzbUdtds0KJ4VQrLaR61LSv2525Npm
+# xRdbcwT7REH1ienC84OtZ4WYxC+DJns8IyCUH2gVdx9Vu+n65l9ufIXrP9aPrIBt
+# uPJEQNIpGTw5StVb9BqPPXABaQAvXO2eubcXx/jXaelE4PAsrEVKKgU3NJ9/yNML
+# QgL4PrcKK+DWU7oXKdHKxILUcsKzH9FlOcNmkbDsibn5o1aYYBBqAE0gL4Y52lYz
+# DrKv8remWjloYn3qcsmqo7Wsa8x0h+cIC4XxtkmJmlQwrwYwRnqYir/Ldb25gUO7
+# fdlx7EYmwcGXkGS9iGzJOkCGCpA1SM1+opomkjvFuvnxyZ8FFgwnPZ3Lux219y1R
+# EwlETfuTdnfaat5x
+# SIG # End signature block

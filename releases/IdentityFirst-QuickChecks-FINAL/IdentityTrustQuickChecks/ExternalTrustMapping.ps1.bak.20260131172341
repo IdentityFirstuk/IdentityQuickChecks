@@ -1,0 +1,122 @@
+<#
+    External Trust Mapping
+    Lists AD trusts and flags external / forest trusts
+#>
+
+param(
+    [string]$OutputPath = "."
+)
+
+Write-Output "════════════════════════════════════════════════════════════"
+Write-Output "  External Trust Mapping"
+Write-Output "════════════════════════════════════════════════════════════"
+Write-Output ""
+Write-Output "  Identifying domain and forest trusts..."
+Write-Output ""
+
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+}
+catch {
+    Write-Output "  ✗ ActiveDirectory module not available"
+    Write-Output "  ℹ Install RSAT AD tools or run on a Domain Controller"
+    exit 1
+}
+
+$trusts = Get-ADTrust | Select-Object Name,TrustType,TrustDirection,IntraForest,
+    @{Name="Created";Expression={$_.WhenCreated.ToString("yyyy-MM-dd")}},
+    @{Name="Modified";Expression={$_.Modified.ToString("yyyy-MM-dd")}}
+
+Write-Output "  Found $($trusts.Count) trust relationships:"
+Write-Output ""
+
+if ($trusts) {
+    $trusts | Format-Table -AutoSize
+    
+    # Flag external trusts
+    $externalTrusts = $trusts | Where-Object { $_.TrustType -notin @("Forest", "None") -or $_.TrustDirection -ne "WithinForest" }
+    
+    if ($externalTrusts) {
+        Write-Output ""
+        Write-Output "  ⚠ External/Cross-realm trusts detected:"
+        $externalTrusts | Format-Table -AutoSize
+    }
+} else {
+    Write-Output "  ✓ No external trusts configured"
+}
+
+# Export report
+$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$jsonPath = Join-Path $OutputPath "ExternalTrustMapping-$timestamp.json"
+$report = @{
+    check = "External Trust Mapping"
+    timestamp = (Get-Date).ToString("o")
+    totalTrusts = ($trusts | Measure-Object).Count
+    externalTrusts = $trusts | Where-Object { $_.TrustType -notin @("Forest", "None") }
+    data = $trusts
+}
+$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $jsonPath -Encoding UTF8
+Write-Output ""
+Write-Output "  📄 Report saved: $jsonPath"
+
+Write-Output ""
+Write-Output "  ─────────────────────────────────────────────────────────────"
+Write-Output "  ℹ  Trust existing ≠ trust justified."
+Write-Output "     For trust justification review, run IdentityHealthCheck."
+Write-Output "  ─────────────────────────────────────────────────────────────"
+
+# SIG # Begin signature block
+# MIIJyAYJKoZIhvcNAQcCoIIJuTCCCbUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAPOxHklEdSafaU
+# tQQgMAmwYQtrDtR5J7RfRqcx10qUHaCCBdYwggXSMIIDuqADAgECAhAxVnqog0nQ
+# oULr1YncnW59MA0GCSqGSIb3DQEBCwUAMIGAMQswCQYDVQQGEwJHQjEXMBUGA1UE
+# CAwOTm9ydGh1bWJlcmxhbmQxFzAVBgNVBAcMDk5vcnRodW1iZXJsYW5kMRowGAYD
+# VQQKDBFJZGVudGl0eUZpcnN0IEx0ZDEjMCEGA1UEAwwaSWRlbnRpdHlGaXJzdCBD
+# b2RlIFNpZ25pbmcwHhcNMjYwMTI5MjExMDU3WhcNMzEwMTI5MjEyMDU2WjCBgDEL
+# MAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQHDA5O
+# b3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAhBgNV
+# BAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nMIICIjANBgkqhkiG9w0BAQEF
+# AAOCAg8AMIICCgKCAgEAtrU2HprgcHe9mxlmt5X72OsSk7cXDyUhoOAcLE9f4lS2
+# rOx7VbZSMSi0r4lt8a/S5m/JIWCdYO+GrWZCgS2S73H3KNDszR5HDPbMhv+leoWA
+# qLT7C0awpjcTnvWIDxnHyHHane/TNl3ehY9Jek5qrbiNgJDatV6SEYVFlK8Nk9kE
+# 3TiveVvRKokNT2xY4/h1rohFCHnF+g7dCn06xAZwoGnFVlmPop3jItAlZdUQz3zR
+# /xSNW01sQXgW6/TYd2VzXXuQihMQ3ikjoNGX1L8SlcV4ih2J+r2kSHjhkZ8c+wJE
+# v2iiUHqpwmch31UwQOb4qklGKg1A+SAUGdf0cTTc6ApSFsqrol1euObreoy0zdAA
+# k47NELuGhKA4N0Dk9Ar616JGFt/03s1waukNisnH/sk9PmPGUo9QtKH1IQpBtwWw
+# uKel0w3MmgTwi2vBwfyh2/oTDkTfic7AT3+wh6O/9mFxxu2Fsq6VSlYRpSTSpgxF
+# c/YsVlQZaueZs6WB6/HzftGzv1Mmz7is8DNnnhkADTEMj+NDo4wq+lUCE7XNDnnH
+# KBN8MkDh4IljXVSkP/xwt4wLLd9g7oAOW91SDA2wJniyjSUy9c+auW3lbA8ybSfL
+# TrQgZiSoepcCjW2otZIXrmDnJ7BtqmmiRff4CCacdJXxqNWdFnv6y7Yy6DQmECEC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBQBfqZy0Xp6lbG6lqI+cAlT7ardlTANBgkqhkiG9w0BAQsFAAOCAgEA
+# IwBi/lJTGag5ac5qkMcnyholdDD6H0OaBSFtux1vPIDqNd35IOGYBsquL0BZKh8O
+# AHiuaKbo2Ykevpn5nzbXDBVHIW+gN1yu5fWCXSezCPN/NgVgdH6CQ6vIuKNq4BVm
+# E8AEhm7dy4pm4WPLqEzWT2fwJhnJ8JYBnPbuUVE8F8acyqG8l3QMcGICG26NWgGs
+# A28YvlkzZsny+HAzLvmJn/IhlfWte1kGu0h0G7/KQG6hei5afsn0HxWHKqxI9JsG
+# EF3SsMVQW3YJtDzAiRkNtII5k0PyywjrgzIGViVNOrKMT9dKlsTev6Ca/xQX13xM
+# 0prtnvxiTXGtT031EBGXAUhOzvx2Hp1WFnZTEIJyX1J2qI+DQsPb9Y1jWcdGBwv3
+# /m1nAHE7FpPGsSv+UIP3QQFD/j6nLl5zUoWxqAZMcV4K4t4WkPQjPAXzomoRaqc6
+# toXHlXhKHKZ0kfAIcPCFlMwY/Rho82GiATIxHXjB/911VRcpv+xBoPCZkXDnsr9k
+# /aRuPNt9DDSrnocJIoTtqIdel/GJmD0D75Lg4voUX9J/1iBuUzta2hoBA8fSVPS5
+# 6plrur3Sn5QQG2kJt9I4z5LS3UZSfT+29+xJz7WSyp8+LwU7jaNUuWr3lpUnY2nS
+# pohDlw2BFFNGT6/DZ0loRJrUMt58UmfdUX8FPB7uNuIxggNIMIIDRAIBATCBlTCB
+# gDELMAkGA1UEBhMCR0IxFzAVBgNVBAgMDk5vcnRodW1iZXJsYW5kMRcwFQYDVQQH
+# DA5Ob3J0aHVtYmVybGFuZDEaMBgGA1UECgwRSWRlbnRpdHlGaXJzdCBMdGQxIzAh
+# BgNVBAMMGklkZW50aXR5Rmlyc3QgQ29kZSBTaWduaW5nAhAxVnqog0nQoULr1Ync
+# nW59MA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
+# GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
+# AQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIPFuOFtqLMpvtiOHGwy+04/hc0BCNwFl
+# KKKjr5DqOmZAMA0GCSqGSIb3DQEBAQUABIICAKK2uDGgmJ8SPwjk3HmeXlkhBrqU
+# fYfXV75OwBJVcQl5UFtfxaKZZKtqPxgcsxNcFFjMZ56c16vzT5/wMCeTYorHwAbz
+# qLIw29P3MTHrIxaVFdi3pEOzfthnEYPLRlPNEQSjpO/GE1BGhnUQHv1q69GH6PCW
+# 5GYYDCRxEwKQk9LGK8txy2HtfsC8Y9HL/cTqjXTt1x3rV3ipndW4x36fGOWGSDBB
+# eLlV3szAHeaq7sxf/Dt4l7viHj/x7vJg1liDXJ5Fapy2CGuDa9wpgrNBFWUmHqwJ
+# Nq4TbLpRiIuTmwpkRy/jNtY4LtLFwaKovL6veU0FbxXqV8xRCL17eD9VjyFm18Sr
+# JQg8+5zQlHOU2MNygHBwRewijHk4xASt1nwQLyQ7AwJ7V/PMWV0KmC96qIX1Upv0
+# q+wBJiXU1wILOOhoHw9/hLnB+ttb/MjPV5ALFi8z/e1OdSaF0OkI8/rrx/jR1dhw
+# P4dmOynhopxKmNpAJ88Sb9BS3iuNl00MknrAEkAXHm6U/SKS4ObnWOXTvRRZs9wI
+# hd+MlCBLYOn9lFK/0BiLGZsrWGkawxWNcr31MvcGW9Sx5WtcfrxPo42PIpZPuU0/
+# vsdiS+BH0w6hGS2r7xL81uWdRQL+p+9TqrTcVxFgWoZH3dfmX9vu6ow6YlQl0KqP
+# rnTOr29G+OqLGaw8
+# SIG # End signature block

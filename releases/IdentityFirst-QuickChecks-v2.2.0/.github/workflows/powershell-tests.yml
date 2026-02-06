@@ -1,0 +1,389 @@
+name: PowerShell Tests and Quality Checks
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  MODULE_NAME: 'IdentityFirst.QuickChecks'
+  PS_VERSION_51: '5.1'
+  PS_VERSION_72: '7.2'
+  PS_VERSION_LTS: '7.4'
+
+jobs:
+  # ============================================================================
+  # Job: Syntax Validation
+  # ============================================================================
+  syntax-check:
+    name: Syntax Validation
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Get all PS1 files
+        id: files
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path . -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\Output\\' }
+          Write-Host "FILES=$($files.FullName -join ',')" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Validate PowerShell Syntax
+        shell: pwsh
+        run: |
+          $files = "${{ steps.files.outputs.FILES }}".Split(',')
+          $errors = @()
+          foreach ($file in $files) {
+            try {
+              $null = Invoke-Expression -Command (Get-Content $file -Raw) -ErrorAction Stop
+              Write-Host "✓ $file - Syntax OK"
+            }
+            catch {
+              $errors += "$file`: $($_.Exception.Message)"
+              Write-Error "$file`: $($_.Exception.Message)"
+            }
+          }
+          if ($errors.Count -gt 0) {
+            throw "Syntax errors found in $($errors.Count) file(s)"
+          }
+
+      - name: Check UTF-8 BOM
+        shell: pwsh
+        run: |
+          $files = "${{ steps.files.outputs.FILES }}".Split(',')
+          foreach ($file in $files) {
+            $bytes = [System.IO.File]::ReadAllBytes($file)
+            if ($bytes.Length -gt 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+              Write-Host "✓ $file - Has UTF-8 BOM (PowerShell 5.1 compatible)"
+            }
+          }
+
+  # ============================================================================
+  # Job: PSScriptAnalyzer
+  # ============================================================================
+  script-analyzer:
+    name: Script Analysis (PSScriptAnalyzer)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -AllowPrerelease -Scope CurrentUser
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path . -Recurse -Settings Production -ExcludeRule @(
+            'PSUseToStringCast',
+            'PSUseOutputTypeCast',
+            'PSAvoidUsingPlainTextForPassword',
+            'PSAvoidUsingUsernameAndPasswordParams'
+          ) -ErrorAction SilentlyContinue
+
+          if ($results) {
+            $results | Format-Table -AutoSize
+            Write-Error "PSScriptAnalyzer found $($results.Count) issue(s)"
+          } else {
+            Write-Host "✓ No PSScriptAnalyzer issues found"
+          }
+
+  # ============================================================================
+  # Job: Module Manifest Validation
+  # ============================================================================
+  manifest-validation:
+    name: Module Manifest Validation
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Validate Module Manifest
+        shell: pwsh
+        run: |
+          $manifestPath = "./Module/IdentityFirst.QuickChecks.psd1"
+          if (Test-Path $manifestPath) {
+            try {
+              $manifest = Test-ModuleManifest -Path $manifestPath -ErrorAction Stop
+              Write-Host "✓ Module manifest valid"
+              Write-Host "  Name: $($manifest.Name)"
+              Write-Host "  Version: $($manifest.Version)"
+              Write-Host "  Functions exported: $($manifest.ExportedFunctions.Count)"
+            }
+            catch {
+              Write-Error "Invalid module manifest: $($_.Exception.Message)"
+              throw
+            }
+          } else {
+            Write-Error "Module manifest not found: $manifestPath"
+            throw
+          }
+
+  # ============================================================================
+  # Job: Pester Tests (PowerShell 7)
+  # ============================================================================
+  pester-tests-ps7:
+    name: Pester Tests (PS 7)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Install-Module -Name Pester -Force -Scope CurrentUser -MinimumVersion 5.0
+
+      - name: Run Pester Tests
+        shell: pwsh
+        run: |
+          $result = Invoke-Pester -Path "./Tests" -OutputFormat JUnitXml -OutputFile "./TestResults/PesterResults-PS7.xml" -PassThru
+          if ($result.FailedCount -gt 0) {
+            Write-Error "Pester tests failed: $($result.FailedCount) test(s)"
+            exit 1
+          } else {
+            Write-Host "✓ All $($result.TotalCount) Pester tests passed"
+          }
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Pester-Test-Results-PS7
+          path: TestResults/
+          retention-days: 7
+
+  # ============================================================================
+  # Job: Pester Tests (PowerShell 5.1)
+  # ============================================================================
+  pester-tests-ps5:
+    name: Pester Tests (PS 5.1)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 5.1
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: '5.1'
+          cache: true
+
+      - name: Install Pester (PS 5.1)
+        shell: powershell
+        run: |
+          Install-Module -Name Pester -Force -MinimumVersion 5.0 -Scope CurrentUser
+
+      - name: Run Pester Tests (PS 5.1)
+        shell: powershell
+        run: |
+          $result = Invoke-Pester -Path "./Tests" -OutputFormat JUnitXml -OutputFile "./TestResults/PesterResults-PS51.xml" -PassThru
+          if ($result.FailedCount -gt 0) {
+            Write-Error "Pester tests failed: $($result.FailedCount) test(s)"
+            exit 1
+          } else {
+            Write-Host "✓ All $($result.TotalCount) Pester tests passed (PS 5.1)"
+          }
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Pester-Test-Results-PS51
+          path: TestResults/
+          retention-days: 7
+
+  # ============================================================================
+  # Job: Cross-Version Compatibility Test
+  # ============================================================================
+  cross-version-compat:
+    name: Cross-Version Compatibility
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ps-version: ['5.1', '7.2', '7.4']
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell ${{ matrix.ps-version }}
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ matrix.ps-version }}
+          cache: true
+
+      - name: Test Module Import
+        shell: pwsh
+        run: |
+          $modulePath = "./Module/IdentityFirst.QuickChecks.psd1"
+          Import-Module $modulePath -ErrorAction Stop
+          Write-Host "✓ Module imported successfully on PowerShell $($PSVersionTable.PSVersion)"
+
+      - name: Test Common Functions
+        shell: pwsh
+        run: |
+          # Test that functions are available
+          $functions = @(
+            'Start-QuickChecks',
+            'Test-SecurePath'
+          )
+          foreach ($func in $functions) {
+            if (Get-Command $func -ErrorAction SilentlyContinue) {
+              Write-Host "✓ Function available: $func"
+            } else {
+              Write-Warning "Function not found: $func"
+            }
+          }
+
+  # ============================================================================
+  # Job: Security Scan
+  # ============================================================================
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Secret Scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --no-update
+        continue-on-error: true
+
+      - name: Check for sensitive patterns
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path . -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\Output\\|\.git\\' }
+
+          $warnings = @()
+          foreach ($file in $files) {
+            $content = Get-Content $file -Raw
+
+            # Check for hardcoded credentials pattern
+            if ($content -match '(password|secret|key|token)\s*=\s*["''][^"'']{8,}["'']') {
+              $warnings += "Possible hardcoded credential in $($file.Name)"
+            }
+          }
+
+          if ($warnings) {
+            Write-Warning "Security scan found $($warnings.Count) potential issue(s):"
+            $warnings | ForEach-Object { Write-Warning "  $_" }
+          } else {
+            Write-Host "✓ No obvious hardcoded credentials found"
+          }
+
+  # ============================================================================
+  # Job: Build and Package
+  # ============================================================================
+  build:
+    name: Build and Package
+    runs-on: windows-latest
+    needs: [syntax-check, manifest-validation, pester-tests-ps7, pester-tests-ps5]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Create Release Package
+        shell: pwsh
+        run: |
+          $version = (Get-Content ./VERSION.txt -Raw).Trim()
+          $packageName = "IdentityFirst.QuickChecks.v$version"
+
+          # Create package directory
+          $packageDir = "./Package/$packageName"
+          New-Item -Path $packageDir -ItemType Directory -Force
+
+          # Copy files (excluding output and temp)
+          Copy-Item -Path .\* -Destination $packageDir -Exclude @('Output*', '*.log', '*.pfx', '*.cer', 'Package') -Recurse -Force
+
+          # Create ZIP
+          Compress-Archive -Path "$packageDir/*" -DestinationPath "./Package/$packageName.zip" -Force
+
+          Write-Host "✓ Package created: $packageName.zip"
+
+      - name: Upload Release Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release-Package
+          path: Package/
+          retention-days: 30
+
+  # ============================================================================
+  # Job: Generate Test Coverage Report
+  # ============================================================================
+  coverage-report:
+    name: Test Coverage Report
+    runs-on: windows-latest
+    needs: pester-tests-ps7
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: actions/setup-powershell@v5
+        with:
+          pwsh-version: ${{ env.PS_VERSION_LTS }}
+          cache: true
+
+      - name: Generate Coverage Report
+        shell: pwsh
+        run: |
+          # Create a simple coverage summary
+          $checkFiles = Get-ChildItem -Path "./Checks" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue
+          $testFiles = Get-ChildItem -Path "./Tests" -Filter "*.Tests.ps1" -ErrorAction SilentlyContinue
+
+          $report = @{
+            TotalChecks = $checkFiles.Count
+            TotalTests = $testFiles.Count
+            Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+          }
+
+          $report | ConvertTo-Json | Out-File -FilePath "./CoverageReport.json" -Encoding utf8
+          Write-Host "✓ Coverage report generated"
+          Write-Host "  Checks: $($report.TotalChecks)"
+          Write-Host "  Tests: $($report.TotalTests)"
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Coverage-Report
+          path: CoverageReport.json
+          retention-days: 7
