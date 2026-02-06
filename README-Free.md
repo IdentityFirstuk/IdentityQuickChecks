@@ -188,7 +188,9 @@ IdentityFirst-QuickChecks/
 
 ## Support
 
-**Email:** info@identityfirst.net
+**Website:** [https://IdentityFirst.net](https://IdentityFirst.net)
+
+**GitHub:** [https://github.com/IdentityFirstuk/IdentityQuickChecks](https://github.com/IdentityFirstuk/IdentityQuickChecks)
 
 ---
 
